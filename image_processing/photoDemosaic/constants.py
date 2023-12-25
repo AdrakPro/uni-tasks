@@ -1,0 +1,2 @@
+BAYER = 'bayer'
+XTRANS = 'xtrans'
