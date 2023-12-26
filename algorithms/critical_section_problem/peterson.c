@@ -22,7 +22,6 @@ void* func1(void* arg) {
   request1 = false;
 
   // Exit section
-
   pthread_exit(NULL);
 }
 
