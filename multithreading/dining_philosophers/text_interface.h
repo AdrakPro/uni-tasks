@@ -4,9 +4,13 @@
 #include "philosopher.h"
 
 void init_ncurses();
+
 WINDOW** draw_philosophers(int windows_number);
+
 void update_sub_window(int id);
+
 void exit_sub_windows(WINDOW** sub_windows, int sub_windows_number);
+
 void exit_ncurses();
 
 
