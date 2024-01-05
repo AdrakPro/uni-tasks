@@ -12,11 +12,11 @@ pthread_cond_t** conditions;
 
 void* start_sim(void* arg);
 
-void grab_forks(int tid);
+void grab_forks(int id);
 
-void return_forks(int tid);
+void return_forks(int id);
 
-void check(int tid);
+void check(int id);
 
 int main(int argc, char* argv[]) {
   // Initialize num_philosophers and validate it
@@ -53,11 +53,11 @@ int main(int argc, char* argv[]) {
 
   pthread_t threads[num_philosophers];
 
-  int tids[num_philosophers];
+  int ids[num_philosophers];
 
   for (int i = 0; i < num_philosophers; i++) {
-    tids[i] = i;
-    pthread_create(&threads[i], NULL, start_sim, (void*) &tids[i]);
+    ids[i] = i;
+    pthread_create(&threads[i], NULL, start_sim, (void*) &ids[i]);
   }
 
   for (int i = 0; i < num_philosophers; i++) {
@@ -92,30 +92,30 @@ void* start_sim(void* arg) {
   return NULL;
 }
 
-void grab_forks(int tid) {
+void grab_forks(int id) {
   pthread_mutex_lock(&mutex);
 
-  set_philosopher_status(tid, HUNGRY);
-  update_sub_window(tid);
+  set_philosopher_status(id, HUNGRY);
+  update_sub_window(id);
 
-  check(tid);
+  check(id);
 
-  while (get_philosopher_status(tid) != EATING) {
-    pthread_cond_wait(conditions[tid], &mutex);
+  while (get_philosopher_status(id) != EATING) {
+    pthread_cond_wait(conditions[id], &mutex);
   }
 
   pthread_mutex_unlock(&mutex);
   sleep(1);
 }
 
-void return_forks(int tid) {
-  int left = (tid + num_philosophers - 1) % num_philosophers;
-  int right = (tid + 1) % num_philosophers;
+void return_forks(int id) {
+  int left = (id + num_philosophers - 1) % num_philosophers;
+  int right = (id + 1) % num_philosophers;
 
   pthread_mutex_lock(&mutex);
 
-  set_philosopher_status(tid, THINKING);
-  update_sub_window(tid);
+  set_philosopher_status(id, THINKING);
+  update_sub_window(id);
 
   // Signal to neighbours that philosopher returned forks
   check(left);
@@ -124,18 +124,18 @@ void return_forks(int tid) {
   pthread_mutex_unlock(&mutex);
 }
 
-void check(int tid) {
-  int left = (tid + num_philosophers - 1) % num_philosophers;
-  int right = (tid + 1) % num_philosophers;
+void check(int id) {
+  int left = (id + num_philosophers - 1) % num_philosophers;
+  int right = (id + 1) % num_philosophers;
 
-  bool is_valid = (get_philosopher_status(tid) == HUNGRY &&
+  bool is_valid = (get_philosopher_status(id) == HUNGRY &&
                    get_philosopher_status(left) != EATING &&
                    get_philosopher_status(right) != EATING);
 
   if (is_valid) {
-    set_philosopher_status(tid, EATING);
-    update_sub_window(tid);
+    set_philosopher_status(id, EATING);
+    update_sub_window(id);
     sleep(2);
-    pthread_cond_signal(conditions[tid]);
+    pthread_cond_signal(conditions[id]);
   }
 }
