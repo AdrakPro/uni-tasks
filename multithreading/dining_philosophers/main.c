@@ -1,8 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <ncurses.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include <unistd.h>
+
 #include "utils.h"
 #include "text_interface.h"
 
@@ -34,7 +33,8 @@ int main(int argc, char* argv[]) {
 
   // Init Ncurses
   init_ncurses();
-  WINDOW** windows = draw_philosophers(num_philosophers);
+  WINDOW** windows = (WINDOW**) calloc(num_philosophers, sizeof(WINDOW*));
+  draw_philosophers(windows, num_philosophers);
 
   // Init mutex
   pthread_mutex_init(&mutex, NULL);
@@ -72,6 +72,7 @@ int main(int argc, char* argv[]) {
   free(conditions);
 
   exit_sub_windows(windows, num_philosophers);
+  free(windows);
   exit_ncurses();
 
   return EXIT_SUCCESS;

@@ -1,6 +1,6 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef DINING_PHILOSOPHER_UTILS_H
+#define DINING_PHILOSOPHER_UTILS_H
 
-int is_number_in_range(int num);
+int is_number_in_range(int number);
 
-#endif
+#endif // DINING_PHILOSOPHER_UTILS_H

@@ -1,11 +1,12 @@
 #ifndef DINING_PHILOSOPHERS_TEXT_INTERFACE_H
 #define DINING_PHILOSOPHERS_TEXT_INTERFACE_H
 
+#include <sys/resource.h>
 #include "philosopher.h"
 
 void init_ncurses();
 
-WINDOW** draw_philosophers(int windows_number);
+void draw_philosophers(WINDOW** windows, int windows_number);
 
 void update_sub_window(int id);
 

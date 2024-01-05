@@ -1,18 +1,8 @@
-#include <ncurses.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/resource.h>
-#include <pthread.h>
 #include "text_interface.h"
 
 void change_text_color(WINDOW* window, char* text, int pair_index);
 
-long getRSS() {
-  struct rusage usage;
-  getrusage(RUSAGE_SELF, &usage);
-
-  return usage.ru_maxrss;
-}
+long get_rss();
 
 void init_ncurses() {
   initscr();
@@ -29,14 +19,12 @@ void init_ncurses() {
   timeout(0);
 }
 
-WINDOW** draw_philosophers(int windows_number) {
+void draw_philosophers(WINDOW** windows, int windows_number) {
   int box_width = 36;
   int start_x = 1;
   int current_x = start_x;
   int current_y = 1;
   int terminal_width = getmaxx(stdscr);
-
-  WINDOW** windows = (WINDOW**) calloc(windows_number, sizeof(WINDOW*));
 
   for (int i = 0; i < windows_number; ++i) {
     refresh();
@@ -54,13 +42,11 @@ WINDOW** draw_philosophers(int windows_number) {
     change_text_color(windows[i], "Thinking", 1);
     // RSS (resident set size) is the portion of process's memory that is held in RAM and used by OS
     // Threads are in the same process, so their RSS is the same
-    mvwprintw(windows[i], 5, 2, "RSS: %ld KB", getRSS());
+    mvwprintw(windows[i], 5, 2, "RSS: %ld KB", get_rss());
     wrefresh(windows[i]);
     // Move window to the next column
     current_x += box_width + 2;
   }
-
-  return windows;
 }
 
 void update_sub_window(int id) {
@@ -81,7 +67,7 @@ void update_sub_window(int id) {
     change_text_color(window, "Eating", 3);
   }
 
-  mvwprintw(window, 5, 2, "RSS: %ld KB", getRSS());
+  mvwprintw(window, 5, 2, "RSS: %ld KB", get_rss());
 
   wrefresh(window);
   refresh();
@@ -93,11 +79,17 @@ void change_text_color(WINDOW* window, char* text, int pair_index) {
   wattroff(window, COLOR_PAIR(pair_index) | A_BOLD);
 }
 
+long get_rss() {
+  struct rusage usage;
+  getrusage(RUSAGE_SELF, &usage);
+
+  return usage.ru_maxrss;
+}
+
 void exit_sub_windows(WINDOW** sub_windows, int sub_windows_number) {
   for (int i = 0; i < sub_windows_number; ++i) {
     delwin(sub_windows[i]);
   }
-  free(sub_windows);
 }
 
 void exit_ncurses() {

@@ -1,5 +1,5 @@
 #include "utils.h"
 
-int is_number_in_range(int num) {
-  return (num >= 5 && num <= 10);
+int is_number_in_range(int number) {
+  return (number >= 5 && number <= 10);
 }
