@@ -4,7 +4,7 @@
 
 Philosopher philosophers[MAX_CAPACITY];
 
-void createPhilosophers(WINDOW** windows, int philosophers_number) {
+void create_philosophers(WINDOW** windows, int philosophers_number) {
   for (int i = 0; i < philosophers_number; ++i) {
     Philosopher newPhilosopher;
 
@@ -16,14 +16,14 @@ void createPhilosophers(WINDOW** windows, int philosophers_number) {
   }
 }
 
-Philosopher* getPhilosopher(int id) {
+Philosopher* get_philosopher(int id) {
   return &philosophers[id];
 }
 
-void setPhilosopherStatus(int id, enum PhilosopherStatus status) {
-  getPhilosopher(id)->status = status;
+void set_philosopher_status(int id, enum PhilosopherStatus status) {
+  get_philosopher(id)->status = status;
 }
 
-enum PhilosopherStatus getPhilosopherStatus(int id) {
-  return getPhilosopher(id)->status;
+enum PhilosopherStatus get_philosopher_status(int id) {
+  return get_philosopher(id)->status;
 }

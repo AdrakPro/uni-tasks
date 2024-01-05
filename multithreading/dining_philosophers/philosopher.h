@@ -2,7 +2,6 @@
 #define DINING_PHILOSOPHERS_PHILOSOPHER_H
 
 #include <ncurses.h>
-#include <stdlib.h>
 
 enum PhilosopherStatus {
     THINKING,
@@ -16,9 +15,9 @@ typedef struct {
     enum PhilosopherStatus status;
 } Philosopher;
 
-void createPhilosophers(WINDOW** windows, int philosophers_number);
-Philosopher* getPhilosopher(int id);
-void setPhilosopherStatus(int id, enum PhilosopherStatus status);
-enum PhilosopherStatus getPhilosopherStatus(int id);
+void create_philosophers(WINDOW** windows, int philosophers_number);
+Philosopher* get_philosopher(int id);
+void set_philosopher_status(int id, enum PhilosopherStatus status);
+enum PhilosopherStatus get_philosopher_status(int id);
 
 #endif //DINING_PHILOSOPHERS_PHILOSOPHER_H

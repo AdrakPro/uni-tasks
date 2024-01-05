@@ -3,11 +3,11 @@
 
 #include "philosopher.h"
 
-void initNcurses();
-WINDOW** drawPhilosophers(int windows_number);
-void updateSubWindow(Philosopher* philosopher);
-void exitSubWindows(WINDOW** windows, int windows_number);
-void exitNcurses();
+void init_ncurses();
+WINDOW** draw_philosophers(int windows_number);
+void update_sub_window(int id);
+void exit_sub_windows(WINDOW** sub_windows, int sub_windows_number);
+void exit_ncurses();
 
 
 #endif //DINING_PHILOSOPHERS_TEXT_INTERFACE_H

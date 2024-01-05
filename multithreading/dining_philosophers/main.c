@@ -6,126 +6,136 @@
 #include "utils.h"
 #include "text_interface.h"
 
-int NUM_PHILOSOPHERS;
+int num_philosophers;
 pthread_mutex_t mutex;
 pthread_cond_t** conditions;
 
-void* startSim(void* arg);
+void* start_sim(void* arg);
 
-void grabForks(int id);
+void grab_forks(int tid);
 
-void returnForks(int id);
+void return_forks(int tid);
 
-void check(int id);
-
+void check(int tid);
 
 int main(int argc, char* argv[]) {
-  // Initialize NUM_PHILOSOPHERS and validate it
+  // Initialize num_philosophers and validate it
   if (argc != 2) {
-    printf("The number of philosophers is missing!");
+    printf("The number of philosophers is missing!\n");
     return EXIT_FAILURE;
   }
 
-  NUM_PHILOSOPHERS = atoi(argv[1]);
+  num_philosophers = atoi(argv[1]);
 
-  if (!isNumberInRange(NUM_PHILOSOPHERS)) {
-    printf("The number must be in range from 5 to 10!");
+  if (!is_number_in_range(num_philosophers)) {
+    printf("The number must be in range from 5 to 10!\n");
     return EXIT_FAILURE;
   }
 
   // Init Ncurses
-  initNcurses();
-  WINDOW** windows = drawPhilosophers(NUM_PHILOSOPHERS);
+  init_ncurses();
+  WINDOW** windows = draw_philosophers(num_philosophers);
 
+  // Init mutex
   pthread_mutex_init(&mutex, NULL);
 
-  createPhilosophers(windows, NUM_PHILOSOPHERS);
-  conditions = (pthread_cond_t**) calloc(NUM_PHILOSOPHERS,
+  // Fill the simple database with philosophers
+  create_philosophers(windows, num_philosophers);
+
+  // Dynamic allocation, because we are waiting for num_philosophers
+  conditions = (pthread_cond_t**) calloc(num_philosophers,
                                          sizeof(pthread_cond_t*));
 
-  pthread_t threads[NUM_PHILOSOPHERS];
-
-  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+  for (int i = 0; i < num_philosophers; i++) {
     conditions[i] = (pthread_cond_t*) malloc(sizeof(pthread_cond_t));
     pthread_cond_init(conditions[i], NULL);
   }
 
-  int ids[NUM_PHILOSOPHERS];
+  pthread_t threads[num_philosophers];
 
-  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
-    ids[i] = i;
-    pthread_create(&threads[i], NULL, startSim, (void*) &ids[i]);
-    sleep(1);
+  int tids[num_philosophers];
+
+  for (int i = 0; i < num_philosophers; i++) {
+    tids[i] = i;
+    pthread_create(&threads[i], NULL, start_sim, (void*) &tids[i]);
   }
 
-  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+  for (int i = 0; i < num_philosophers; i++) {
     pthread_join(threads[i], NULL);
   }
 
-  /* Cleanup */
+  // Cleanup
   pthread_mutex_destroy(&mutex);
-  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+  for (int i = 0; i < num_philosophers; i++) {
     pthread_cond_destroy(conditions[i]);
   }
+  free(conditions);
 
-  exitSubWindows(windows, NUM_PHILOSOPHERS);
-  exitNcurses();
+  exit_sub_windows(windows, num_philosophers);
+  exit_ncurses();
 
   return EXIT_SUCCESS;
 }
 
-void* startSim(void* arg) {
+void* start_sim(void* arg) {
   while (1) {
     if (getch() != ERR) {
       break;
     }
 
     int id = *(int*) arg;
-    sleep(2);
-    grabForks(id);
-    returnForks(id);
+    sleep(1);
+    grab_forks(id);
+    return_forks(id);
   }
+
+  return NULL;
 }
 
-void grabForks(int id) {
+void grab_forks(int tid) {
   pthread_mutex_lock(&mutex);
 
-  setPhilosopherStatus(id, HUNGRY);
-  updateSubWindow(getPhilosopher(id));
+  set_philosopher_status(tid, HUNGRY);
+  update_sub_window(tid);
 
-  check(id);
+  check(tid);
 
-  while (getPhilosopherStatus(id) != EATING) {
-    pthread_cond_wait(conditions[id], &mutex);
+  while (get_philosopher_status(tid) != EATING) {
+    pthread_cond_wait(conditions[tid], &mutex);
   }
 
   pthread_mutex_unlock(&mutex);
+  sleep(1);
 }
 
-void returnForks(int id) {
+void return_forks(int tid) {
+  int left = (tid + num_philosophers - 1) % num_philosophers;
+  int right = (tid + 1) % num_philosophers;
+
   pthread_mutex_lock(&mutex);
 
-  int left = (id + NUM_PHILOSOPHERS - 1) % NUM_PHILOSOPHERS;
-  int right = (id + 1) % NUM_PHILOSOPHERS;
+  set_philosopher_status(tid, THINKING);
+  update_sub_window(tid);
 
-  setPhilosopherStatus(id, THINKING);
-  updateSubWindow(getPhilosopher(id));
+  // Signal to neighbours that philosopher returned forks
   check(left);
   check(right);
 
   pthread_mutex_unlock(&mutex);
 }
 
-void check(int id) {
-  int left = (id + NUM_PHILOSOPHERS - 1) % NUM_PHILOSOPHERS;
-  int right = (id + 1) % NUM_PHILOSOPHERS;
+void check(int tid) {
+  int left = (tid + num_philosophers - 1) % num_philosophers;
+  int right = (tid + 1) % num_philosophers;
 
-  if (getPhilosopherStatus(id) == HUNGRY &&
-      getPhilosopherStatus(left) != EATING &&
-      getPhilosopherStatus(right) != EATING) {
-    setPhilosopherStatus(id, EATING);
-    updateSubWindow(getPhilosopher(id));
-    sleep(3);
-    pthread_cond_signal(conditions[id]);
+  bool is_valid = (get_philosopher_status(tid) == HUNGRY &&
+                   get_philosopher_status(left) != EATING &&
+                   get_philosopher_status(right) != EATING);
+
+  if (is_valid) {
+    set_philosopher_status(tid, EATING);
+    update_sub_window(tid);
+    sleep(2);
+    pthread_cond_signal(conditions[tid]);
   }
 }

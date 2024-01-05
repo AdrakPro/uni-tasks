@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-int isNumberInRange(int num);
+int is_number_in_range(int num);
 
 #endif
