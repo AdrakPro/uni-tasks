@@ -134,7 +134,6 @@ void check(int id) {
 
   if (is_valid) {
     set_philosopher_status(id, EATING);
-    // Not using right_fork(id), don't want to display in terminal fork with number 0
     set_forks(id, left_fork(id) + 1 , id + 1);
     update_sub_window(id);
     sleep(2);
