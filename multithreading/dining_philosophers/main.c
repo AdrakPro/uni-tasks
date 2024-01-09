@@ -17,6 +17,10 @@ void return_forks(int id);
 
 void check(int id);
 
+int left_fork(int id);
+
+int right_fork(int id);
+
 int main(int argc, char* argv[]) {
   // Initialize num_philosophers and validate it
   if (argc != 2) {
@@ -58,6 +62,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < num_philosophers; i++) {
     ids[i] = i;
     pthread_create(&threads[i], NULL, start_sim, (void*) &ids[i]);
+    usleep(5000);
   }
 
   for (int i = 0; i < num_philosophers; i++) {
@@ -110,33 +115,37 @@ void grab_forks(int id) {
 }
 
 void return_forks(int id) {
-  int left = (id + num_philosophers - 1) % num_philosophers;
-  int right = (id + 1) % num_philosophers;
-
   pthread_mutex_lock(&mutex);
 
   set_philosopher_status(id, THINKING);
   update_sub_window(id);
 
   // Signal to neighbours that philosopher returned forks
-  check(left);
-  check(right);
+  check(left_fork(id));
+  check(right_fork(id));
 
   pthread_mutex_unlock(&mutex);
 }
 
 void check(int id) {
-  int left = (id + num_philosophers - 1) % num_philosophers;
-  int right = (id + 1) % num_philosophers;
-
   bool is_valid = (get_philosopher_status(id) == HUNGRY &&
-                   get_philosopher_status(left) != EATING &&
-                   get_philosopher_status(right) != EATING);
+                   get_philosopher_status(left_fork(id)) != EATING &&
+                   get_philosopher_status(right_fork(id)) != EATING);
 
   if (is_valid) {
     set_philosopher_status(id, EATING);
+    // Not using right_fork(id), don't want to display in terminal fork with number 0
+    set_forks(id, left_fork(id) + 1 , id + 1);
     update_sub_window(id);
     sleep(2);
     pthread_cond_signal(conditions[id]);
   }
+}
+
+int left_fork(int id) {
+  return (id + num_philosophers - 1) % num_philosophers;
+}
+
+int right_fork(int id) {
+  return (id + 1) % num_philosophers;
 }

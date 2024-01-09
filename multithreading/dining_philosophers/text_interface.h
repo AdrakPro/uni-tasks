@@ -1,7 +1,6 @@
 #ifndef DINING_PHILOSOPHERS_TEXT_INTERFACE_H
 #define DINING_PHILOSOPHERS_TEXT_INTERFACE_H
 
-#include <sys/resource.h>
 #include "philosopher.h"
 
 void init_ncurses();

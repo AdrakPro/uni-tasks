@@ -2,8 +2,6 @@
 
 void change_text_color(WINDOW* window, char* text, int pair_index);
 
-long get_rss();
-
 void init_ncurses() {
   initscr();
 
@@ -40,9 +38,6 @@ void draw_philosophers(WINDOW** windows, int windows_number) {
     mvwprintw(windows[i], 1, 2, "Philosopher %d", i + 1);
     mvwprintw(windows[i], 3, 2, "Status: ");
     change_text_color(windows[i], "Thinking", 1);
-    // RSS (resident set size) is the portion of process's memory that is held in RAM and used by OS
-    // Threads are in the same process, so their RSS is the same
-    mvwprintw(windows[i], 5, 2, "RSS: %ld KB", get_rss());
     wrefresh(windows[i]);
     // Move window to the next column
     current_x += box_width + 2;
@@ -64,10 +59,12 @@ void update_sub_window(int id) {
   } else if (status == HUNGRY) {
     change_text_color(window, "Hungry", 2);
   } else if (status == EATING) {
-    change_text_color(window, "Eating", 3);
-  }
+    int left_fork = philosopher->forks[0];
+    int right_fork = philosopher->forks[1];
 
-  mvwprintw(window, 5, 2, "RSS: %ld KB", get_rss());
+    change_text_color(window, "Eating ", 3);
+    mvwprintw(window, 5, 2, "Forks taken: %d, %d", left_fork, right_fork);
+  }
 
   wrefresh(window);
   refresh();
@@ -77,13 +74,6 @@ void change_text_color(WINDOW* window, char* text, int pair_index) {
   wattron(window, COLOR_PAIR(pair_index) | A_BOLD);
   wprintw(window, "%s", text);
   wattroff(window, COLOR_PAIR(pair_index) | A_BOLD);
-}
-
-long get_rss() {
-  struct rusage usage;
-  getrusage(RUSAGE_SELF, &usage);
-
-  return usage.ru_maxrss;
 }
 
 void exit_sub_windows(WINDOW** sub_windows, int sub_windows_number) {

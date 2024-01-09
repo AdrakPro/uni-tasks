@@ -11,7 +11,6 @@ void create_philosophers(WINDOW** windows, int philosophers_number) {
     newPhilosopher.id = i;
     newPhilosopher.status = THINKING;
     newPhilosopher.window = windows[i];
-
     philosophers[i] = newPhilosopher;
   }
 }
@@ -26,4 +25,9 @@ void set_philosopher_status(int id, enum PhilosopherStatus status) {
 
 enum PhilosopherStatus get_philosopher_status(int id) {
   return get_philosopher(id)->status;
+}
+
+void set_forks(int id, int left, int right) {
+  get_philosopher(id)->forks[0] = left;
+  get_philosopher(id)->forks[1] = right;
 }
