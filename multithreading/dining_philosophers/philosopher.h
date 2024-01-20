@@ -12,6 +12,7 @@ enum PhilosopherStatus {
 typedef struct {
     int id;
     int forks[2];
+    int eatCount;
     enum PhilosopherStatus status;
     WINDOW* window;
 } Philosopher;
@@ -25,5 +26,9 @@ void set_philosopher_status(int id, enum PhilosopherStatus status);
 enum PhilosopherStatus get_philosopher_status(int id);
 
 void set_forks(int id, int left, int right);
+
+void increment_eat_count(int id);
+
+int get_eat_count(int id);
 
 #endif //DINING_PHILOSOPHERS_PHILOSOPHER_H

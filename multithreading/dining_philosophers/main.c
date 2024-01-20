@@ -21,6 +21,8 @@ int left_fork(int id);
 
 int right_fork(int id);
 
+void display_eat_count();
+
 int main(int argc, char* argv[]) {
   // Initialize num_philosophers and validate it
   if (argc != 2) {
@@ -37,7 +39,7 @@ int main(int argc, char* argv[]) {
 
   // Init Ncurses
   init_ncurses();
-  WINDOW** windows = (WINDOW**) calloc(num_philosophers, sizeof(WINDOW*));
+  WINDOW** windows = (WINDOW**) malloc(num_philosophers * sizeof(WINDOW*));
   draw_philosophers(windows, num_philosophers);
 
   // Init mutex
@@ -47,8 +49,7 @@ int main(int argc, char* argv[]) {
   create_philosophers(windows, num_philosophers);
 
   // Dynamic allocation, because we are waiting for num_philosophers
-  conditions = (pthread_cond_t**) calloc(num_philosophers,
-                                         sizeof(pthread_cond_t*));
+  conditions = (pthread_cond_t**) malloc(num_philosophers * sizeof(pthread_cond_t*));
 
   for (int i = 0; i < num_philosophers; i++) {
     conditions[i] = (pthread_cond_t*) malloc(sizeof(pthread_cond_t));
@@ -62,7 +63,6 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < num_philosophers; i++) {
     ids[i] = i;
     pthread_create(&threads[i], NULL, start_sim, (void*) &ids[i]);
-    usleep(5000);
   }
 
   for (int i = 0; i < num_philosophers; i++) {
@@ -79,6 +79,8 @@ int main(int argc, char* argv[]) {
   exit_sub_windows(windows, num_philosophers);
   free(windows);
   exit_ncurses();
+
+  display_eat_count();
 
   return EXIT_SUCCESS;
 }
@@ -128,13 +130,15 @@ void return_forks(int id) {
 }
 
 void check(int id) {
+  // Take forks if both are available (deadlock prevention)
   bool is_valid = (get_philosopher_status(id) == HUNGRY &&
                    get_philosopher_status(left_fork(id)) != EATING &&
                    get_philosopher_status(right_fork(id)) != EATING);
 
   if (is_valid) {
     set_philosopher_status(id, EATING);
-    set_forks(id, left_fork(id) + 1 , id + 1);
+    set_forks(id, left_fork(id) + 1, id + 1);
+    increment_eat_count(id);
     update_sub_window(id);
     sleep(2);
     pthread_cond_signal(conditions[id]);
@@ -147,4 +151,10 @@ int left_fork(int id) {
 
 int right_fork(int id) {
   return (id + 1) % num_philosophers;
+}
+
+void display_eat_count() {
+  for (int i = 0; i < num_philosophers; ++i) {
+    printf("Philosopher %d has eaten: %d times.\n", i + 1, get_eat_count(i));
+  }
 }
