@@ -44,7 +44,7 @@ void draw_philosophers(WINDOW** windows, int windows_number) {
   }
 }
 
-void update_sub_window(int id) {
+void update_window(int id) {
   Philosopher* philosopher = get_philosopher(id);
   WINDOW* window = philosopher->window;
   enum PhilosopherStatus status = philosopher->status;
@@ -55,7 +55,7 @@ void update_sub_window(int id) {
   mvwprintw(window, 1, 2, "Philosopher %d", id + 1);
   mvwprintw(window, 3, 2, "Status: ");
   if (status == THINKING) {
-    change_text_color(window, "Thinking", 1);
+    change_text_color(window, "Thinking ", 1);
   } else if (status == HUNGRY) {
     change_text_color(window, "Hungry", 2);
   } else if (status == EATING) {
@@ -76,9 +76,9 @@ void change_text_color(WINDOW* window, char* text, int pair_index) {
   wattroff(window, COLOR_PAIR(pair_index) | A_BOLD);
 }
 
-void exit_sub_windows(WINDOW** sub_windows, int sub_windows_number) {
-  for (int i = 0; i < sub_windows_number; ++i) {
-    delwin(sub_windows[i]);
+void exit_windows(WINDOW** windows, int windows_number) {
+  for (int i = 0; i < windows_number; ++i) {
+    delwin(windows[i]);
   }
 }
 

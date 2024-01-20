@@ -12,6 +12,7 @@ void create_philosophers(WINDOW** windows, int philosophers_number) {
     newPhilosopher.status = THINKING;
     newPhilosopher.window = windows[i];
     newPhilosopher.eatCount = 0;
+    newPhilosopher.ticket = 0;
     philosophers[i] = newPhilosopher;
   }
 }
@@ -20,17 +21,18 @@ Philosopher* get_philosopher(int id) {
   return &philosophers[id];
 }
 
-void set_philosopher_status(int id, enum PhilosopherStatus status) {
+void set_status(int id, enum PhilosopherStatus status) {
   get_philosopher(id)->status = status;
 }
 
-enum PhilosopherStatus get_philosopher_status(int id) {
+enum PhilosopherStatus get_status(int id) {
   return get_philosopher(id)->status;
 }
 
-void set_forks(int id, int left, int right) {
+void set_forks(int id, int left) {
   get_philosopher(id)->forks[0] = left;
-  get_philosopher(id)->forks[1] = right;
+  // Right fork
+  get_philosopher(id)->forks[1] = id + 1;
 }
 
 void increment_eat_count(int id) {
@@ -39,4 +41,12 @@ void increment_eat_count(int id) {
 
 int get_eat_count(int id) {
   return get_philosopher(id)->eatCount;
+}
+
+void increment_ticket(int id) {
+  get_philosopher(id)->ticket++;
+}
+
+int get_ticket(int id) {
+  return get_philosopher(id)->ticket;
 }
