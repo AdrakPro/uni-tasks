@@ -10,11 +10,10 @@ void init_ncurses() {
   init_pair(2, COLOR_RED, COLOR_BLACK);
   init_pair(3, COLOR_GREEN, COLOR_BLACK);
 
-  cbreak();
-  noecho();
-  curs_set(0);
-  nodelay(stdscr, TRUE);
-  timeout(0);
+  cbreak(); // Take input without clicking enter
+  noecho(); // The characters typed by the user will not be displayed on the screen.
+  curs_set(0); // Hide cursor
+  nodelay(stdscr, TRUE); // getch() will not block, it will return ERR if no input is waiting
 }
 
 void draw_philosophers(WINDOW** windows, int windows_number) {
@@ -25,8 +24,6 @@ void draw_philosophers(WINDOW** windows, int windows_number) {
   int terminal_width = getmaxx(stdscr);
 
   for (int i = 0; i < windows_number; ++i) {
-    refresh();
-
     // Check if the next box exceeds the terminal width
     if (current_x + box_width > terminal_width) {
       current_x = start_x;
@@ -39,7 +36,7 @@ void draw_philosophers(WINDOW** windows, int windows_number) {
     mvwprintw(windows[i], 3, 2, "Status: ");
     change_text_color(windows[i], "Thinking", 1);
     wrefresh(windows[i]);
-    // Move window to the next column
+    // Move window to the next row
     current_x += box_width + 2;
   }
 }
@@ -67,7 +64,6 @@ void update_window(int id) {
   }
 
   wrefresh(window);
-  refresh();
 }
 
 void change_text_color(WINDOW* window, char* text, int pair_index) {

@@ -11,7 +11,7 @@ pthread_cond_t** conditions;
 
 void* start_sim(void* arg);
 
-void* refresh_windows(void* arg);
+void* refresh_windows();
 
 void grab_forks(int id);
 
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 
   pthread_create(&window_update_thread, NULL, refresh_windows, NULL);
 
-  // With for loop we are waiting sequentially for end of the threads preventing race condition
+  // With for loop main thread is waiting sequentially for end of the threads preventing race condition
   for (int i = 0; i < philosophers_number; i++) {
     pthread_join(threads[i], NULL);
   }
@@ -150,7 +150,7 @@ int right(int id) {
   return (id + 1) % philosophers_number;
 }
 
-void* refresh_windows(void* arg) {
+void* refresh_windows() {
   while (is_sim_running) {
     if (getch() != ERR) {
       is_sim_running = false;
