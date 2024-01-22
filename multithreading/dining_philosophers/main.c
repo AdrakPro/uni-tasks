@@ -112,7 +112,7 @@ void grab_forks(int id) {
   set_status(id, HUNGRY);
   increment_ticket(id);
 
-  // If false, release lock on mutex and put to sleep until another thread signal condition variable
+  // If true, release lock on mutex and put to sleep until another thread signal condition variable
   while (!can_i_eat(id)) {
     pthread_cond_wait(conditions[id], &mutex);
   }
