@@ -105,14 +105,14 @@ void* start_sim(void* arg) {
 // When a philosopher wants to eat, he checks both chopsticks
 // If they are free, then he eats. Otherwise, he waits on a condition variable
 // Whenever a philosopher finishes eating, he checks to see if his neighbors want to eat and are waiting
-// If so, then he calls signal on their condition variables so that they can recheck the chopsticks and eat if possible
+// Then he calls signal on their condition variables so that they can recheck the chopsticks and eat if possible
 void grab_forks(int id) {
   pthread_mutex_lock(&mutex);
 
   set_status(id, HUNGRY);
   increment_ticket(id);
 
-  // If true, release lock on mutex and put to sleep until another thread signal condition variable
+  // If false, release lock on mutex and put to sleep until another thread signal condition variable
   while (!can_i_eat(id)) {
     pthread_cond_wait(conditions[id], &mutex);
   }
