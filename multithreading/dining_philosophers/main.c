@@ -61,12 +61,12 @@ int main(int argc, char* argv[]) {
   pthread_t threads[philosophers_number];
   int ids[philosophers_number];
 
+  pthread_create(&window_update_thread, NULL, refresh_windows, NULL);
+
   for (int i = 0; i < philosophers_number; i++) {
     ids[i] = i;
     pthread_create(&threads[i], NULL, start_sim, (void*) &ids[i]);
   }
-
-  pthread_create(&window_update_thread, NULL, refresh_windows, NULL);
 
   // With for loop main thread is waiting sequentially for end of the threads preventing race condition
   for (int i = 0; i < philosophers_number; i++) {
@@ -160,9 +160,12 @@ void* refresh_windows() {
       is_sim_running = false;
     }
 
+    // Not sure about this, avoid dirty reads?
+//    pthread_mutex_lock(&mutex);
     for (int i = 0; i < philosophers_number; ++i) {
       update_window(i);
     }
+//    pthread_mutex_unlock(&mutex);
     // Sleep for 0.3 second
     usleep(300000);
   }
