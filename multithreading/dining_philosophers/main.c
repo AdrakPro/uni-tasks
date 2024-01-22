@@ -172,6 +172,7 @@ void* refresh_windows() {
 
 void display_result() {
   for (int i = 0; i < philosophers_number; ++i) {
-    printf("Philosopher %d has eaten %d times.\n", i + 1, get_eat_count(i));
+    // Fix the bug, when program started already all philosophers ate one time.
+    printf("Philosopher %d has eaten %d times.\n", i + 1, get_eat_count(i) - 1);
   }
 }
