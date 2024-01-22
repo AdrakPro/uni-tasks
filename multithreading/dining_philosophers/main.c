@@ -161,11 +161,11 @@ void* refresh_windows() {
     }
 
     // Not sure about this, avoid dirty reads?
-//    pthread_mutex_lock(&mutex);
+    // pthread_mutex_lock(&mutex);
     for (int i = 0; i < philosophers_number; ++i) {
       update_window(i);
     }
-//    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
     // Sleep for 0.3 second
     usleep(300000);
   }
