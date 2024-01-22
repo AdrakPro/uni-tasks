@@ -102,6 +102,10 @@ void* start_sim(void* arg) {
   return NULL;
 }
 
+// When a philosopher wants to eat, he checks both chopsticks
+// If they are free, then he eats. Otherwise, he waits on a condition variable
+// Whenever a philosopher finishes eating, he checks to see if his neighbors want to eat and are waiting
+// If so, then he calls signal on their condition variables so that they can recheck the chopsticks and eat if possible
 void grab_forks(int id) {
   pthread_mutex_lock(&mutex);
 
@@ -134,7 +138,7 @@ void return_forks(int id) {
 }
 
 int can_i_eat(int id) {
-  // Take forks if both are available (deadlock prevention) and if it has the lowest ticket than its neighbours (starvation prevention)
+  // Take forks if both are available and if it has the lowest ticket than its neighbours
   if (get_status(left(id)) == EATING || get_status(right(id)) == EATING) return 0;
   if (get_status(left(id)) == HUNGRY && get_ticket(left(id)) < get_ticket(id)) return 0;
   if (get_status(right(id)) == HUNGRY && get_ticket(right(id)) < get_ticket(id)) return 0;
