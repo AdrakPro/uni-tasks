@@ -1,4 +1,5 @@
 import numpy as np
+
 from uniform import rand_one_number
 
 

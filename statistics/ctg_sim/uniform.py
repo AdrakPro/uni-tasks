@@ -12,4 +12,3 @@ def uniform(seed: float, saw_teeth: int = 7, number_of_samples: int = 1):
     for index, seed in enumerate(y[1:]):
         y[index + 1] = rand_one_number(y[index], saw_teeth)
     return y
-
