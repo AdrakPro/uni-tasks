@@ -1,13 +1,12 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from uniform import rand_one_number, uniform
+from uniform import rand_one_number
 
 
-def method_1(distribution: callable,
-             start: float,
-             stop: float,
-             upper_bound: float,
-             number_of_sample):
+def generate_sequences(distribution: callable,
+                       start: float,
+                       stop: float,
+                       upper_bound: float,
+                       number_of_sample):
     output = list()
     x = np.pi - np.floor(np.pi)
     y = np.e - np.floor(np.e)

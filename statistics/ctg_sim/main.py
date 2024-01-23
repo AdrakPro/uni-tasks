@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from random_generator import method_1
+from random_generator import generate_sequences
 
 
 # CTG (Centralne Twierdzenie Graniczne) mówi o tym, że rozkład zbioru
@@ -30,11 +30,11 @@ def f(x):
 
 
 if __name__ == '__main__':
-    y = method_1(distribution=f,
-                 start=-1,
-                 stop=1,
-                 upper_bound=1,
-                 number_of_sample=100_000)
+    y = generate_sequences(distribution=f,
+                           start=-1,
+                           stop=1,
+                           upper_bound=1,
+                           number_of_sample=100_000)
 
     total_samples = 100_000
     sub_sequences = 10_000
@@ -42,8 +42,8 @@ if __name__ == '__main__':
 
     for n in n_values:
         # Generate a sequence of random variables
-        y_sequence = method_1(distribution=f, start=-1, stop=1, upper_bound=1,
-                              number_of_sample=total_samples)
+        y_sequence = generate_sequences(distribution=f, start=-1, stop=1, upper_bound=1,
+                                        number_of_sample=total_samples)
 
         # Divide the sequence into m equal subsequences of length n. Example:
         # data = [1,2,3,4,5,6] the subsequence for n=2 is [data[1],data[1+2],data[3+2],...],
