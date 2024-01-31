@@ -1,25 +1,44 @@
 import math
 import time
+from typing import Callable
 
 import cv2
 import numpy as np
 
 
-def function_a(x):
+def rectangle_function(x: float) -> float:
+    """
+    Implements rectangle function for interpolation.
+
+    :param x: (float) Input parameter for the function.
+    :return: (float) Returns 1 if -0.5 <= x < 0.5, and 0 otherwise.
+    """
     if -0.5 <= x < 0.5:
-        return 1
+        return 1.0
     else:
-        return 0
+        return 0.0
 
 
-def function_b(x):
+def triangle_function(x: float) -> float:
+    """
+     Implements triangle function for interpolation.
+
+    :param x: (float) Input parameter for the function.
+    :return: (float) Returns 1 - abs(x) if abs(x) < 1, and 0 otherwise.
+    """
     if abs(x) < 1:
         return 1 - abs(x)
     else:
         return 0
 
 
-def keys_function(x):
+def keys_function(x: float) -> float:
+    """
+     Implements Keys function for interpolation.
+
+    :param x: (float) Input parameter for the function.
+    :return: (float) Interpolated value based on specific conditions.
+    """
     alpha = -0.5
     x = abs(x)
     if 0 <= x < 1:
@@ -29,8 +48,14 @@ def keys_function(x):
     return 0
 
 
-# Wzory na błędy podane w instrukcji
-def calculate_errors(img, img_diff):
+def calculate_errors(img: np.ndarray, img_diff: np.ndarray) -> list:
+    """
+    Calculates Mean Squared Error (MSE) and Mean Absolute Error (MAE) between two images.
+
+    :param img: (numpy.ndarray) Original image.
+    :param img_diff: (numpy.ndarray) Image to compare against the original.
+    :return: (list) List containing MSE and MAE.
+    """
     height, width = img.shape[:2]
     mse = (img - img_diff) ** 2
     mae = abs(img - img_diff)
@@ -43,7 +68,17 @@ def calculate_errors(img, img_diff):
     return [err1 / (width * height), err2 / (width * height)]
 
 
-def scale_img(img, ratio: float, func):
+def scale_img(
+    img: np.ndarray, ratio: float, func: Callable[[float], float]
+) -> np.ndarray:
+    """
+    Scales an input image using a specified scaling ratio and interpolation function.
+
+    :param img: (numpy.ndarray) Input image.
+    :param ratio: (float) Scaling ratio.
+    :param func: (function) Interpolation function.
+    :return: (numpy.ndarray) Scaled image.
+    """
     img = img.astype(np.float64) / 255
 
     old_height, old_width = img.shape[:2]
@@ -54,7 +89,6 @@ def scale_img(img, ratio: float, func):
 
     for j in range(new_height):
         y = ((j + 0.5) / ratio) - 0.5 + 2
-        # iy i ix to frakcje
         iy = int(y)
         decy = iy - y
         for i in range(new_width):
@@ -73,7 +107,15 @@ def scale_img(img, ratio: float, func):
     return (new_image * 255).round().astype(np.uint8)
 
 
-def clip(n, nmax, nmin=0):
+def clip(n: int, nmax: int, nmin: int = 0) -> int:
+    """
+    Clips a value within a specified range.
+
+    :param n: (int) Value to be clipped.
+    :param nmax: (int) Maximum value for clipping.
+    :param nmin: (int, optional) Minimum value for clipping. Defaults to 0.
+    :return: (int) Clipped value.
+    """
     if n < 0:
         return nmin
     elif n < nmax:
@@ -82,13 +124,31 @@ def clip(n, nmax, nmin=0):
         return nmax - 1
 
 
-def range_clip(n, m, nmax):
+def range_clip(n: int, m: int, nmax: int) -> tuple:
+    """
+    Clips two values within a specified range.
+
+    :param n: (int) First value to be clipped.
+    :param m: (int) Second value to be clipped.
+    :param nmax: (int) Maximum value for clipping.
+    :return: (tuple) Clipped values.
+    """
     return clip(n, nmax), clip(m, nmax)
 
 
-def interpolate(img, x, y, func=keys_function):
+def interpolate(
+    img: np.ndarray, x: float, y: float, func: Callable[[float], float]
+) -> float:
+    """
+    Interpolates values in an image using a specified function.
+
+    :param img: (numpy.ndarray) Image to interpolate.
+    :param x: (float) X-coordinate for interpolation.
+    :param y: (float) Y-coordinate for interpolation.
+    :param func: (function, optional) Interpolation function. Defaults to keys_function.
+    :return: (float) Interpolated value.
+    """
     height, width = img.shape[:2]
-    # Zakres iterowania pobliskich pikseli
     delta = 3
     ix, iy = int(x), int(y)
 
@@ -99,13 +159,22 @@ def interpolate(img, x, y, func=keys_function):
     return f
 
 
-def rotate_image(img, angle, func):
-    radians = np.radians(angle)
-    M = len(img)
-    size = img.shape[0]
-    out = np.empty((size, size))
+def rotate_image(
+    img: np.ndarray, angle: float, func: Callable[[float], float]
+) -> np.ndarray:
+    """
+    Rotates an image by a specified angle using a given interpolation function.
 
-    OXY = np.array([M / 2, M / 2])
+    :param img: (numpy.ndarray) Input image.
+    :param angle: (float) Rotation angle in degrees.
+    :param func: (function) Interpolation function.
+    :return: (numpy.ndarray) Rotated image.
+    """
+    radians = np.radians(angle)
+    m = len(img)
+    size = img.shape[0]
+
+    OXY = np.array([m / 2, m / 2])
     rotation_matrix = np.array(
         [[np.cos(radians), -np.sin(radians)], [np.sin(radians), np.cos(radians)]]
     )
@@ -114,7 +183,7 @@ def rotate_image(img, angle, func):
         [
             interpolate(
                 img,
-                *(OXY + rotation_matrix @ (np.array([n / size, m / size]) * M - OXY)),
+                *(OXY + rotation_matrix @ (np.array([n / size, m / size]) * m - OXY)),
                 func,
             )
             for m in range(size)
@@ -125,7 +194,7 @@ def rotate_image(img, angle, func):
 
 
 if __name__ == "__main__":
-    original_img = cv2.imread("img.bmp")
+    original_img = cv2.imread("img/img.bmp")
 
     start = time.perf_counter()
 
@@ -133,8 +202,8 @@ if __name__ == "__main__":
 
     channels = cv2.split(original_img)
 
-    # Zmiana funkcji interpolujacej
-    interpolation = function_a
+    # Change interpolation function
+    interpolation = rectangle_function
 
     print(
         f"Scaling image from {width}x{height} to {int(width * 0.5)}x{int(height * 0.5)}..."
@@ -153,29 +222,29 @@ if __name__ == "__main__":
         list(scale_img(channels2[c], 2, interpolation) for c in range(c2))
     )
 
-    b = np.pad(scaled_up, ((0, 12), (0, 12), (0, 0)), mode="constant")
-
-    a = rotate_image(original_img, 90, interpolation)
+    rotated_img = rotate_image(original_img, 90, interpolation)
 
     print(f"Finished in {time.perf_counter() - start} seconds")
-    cv2.imwrite("rotated.bmp", a)
-    diff = original_img - b
+    cv2.imwrite("img/rotated.bmp", rotated_img)
+    # Rotate returns array with different dimensions, primitive fix
+    diff = original_img - np.pad(scaled_up, ((0, 12), (0, 12), (0, 0)), mode="constant")
     cv2.imwrite("diff.bmp", diff)
     mse, mae = calculate_errors(original_img, diff)
-    print(f"Błąd średniokwadratowy: {mse}")
-    print(f"Średni błąd względny: {mae}")
+    print(f"Mean Squared Error: {mse}")
+    print(f"Mean Absolute Error: {mae}")
 
     # Keys
     # Finished in 56 seconds
-    # Błąd średniokwadratowy: 98.67
-    # Średni błąd względny: 130.43
+    # MSE: 98.67
+    # MAE: 130.43
 
     # Function B
     # Finished in 46.39 seconds
-    # Błąd średniokwadratowy: 99.80
-    # Średni błąd względny: 130.38
+    # MSE: 99.80
+    # MAE: 130.38
 
     # Function a
     # Finished in 62.224294428000576 seconds
-    # Błąd średniokwadratowy: 9 7.96
-    # Średni błąd względny: 130.04
+    # MSE: 97.96
+    # MAE: 130.04
+
