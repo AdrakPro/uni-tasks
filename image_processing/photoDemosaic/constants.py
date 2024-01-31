@@ -1,2 +1,2 @@
-BAYER = 'bayer'
-XTRANS = 'xtrans'
+BAYER = "bayer"
+XTRANS = "xtrans"
