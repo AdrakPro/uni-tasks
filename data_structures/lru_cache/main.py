@@ -4,6 +4,8 @@ from lru_cache import Cache, PriorityQueue
 
 
 # First write tests, later implementation
+# It was good material to learn about LRU and optimizations.
+# https://death.andgravity.com/lru-cache#a-minimal-plausible-solution
 
 
 class FakeTime:
