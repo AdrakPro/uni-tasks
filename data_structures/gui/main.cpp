@@ -7,10 +7,10 @@
 // - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
 // - Introduction, links and more at the top of imgui.cpp
 
-#include "utils/browser.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
-#include <cstdio>
+#include "utils/browser.h"
+#include "utils/number_generator.h"
 
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -103,9 +103,9 @@ int main(int, char**) {
 	style.ItemSpacing = ImVec2(12.0f, 12.0f);
 	style.FramePadding = ImVec2(4.0f, 6.0f);
 
-  //	Color palette
+	//	Color palette
 	ImVec4* colors = ImGui::GetStyle().Colors;
-	colors[ImGuiCol_WindowBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+	colors[ImGuiCol_WindowBg] = ImVec4(0.28f, 0.28f, 0.28f, 1.0f);
 	colors[ImGuiCol_Border] = ImVec4(0.32f, 0.82f, 0.45f, 0.50f);
 	colors[ImGuiCol_TitleBg] = ImVec4(0.32f, 0.82f, 0.45f, 0.86f);
 	colors[ImGuiCol_TitleBgActive] = ImVec4(0.32f, 0.84f, 0.45f, 1.00f);
@@ -123,9 +123,9 @@ int main(int, char**) {
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// STATE
-	ImVec4 bg_color = {0.28f, 0.28f, 0.28f, 1.0f};
-	const ImVec2 offset = {50.0f, 50.0f};
-	const ImVec2 button_size = {190.0f, 50.0f};
+	ImVec4 bg_color(0.20f, 0.20f, 0.20f, 1.0f);
+	const ImVec2 offset(50.0f, 50.0f);
+	const ImVec2 button_size(190.0f, 50.0f);
 	const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize |
 																 ImGuiWindowFlags_NoCollapse;
 
@@ -189,6 +189,37 @@ int main(int, char**) {
 		std::string path = fileBrowser.getSelectedItemPath();
 
 		if (ImGui::Button("Generate random data", button_size)) {
+			ImGui::OpenPopup("Generate random data");
+		}
+		// Always center this window when appearing
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		if (ImGui::BeginPopupModal(
+				"Generate random data", nullptr, ImGuiWindowFlags_AlwaysAutoResize
+		)) {
+			static int size = 0;
+			ImGui::Text("How much data to generate?");
+			ImGui::InputInt("Input",&size);
+			ImGui::Separator();
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+			ImGui::PopStyleVar();
+
+			if (ImGui::Button("Ok", ImVec2(120, 0)) && size != 0) {
+				generate_numbers(size);
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SetItemDefaultFocus();
+			ImGui::SameLine();
+			if (ImGui::Button(
+					"Cancel", ImVec2(120, 0))) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+
+		if (ImGui::Button("Show data table", button_size)) {
 
 		}
 		ImGui::End();
