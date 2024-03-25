@@ -7,7 +7,7 @@
 // - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
 // - Introduction, links and more at the top of imgui.cpp
 
-#include "imgui/imgui.h"
+#include "utils/browser.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include <cstdio>
@@ -88,6 +88,9 @@ int main(int, char**) {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
+	// Init file browser
+	Browser fileBrowser;
+	fileBrowser.init();
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -100,7 +103,7 @@ int main(int, char**) {
 	style.ItemSpacing = ImVec2(12.0f, 12.0f);
 	style.FramePadding = ImVec2(4.0f, 6.0f);
 
-//	Color palette
+  //	Color palette
 	ImVec4* colors = ImGui::GetStyle().Colors;
 	colors[ImGuiCol_WindowBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_Border] = ImVec4(0.32f, 0.82f, 0.45f, 0.50f);
@@ -111,9 +114,9 @@ int main(int, char**) {
 	colors[ImGuiCol_ButtonHovered] = ImVec4(0.32f, 0.78f, 0.45f, 1.00f);
 	colors[ImGuiCol_ButtonActive] = ImVec4(0.32f, 0.78f, 0.45f, 1.00f);
 
-
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
+
 #ifdef __EMSCRIPTEN__
 	ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
 #endif
@@ -172,19 +175,25 @@ int main(int, char**) {
 		ImVec2 right_pos(
 				(data_window_size.x + structure_window_size.x + 3 * offset.x), offset.y
 		);
-//		ImGui::ShowDemoWindow(NULL);
+		ImGui::ShowDemoWindow(nullptr);
 
 		// Loading data window
 		ImGui::SetNextWindowPos(left_pos);
 		ImGui::SetNextWindowSize(data_window_size, ImGuiCond_Once);
 		ImGui::Begin("Data", nullptr, flags);
+
 		if (ImGui::Button("Load from file (JSON)", button_size)) {
-			// Load data
+			fileBrowser.open();
 		}
+
+		std::string path = fileBrowser.getSelectedItemPath();
+
 		if (ImGui::Button("Generate random data", button_size)) {
-			// Load data
+
 		}
 		ImGui::End();
+
+
 
 		// Data structures window
 		ImGui::SetNextWindowPos(center_pos);
@@ -243,4 +252,3 @@ int main(int, char**) {
 
 	return 0;
 }
-
