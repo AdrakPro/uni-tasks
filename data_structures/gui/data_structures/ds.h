@@ -3,7 +3,9 @@
 
 class DS {
 public:
-	virtual bool insert(const int &element, int index) = 0;
+	virtual bool add(const int &element, int index) = 0;
+
+	virtual bool addFront(const int &element) = 0;
 
 	virtual bool remove(int index) = 0;
 

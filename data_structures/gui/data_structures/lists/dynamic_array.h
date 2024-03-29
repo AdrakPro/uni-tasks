@@ -12,14 +12,16 @@ private:
 	int* array;
 	int size;
 	int capacity;
+	int start;
 
-	void resizeArray();
+	void resize();
 	static bool isPositionNotValid(int position, int upperBound);
 public:
 	DynamicArray(int* array, int capacity);
 	~DynamicArray();
 
-	bool insert(const int &element, int position) override;
+	bool add(const int &element, int position) override;
+	bool addFront(const int &element) override;
 	bool remove(int position) override;
 	bool find(const int &element) override;
 
@@ -28,6 +30,6 @@ public:
 	int getElement(int position) const; // Only for testing purpose (I dont have search yet)
 
 	void setSize(int newSize);
-};
+````````````````````````````````````````````````````````````````````````````````````````````````````````````````````};
 
 #endif //GUI_DYNAMIC_ARRAY_H

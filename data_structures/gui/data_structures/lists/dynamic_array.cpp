@@ -1,18 +1,16 @@
 #include "dynamic_array.h"
 
 DynamicArray::DynamicArray(int* array, int capacity) {
-	this->size = 0;
-	this->capacity = capacity;
-	// Consider	reallocarray() when there is multiplication in the size argument of malloc() or realloc().
-  // It checks for integer overflow in multiplication of capacity and sizeof(int)
-	// https://man.freebsd.org/cgi/man.cgi?query=reallocarray&sektion=3&manpath=freebsd-release-ports
-	this->array = (int*) reallocarray(nullptr, capacity, sizeof(int));
-	std::memcpy(this->array, array, capacity * sizeof(int));
+	this->size = capacity;
+	this->start = 10;
+	this->capacity = capacity + start;
+	this->array = new int[capacity];
+	std::memcpy(this->array + start, array, this->capacity * sizeof(int));
 }
 
-bool DynamicArray::insert(const int &element, int position) {
+bool DynamicArray::add(const int &element, int position) {
 	if (size == capacity) {
-		resizeArray();
+		resize();
 	}
 
 	if (isPositionNotValid(position, capacity)) {
@@ -20,24 +18,41 @@ bool DynamicArray::insert(const int &element, int position) {
 	}
 
 	for (int i = size; i > position; --i) {
-		array[i] = array[i - 1];
+		array[start + i] = array[start + i - 1];
 	}
 
-	array[position] = element;
+	array[start + position] = element;
 	++size;
 
 	return true;
 }
 
-void DynamicArray::resizeArray() {
-	int newCapacity = 2 * capacity;
-	int* tmp = (int*) reallocarray(array, newCapacity, sizeof(int));
+bool DynamicArray::addFront(const int &element) {
+	if (start == 0) {
+		int newCapacity = capacity + start;
+		int* tmp = new int[newCapacity];
 
-	if (tmp == nullptr) {
-		std::cerr << "Failed to resize array." << std::endl;
-		exit(EXIT_FAILURE);
+		// Offset array to right by start making space for front
+		std::memcpy(tmp + capacity, array, size * sizeof(int));
+		delete[] array;
+
+		array = tmp;
+		capacity = newCapacity;
+		start = capacity - size;
 	}
 
+	--start;
+	array[start] = element;
+	++size;
+
+	return true;
+}
+
+void DynamicArray::resize() {
+	int newCapacity = 2 * capacity;
+	int* tmp = new int[newCapacity];
+
+	delete[] array;
 	array = tmp;
 	capacity = newCapacity;
 }
@@ -60,7 +75,7 @@ bool DynamicArray::isPositionNotValid(int position, int upperBound) {
 }
 
 int DynamicArray::getElement(int position) const {
-	return array[position];
+	return array[start + position];
 }
 
 int DynamicArray::getSize() const {
@@ -82,27 +97,30 @@ TEST_CASE("DynamicArray Test") {
 	dynamicArray.setSize(9);
 
 	SECTION("Insert element") {
-		SECTION("Insert element at beginning and shift all other elements") {
-			REQUIRE(dynamicArray.insert(2137, 0) == true);
+		SECTION("Insert element at beginning") {
+			REQUIRE(dynamicArray.addFront(2137) == true);
 			REQUIRE(dynamicArray.getElement(0) == 2137);
 			REQUIRE(dynamicArray.getElement(1) == -2);
+			REQUIRE(dynamicArray.addFront(2000) == true);
+			REQUIRE(dynamicArray.getElement(0) == 2000);
+			REQUIRE(dynamicArray.getElement(1) == 2137);
 		}
 
 		SECTION("Insert element in mid and shift all other elements") {
-			REQUIRE(dynamicArray.insert(55, 3) == true);
+			REQUIRE(dynamicArray.add(55, 3) == true);
 			REQUIRE(dynamicArray.getElement(3) == 55);
 			REQUIRE(dynamicArray.getElement(4) == 1);
 		}
 
 		SECTION("Insert element at the end") {
-			REQUIRE(dynamicArray.insert(22, 8) == true);
+			REQUIRE(dynamicArray.add(22, 8) == true);
 			REQUIRE(dynamicArray.getElement(8) == 22);
 			REQUIRE(dynamicArray.getElement(9) == 6);
 		}
 
 		SECTION("Double capacity if array is full") {
-			REQUIRE(dynamicArray.insert(22, 9) == true);
-			REQUIRE(dynamicArray.insert(23, 10) == true); // Resize
+			REQUIRE(dynamicArray.add(22, 9) == true);
+			REQUIRE(dynamicArray.add(23, 10) == true); // Resize
 			REQUIRE(dynamicArray.getElement(10) == 23);
 			REQUIRE(dynamicArray.getCapacity() == 20);
 		}
