@@ -125,8 +125,8 @@ TEST_CASE("DynamicArray Test") {
 	DynamicArray dynamicArray(data, 10);
 	dynamicArray.setSize(9);
 
-	SECTION("Insert element") {
-		SECTION("Insert element at beginning") {
+	SECTION("Add element") {
+		SECTION("Add element at beginning") {
 			REQUIRE(dynamicArray.addFront(2137) == true);
 			REQUIRE(dynamicArray.getElement(0) == 2137);
 			REQUIRE(dynamicArray.getElement(1) == -2);
@@ -135,13 +135,13 @@ TEST_CASE("DynamicArray Test") {
 			REQUIRE(dynamicArray.getElement(1) == 2137);
 		}
 
-		SECTION("Insert element in mid and shift all other elements") {
+		SECTION("Add element in mid and shift all other elements") {
 			REQUIRE(dynamicArray.add(55, 3) == true);
 			REQUIRE(dynamicArray.getElement(3) == 55);
 			REQUIRE(dynamicArray.getElement(4) == 1);
 		}
 
-		SECTION("Insert element at the end") {
+		SECTION("Add element at the end") {
 			REQUIRE(dynamicArray.add(22, 8) == true);
 			REQUIRE(dynamicArray.getElement(8) == 22);
 			REQUIRE(dynamicArray.getElement(9) == 6);

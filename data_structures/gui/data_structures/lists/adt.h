@@ -1,7 +1,7 @@
-#ifndef GUI_DS_H
-#define GUI_DS_H
+#ifndef GUI_ADT_H
+#define GUI_ADT_H
 
-class DS {
+class ADT {
 public:
 	virtual bool add(const int &element, int index) = 0;
 
@@ -16,4 +16,4 @@ public:
 	[[nodiscard]] virtual bool isEmpty() const = 0;
 };
 
-#endif //GUI_DS_H
+#endif //GUI_ADT_H

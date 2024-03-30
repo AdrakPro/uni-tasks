@@ -1,11 +1,11 @@
 #ifndef GUI_DYNAMIC_ARRAY_H
 #define GUI_DYNAMIC_ARRAY_H
 
-#include "../../ds.h"
+#include "../adt.h"
 #include <cstdlib>
 #include <cstring>
 
-class DynamicArray : public DS {
+class DynamicArray : public ADT {
 private:
 	int* array;
 	int size;
