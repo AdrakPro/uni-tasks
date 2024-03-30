@@ -99,10 +99,6 @@ void DynamicArray::setSize(int newSize) {
 	this->size = newSize;
 }
 
-bool DynamicArray::isPositionNotValid(int position, int upperBound) {
-	return position < 0 && position > upperBound;
-}
-
 int DynamicArray::getElement(int position) const {
 	return array[start + position];
 }

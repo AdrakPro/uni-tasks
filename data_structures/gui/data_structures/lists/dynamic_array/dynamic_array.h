@@ -2,6 +2,7 @@
 #define GUI_DYNAMIC_ARRAY_H
 
 #include "../adt.h"
+#include "../../utils.h"
 #include <cstdlib>
 #include <cstring>
 
@@ -13,9 +14,6 @@ private:
 	int start;
 
 	void resize();
-
-	static bool isPositionNotValid(int position, int upperBound);
-
 public:
 	DynamicArray(int* array, int capacity);
 
