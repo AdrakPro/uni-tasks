@@ -26,9 +26,13 @@ public:
 
 	bool addFront(const int &element) override;
 
+	bool addBack(const int &element) override;
+
 	bool remove(int index) override;
 
 	bool removeFront() override;
+
+	bool removeBack() override;
 
 	bool find(const int &element) override;
 
@@ -38,6 +42,8 @@ public:
 	[[nodiscard]] bool isEmpty() const override;
 
 	[[nodiscard]] int getCapacity() const;
+
+	[[nodiscard]] int getSize() const;
 
 	[[nodiscard]] int getElement(int index) const; // Only for testing purpose
 };

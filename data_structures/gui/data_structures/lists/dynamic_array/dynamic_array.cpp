@@ -45,8 +45,19 @@ bool DynamicArray::addFront(const int &element) {
 	return true;
 }
 
+bool DynamicArray::addBack(const int &element) {
+	if (size == capacity) {
+		expand();
+	}
+
+	array[start + size] = element;
+	++size;
+
+	return true;
+}
+
 bool DynamicArray::remove(int index) {
-	if (isEmpty() || isIndexNotValid(index, capacity)) {
+	if (isIndexNotValid(index, capacity)) {
 		return false;
 	}
 
@@ -62,9 +73,16 @@ bool DynamicArray::remove(int index) {
 
 bool DynamicArray::removeFront() {
 	bool result = remove(0);
-	++start;
+
+	if (result) {
+		++start;
+	}
 
 	return result;
+}
+
+bool DynamicArray::removeBack() {
+	return remove(size - 1);
 }
 
 
@@ -115,6 +133,10 @@ bool DynamicArray::isEmpty() const {
 	return size == 0;
 }
 
+int DynamicArray::getSize() const {
+	return size;
+}
+
 #define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_FAST_COMPILE
 
@@ -127,29 +149,28 @@ TEST_CASE("DynamicArray Test") {
 
 	SECTION("Add element") {
 		SECTION("Add element at beginning") {
-			REQUIRE(dynamicArray.addFront(2137) == true);
+			REQUIRE(dynamicArray.addFront(2137));
 			REQUIRE(dynamicArray.getElement(0) == 2137);
 			REQUIRE(dynamicArray.getElement(1) == -2);
-			REQUIRE(dynamicArray.addFront(2000) == true);
+			REQUIRE(dynamicArray.addFront(2000));
 			REQUIRE(dynamicArray.getElement(0) == 2000);
 			REQUIRE(dynamicArray.getElement(1) == 2137);
 		}
 
 		SECTION("Add element in mid and shift all other elements") {
-			REQUIRE(dynamicArray.add(55, 3) == true);
+			REQUIRE(dynamicArray.add(55, 3));
 			REQUIRE(dynamicArray.getElement(3) == 55);
 			REQUIRE(dynamicArray.getElement(4) == 1);
 		}
 
 		SECTION("Add element at the end") {
-			REQUIRE(dynamicArray.add(22, 8) == true);
-			REQUIRE(dynamicArray.getElement(8) == 22);
-			REQUIRE(dynamicArray.getElement(9) == 6);
+			REQUIRE(dynamicArray.addBack(22));
+			REQUIRE(dynamicArray.getElement(9) == 22);
 		}
 
 		SECTION("Double capacity if array is full") {
-			REQUIRE(dynamicArray.add(22, 9) == true);
-			REQUIRE(dynamicArray.add(23, 10) == true); // Resize
+			REQUIRE(dynamicArray.addBack(22));
+			REQUIRE(dynamicArray.addBack(23)); // Resize
 			REQUIRE(dynamicArray.getElement(10) == 23);
 			REQUIRE(dynamicArray.getCapacity() == 20);
 		}
@@ -157,23 +178,23 @@ TEST_CASE("DynamicArray Test") {
 
 	SECTION("Remove element") {
 		SECTION("Remove element at beginning") {
-			REQUIRE(dynamicArray.removeFront() == true);
+			REQUIRE(dynamicArray.removeFront());
 			REQUIRE(dynamicArray.getElement(0) != -2);
 		}
 
 		SECTION("Remove at the middle") {
-			REQUIRE(dynamicArray.remove(3) == true);
+			REQUIRE(dynamicArray.remove(3));
 			REQUIRE(dynamicArray.getElement(3) == 2);
 		}
 
 		SECTION("Remove element at the end") {
-			REQUIRE(dynamicArray.remove(8) == true);
+			REQUIRE(dynamicArray.removeBack());
 			REQUIRE(dynamicArray.getElement(8) == 0);
 		}
 	}
 
 	SECTION("Find element") {
-		REQUIRE(dynamicArray.find(5) == true);
+		REQUIRE(dynamicArray.find(5));
 		REQUIRE(dynamicArray.find(100) == false);
 	}
 }

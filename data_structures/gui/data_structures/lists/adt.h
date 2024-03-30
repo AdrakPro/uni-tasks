@@ -7,9 +7,13 @@ public:
 
 	virtual bool addFront(const int &element) = 0;
 
+	virtual bool addBack(const int &element) = 0;
+
 	virtual bool remove(int index) = 0;
 
 	virtual bool removeFront() = 0;
+
+	virtual bool removeBack() = 0;
 
 	virtual bool find(const int &element) = 0;
 
