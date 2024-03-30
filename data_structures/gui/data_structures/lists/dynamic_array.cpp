@@ -5,6 +5,7 @@ DynamicArray::DynamicArray(int* array, int capacity) {
 	this->start = 10;
 	this->capacity = capacity + start;
 	this->array = new int[capacity];
+	// Copy elements from array to this->array, leaving the space in front
 	std::memcpy(this->array + start, array, this->capacity * sizeof(int));
 }
 
@@ -17,6 +18,7 @@ bool DynamicArray::add(const int &element, int position) {
 		return false;
 	}
 
+	// Shift elements to the right to make space for new element
 	for (int i = size; i > position; --i) {
 		array[start + i] = array[start + i - 1];
 	}
@@ -48,6 +50,38 @@ bool DynamicArray::addFront(const int &element) {
 	return true;
 }
 
+bool DynamicArray::remove(int position) {
+	if (size == 0 || isPositionNotValid(position, capacity)) {
+		return false;
+	}
+
+	// Shift elements to the left to remove the element at position
+	for (int i = position; i < size; ++i) {
+		array[start + i] = array[start + i + 1];
+	}
+
+	--size;
+
+	return true;
+}
+
+bool DynamicArray::removeFront() {
+	bool result = remove(0);
+	++start;
+
+	return result;
+}
+
+
+bool DynamicArray::find(const int &element) {
+	for (int i = 0; i < size; ++i) {
+		if (array[start + i] == element) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void DynamicArray::resize() {
 	int newCapacity = 2 * capacity;
 	int* tmp = new int[newCapacity];
@@ -57,13 +91,8 @@ void DynamicArray::resize() {
 	capacity = newCapacity;
 }
 
-bool DynamicArray::remove(int position) {}
-
-bool DynamicArray::find(const int &element) {}
-
-
 DynamicArray::~DynamicArray() {
-	free(array);
+	delete[] array;
 }
 
 void DynamicArray::setSize(int newSize) {
@@ -76,10 +105,6 @@ bool DynamicArray::isPositionNotValid(int position, int upperBound) {
 
 int DynamicArray::getElement(int position) const {
 	return array[start + position];
-}
-
-int DynamicArray::getSize() const {
-	return size;
 }
 
 int DynamicArray::getCapacity() const {
@@ -124,5 +149,27 @@ TEST_CASE("DynamicArray Test") {
 			REQUIRE(dynamicArray.getElement(10) == 23);
 			REQUIRE(dynamicArray.getCapacity() == 20);
 		}
+	}
+
+	SECTION("Remove element") {
+		SECTION("Remove element at beginning") {
+			REQUIRE(dynamicArray.removeFront() == true);
+			REQUIRE(dynamicArray.getElement(0) != -2);
+		}
+
+		SECTION("Remove at the middle") {
+			REQUIRE(dynamicArray.remove(3) == true);
+			REQUIRE(dynamicArray.getElement(3) == 2);
+		}
+
+		SECTION("Remove element at the end") {
+			REQUIRE(dynamicArray.remove(8) == true);
+			REQUIRE(dynamicArray.getElement(8) == 0);
+		}
+	}
+
+	SECTION("Find element") {
+		REQUIRE(dynamicArray.find(5) == true);
+		REQUIRE(dynamicArray.find(100) == false);
 	}
 }
