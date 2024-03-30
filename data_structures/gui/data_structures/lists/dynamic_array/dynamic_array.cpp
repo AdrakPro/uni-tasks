@@ -9,9 +9,13 @@ DynamicArray::DynamicArray(int* array, int capacity) {
 	std::memcpy(this->array + start, array, this->capacity * sizeof(int));
 }
 
+DynamicArray::~DynamicArray() {
+	delete[] array;
+}
+
 bool DynamicArray::add(const int &element, int index) {
 	if (size == capacity) {
-		resize();
+		expand();
 	}
 
 	if (isIndexNotValid(index, capacity)) {
@@ -31,16 +35,7 @@ bool DynamicArray::add(const int &element, int index) {
 
 bool DynamicArray::addFront(const int &element) {
 	if (start == 0) {
-		int newCapacity = capacity + start;
-		int* tmp = new int[newCapacity];
-
-		// Offset array to right by start making space for front
-		std::memcpy(tmp + capacity, array, size * sizeof(int));
-		delete[] array;
-
-		array = tmp;
-		capacity = newCapacity;
-		start = capacity - size;
+		expandWithOffset();
 	}
 
 	--start;
@@ -82,7 +77,7 @@ bool DynamicArray::find(const int &element) {
 	return false;
 }
 
-void DynamicArray::resize() {
+void DynamicArray::expand() {
 	int newCapacity = 2 * capacity;
 	int* tmp = new int[newCapacity];
 
@@ -91,8 +86,17 @@ void DynamicArray::resize() {
 	capacity = newCapacity;
 }
 
-DynamicArray::~DynamicArray() {
+void DynamicArray::expandWithOffset() {
+	int newCapacity = capacity + start;
+	int* tmp = new int[newCapacity];
+
+	// Offset array to right by start making space for front
+	std::memcpy(tmp + capacity, array, size * sizeof(int));
 	delete[] array;
+
+	array = tmp;
+	capacity = newCapacity;
+	start = capacity - size;
 }
 
 void DynamicArray::setSize(int newSize) {

@@ -129,6 +129,9 @@ int main(int, char**) {
 	const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize |
 																 ImGuiWindowFlags_NoCollapse;
 
+	// Setup data structures (ogólny obiekt (absract) ilosc danych, ilosc guzikow dla operacji)
+	int* data = new int[10];
+
 	// MAIN LOOP
 #ifdef __EMSCRIPTEN__
 	// For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
@@ -200,7 +203,7 @@ int main(int, char**) {
 		)) {
 			static int size = 0;
 			ImGui::Text("How much data to generate?");
-			ImGui::InputInt("Input",&size);
+			ImGui::InputInt("",&size);
 			ImGui::Separator();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));

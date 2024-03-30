@@ -13,7 +13,10 @@ private:
 	int capacity;
 	int start;
 
-	void resize();
+	void expand();
+
+	void expandWithOffset();
+
 public:
 	DynamicArray(int* array, int capacity);
 
