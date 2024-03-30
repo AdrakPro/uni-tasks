@@ -1,12 +1,12 @@
 #include "singly_linked_list_tail.h"
 
-SinglyLinkedListTail::SinglyLinkedListTail() {
+SLinkedListWithTail::SLinkedListWithTail() {
 	this->head = nullptr;
 	this->tail = nullptr;
 	this->size = 0;
 }
 
-SinglyLinkedListTail::~SinglyLinkedListTail() {
+SLinkedListWithTail::~SLinkedListWithTail() {
 	Node* current = head;
 	while (current != nullptr) {
 		Node* next = current->next;
@@ -16,7 +16,7 @@ SinglyLinkedListTail::~SinglyLinkedListTail() {
 }
 
 
-bool SinglyLinkedListTail::add(const int &element, int index) {
+bool SLinkedListWithTail::add(const int &element, int index) {
 	if (isIndexNotValid(index, size)) {
 		return false;
 	}
@@ -43,7 +43,7 @@ bool SinglyLinkedListTail::add(const int &element, int index) {
 }
 
 // TODO: Change the bool (interfere with ADT :v)
-bool SinglyLinkedListTail::addFront(const int &element) {
+bool SLinkedListWithTail::addFront(const int &element) {
 	Node* node = new Node;
 
 	node->value = element;
@@ -61,7 +61,7 @@ bool SinglyLinkedListTail::addFront(const int &element) {
 	return true;
 }
 
-bool SinglyLinkedListTail::addBack(const int &element) {
+bool SLinkedListWithTail::addBack(const int &element) {
 	Node* node = new Node;
 
   //	Set new node's value and mark it as end
@@ -82,7 +82,7 @@ bool SinglyLinkedListTail::addBack(const int &element) {
 	return true;
 }
 
-bool SinglyLinkedListTail::remove(int index) {
+bool SLinkedListWithTail::remove(int index) {
 	if (isIndexNotValid(index, size)) {
 		return false;
 	}
@@ -108,7 +108,7 @@ bool SinglyLinkedListTail::remove(int index) {
 	return true;
 }
 
-bool SinglyLinkedListTail::removeFront() {
+bool SLinkedListWithTail::removeFront() {
 	if (isEmpty()) {
 		return false;
 	}
@@ -124,7 +124,7 @@ bool SinglyLinkedListTail::removeFront() {
 	return true;
 }
 
-bool SinglyLinkedListTail::removeBack() {
+bool SLinkedListWithTail::removeBack() {
 	if (isEmpty()) {
 		return false;
 	}
@@ -148,7 +148,7 @@ bool SinglyLinkedListTail::removeBack() {
 	return true;
 }
 
-bool SinglyLinkedListTail::find(const int &element) {
+bool SLinkedListWithTail::find(const int &element) {
 	for (int i = 0; i < size; ++i) {
 		if (getNodeValue(i) == element) {
 			return true;
@@ -158,19 +158,19 @@ bool SinglyLinkedListTail::find(const int &element) {
 	return false;
 }
 
-const int &SinglyLinkedListTail::front() const {
+const int &SLinkedListWithTail::front() const {
 	return head->value;
 }
 
-const int &SinglyLinkedListTail::back() const {
+const int &SLinkedListWithTail::back() const {
 	return tail->value;
 }
 
-bool SinglyLinkedListTail::isEmpty() const {
+bool SLinkedListWithTail::isEmpty() const {
 	return head == nullptr;
 }
 
-Node* SinglyLinkedListTail::getNode(int index) const {
+Node* SLinkedListWithTail::getNode(int index) const {
 	if (isIndexNotValid(index, size)) {
 		return nullptr;
 	}
@@ -186,7 +186,7 @@ Node* SinglyLinkedListTail::getNode(int index) const {
 	return current;
 }
 
-int SinglyLinkedListTail::getNodeValue(int index) const {
+int SLinkedListWithTail::getNodeValue(int index) const {
 	Node* node = getNode(index);
 
 	if (node == nullptr) {
@@ -203,7 +203,7 @@ int SinglyLinkedListTail::getNodeValue(int index) const {
 
 // g++ -o test singly_linked_list/singly_linked_list_tail.cpp ../utils.cpp -std=c++17 && ./test
 TEST_CASE("Singly linked list with head and tail") {
-	SinglyLinkedListTail list;
+	SLinkedListWithTail list;
 	list.add(1, 0);
 	list.add(2, 1);
 	list.add(3, 2);

@@ -4,24 +4,20 @@
 #include "../adt.h"
 #include "../../utils.h"
 
-class Node {
-private:
+struct Node {
 	int value;
 	Node* next;
-
-	// Provide SinglyLinkedList access
-	friend class SinglyLinkedList;
 };
 
-class SinglyLinkedList : public ADT {
+class SLinkedList : public ADT {
 private:
 	Node* head;
 	int size;
 
 public:
-	SinglyLinkedList();
+	SLinkedList();
 
-	~SinglyLinkedList();
+	~SLinkedList();
 
 	bool add(const int &element, int index) override;
 

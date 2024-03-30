@@ -4,25 +4,21 @@
 #include "../adt.h"
 #include "../../utils.h"
 
-class Node {
-private:
+struct Node {
 	int value;
 	Node* next;
-
-	// Provide SinglyLinkedList access
-	friend class SinglyLinkedListTail;
 };
 
-class SinglyLinkedListTail : public ADT {
+class SLinkedListWithTail : public ADT {
 private:
 	Node* head;
 	Node* tail;
 	int size;
 
 public:
-	SinglyLinkedListTail();
+	SLinkedListWithTail();
 
-	~SinglyLinkedListTail();
+	~SLinkedListWithTail();
 
 	bool add(const int &element, int index) override;
 
@@ -49,9 +45,6 @@ public:
 	[[nodiscard]] Node* getNode(int index) const;
 
 	[[nodiscard]] int getNodeValue(int index) const;
-
-	[[nodiscard]] int getSize() const;
-
 };
 
 

@@ -1,11 +1,11 @@
 #include "singly_linked_list.h"
 
-SinglyLinkedList::SinglyLinkedList() {
+SLinkedList::SLinkedList() {
 	this->head = nullptr;
 	this->size = 0;
 }
 
-SinglyLinkedList::~SinglyLinkedList() {
+SLinkedList::~SLinkedList() {
 	Node* current = head;
 	while (current != nullptr) {
 		Node* next = current->next;
@@ -14,7 +14,7 @@ SinglyLinkedList::~SinglyLinkedList() {
 	}
 }
 
-bool SinglyLinkedList::add(const int &element, int index) {
+bool SLinkedList::add(const int &element, int index) {
 	if (isIndexNotValid(index, size)) {
 		return false;
 	}
@@ -40,7 +40,7 @@ bool SinglyLinkedList::add(const int &element, int index) {
 	return true;
 }
 
-bool SinglyLinkedList::addFront(const int &element) {
+bool SLinkedList::addFront(const int &element) {
 	Node* node = new Node;
 
 	node->value = element;
@@ -58,7 +58,7 @@ bool SinglyLinkedList::addFront(const int &element) {
 	return true;
 }
 
-bool SinglyLinkedList::addBack(const int &element) {
+bool SLinkedList::addBack(const int &element) {
 	Node* node = new Node;
 	Node* old = getNode(size - 1);
 
@@ -71,6 +71,7 @@ bool SinglyLinkedList::addBack(const int &element) {
 	} else {
 		// Update old's pointer
 		old->next = node;
+
 	}
 
 	++size;
@@ -78,7 +79,7 @@ bool SinglyLinkedList::addBack(const int &element) {
 	return true;
 }
 
-bool SinglyLinkedList::remove(int index) {
+bool SLinkedList::remove(int index) {
 	if (isIndexNotValid(index, size)) {
 		return false;
 	}
@@ -105,7 +106,7 @@ bool SinglyLinkedList::remove(int index) {
 	return true;
 }
 
-bool SinglyLinkedList::removeFront() {
+bool SLinkedList::removeFront() {
 	if (isEmpty()) {
 		return false;
 	}
@@ -121,7 +122,7 @@ bool SinglyLinkedList::removeFront() {
 	return true;
 }
 
-bool SinglyLinkedList::removeBack() {
+bool SLinkedList::removeBack() {
 	if (isEmpty()) {
 		return false;
 	}
@@ -144,7 +145,7 @@ bool SinglyLinkedList::removeBack() {
 	return true;
 }
 
-bool SinglyLinkedList::find(const int &element) {
+bool SLinkedList::find(const int &element) {
 	for (int i = 0; i < size; ++i) {
 		if (getNodeValue(i) == element) {
 			return true;
@@ -154,11 +155,11 @@ bool SinglyLinkedList::find(const int &element) {
 	return false;
 }
 
-bool SinglyLinkedList::isEmpty() const {
+bool SLinkedList::isEmpty() const {
 	return head == nullptr;
 }
 
-Node* SinglyLinkedList::getNode(int index) const {
+Node* SLinkedList::getNode(int index) const {
 	if (isIndexNotValid(index, size)) {
 		return nullptr;
 	}
@@ -174,7 +175,7 @@ Node* SinglyLinkedList::getNode(int index) const {
 	return current;
 }
 
-int SinglyLinkedList::getNodeValue(int index) const {
+int SLinkedList::getNodeValue(int index) const {
 	Node* node = getNode(index);
 
 	if (node == nullptr) {
@@ -184,7 +185,7 @@ int SinglyLinkedList::getNodeValue(int index) const {
 	return node->value;
 }
 
-const int &SinglyLinkedList::front() const {
+const int &SLinkedList::front() const {
 	return head->value;
 }
 
@@ -194,7 +195,7 @@ const int &SinglyLinkedList::front() const {
 #include "../../../tests/catch.hpp"
 
 TEST_CASE("Singly linked list with head") {
-	SinglyLinkedList list;
+	SLinkedList list;
 	list.add(1, 0);
 	list.add(2, 1);
 	list.add(3, 2);
