@@ -19,11 +19,11 @@ public:
 
 	~DynamicArray();
 
-	bool add(const int &element, int position) override;
+	bool add(const int &element, int index) override;
 
 	bool addFront(const int &element) override;
 
-	bool remove(int position) override;
+	bool remove(int index) override;
 
 	bool removeFront() override;
 
@@ -36,7 +36,7 @@ public:
 
 	[[nodiscard]] int getCapacity() const;
 
-	[[nodiscard]] int getElement(int position) const; // Only for testing purpose
+	[[nodiscard]] int getElement(int index) const; // Only for testing purpose
 };
 
 #endif //GUI_DYNAMIC_ARRAY_H

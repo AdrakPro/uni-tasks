@@ -1,6 +1,6 @@
 #ifndef GUI_UTILS_H
 #define GUI_UTILS_H
 
-bool isPositionNotValid(int position, int upperBound);
+bool isIndexNotValid(int index, int upperBound);
 
 #endif //GUI_UTILS_H

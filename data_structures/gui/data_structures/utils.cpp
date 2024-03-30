@@ -1,5 +1,5 @@
 #include "utils.h"
 
-bool isPositionNotValid(int position, int upperBound) {
-	return position < 0 || position > upperBound;
+bool isIndexNotValid(int index, int upperBound) {
+	return index < 0 || index > upperBound;
 }

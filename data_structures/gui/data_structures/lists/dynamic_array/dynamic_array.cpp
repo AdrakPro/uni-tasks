@@ -9,21 +9,21 @@ DynamicArray::DynamicArray(int* array, int capacity) {
 	std::memcpy(this->array + start, array, this->capacity * sizeof(int));
 }
 
-bool DynamicArray::add(const int &element, int position) {
+bool DynamicArray::add(const int &element, int index) {
 	if (size == capacity) {
 		resize();
 	}
 
-	if (isPositionNotValid(position, capacity)) {
+	if (isIndexNotValid(index, capacity)) {
 		return false;
 	}
 
 	// Shift elements to the right to make space for new element
-	for (int i = size; i > position; --i) {
+	for (int i = size; i > index; --i) {
 		array[start + i] = array[start + i - 1];
 	}
 
-	array[start + position] = element;
+	array[start + index] = element;
 	++size;
 
 	return true;
@@ -50,13 +50,13 @@ bool DynamicArray::addFront(const int &element) {
 	return true;
 }
 
-bool DynamicArray::remove(int position) {
-	if (isEmpty() || isPositionNotValid(position, capacity)) {
+bool DynamicArray::remove(int index) {
+	if (isEmpty() || isIndexNotValid(index, capacity)) {
 		return false;
 	}
 
-	// Shift elements to the left to remove the element at position
-	for (int i = position; i < size; ++i) {
+	// Shift elements to the left to remove the element at index
+	for (int i = index; i < size; ++i) {
 		array[start + i] = array[start + i + 1];
 	}
 
@@ -99,8 +99,8 @@ void DynamicArray::setSize(int newSize) {
 	this->size = newSize;
 }
 
-int DynamicArray::getElement(int position) const {
-	return array[start + position];
+int DynamicArray::getElement(int index) const {
+	return array[start + index];
 }
 
 int DynamicArray::getCapacity() const {
