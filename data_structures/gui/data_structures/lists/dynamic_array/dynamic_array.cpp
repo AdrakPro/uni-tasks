@@ -51,7 +51,7 @@ bool DynamicArray::addFront(const int &element) {
 }
 
 bool DynamicArray::remove(int position) {
-	if (size == 0 || isPositionNotValid(position, capacity)) {
+	if (isEmpty() || isPositionNotValid(position, capacity)) {
 		return false;
 	}
 
@@ -111,10 +111,14 @@ int DynamicArray::getCapacity() const {
 	return capacity;
 }
 
+bool DynamicArray::isEmpty() const {
+	return size == 0;
+}
+
 #define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_FAST_COMPILE
 
-#include "../../tests/catch.hpp"
+#include "../../../tests/catch.hpp"
 
 TEST_CASE("DynamicArray Test") {
 	int data[10] = {-2, -1, 0, 1, 2, 3, 4, 5, 6};

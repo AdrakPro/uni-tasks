@@ -12,6 +12,8 @@ public:
 	virtual bool removeFront() = 0;
 
 	virtual bool find(const int &element) = 0;
+
+	[[nodiscard]] virtual bool isEmpty() const = 0;
 };
 
 #endif //GUI_DS_H

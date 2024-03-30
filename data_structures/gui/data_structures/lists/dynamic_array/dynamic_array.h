@@ -1,7 +1,7 @@
 #ifndef GUI_DYNAMIC_ARRAY_H
 #define GUI_DYNAMIC_ARRAY_H
 
-#include "../ds.h"
+#include "../../ds.h"
 #include <cstdlib>
 #include <cstring>
 
@@ -31,12 +31,14 @@ public:
 
 	bool find(const int &element) override;
 
-  // [[nodiscard]] attribute indicates that the return value should not be ignored by the caller.
+	void setSize(int newSize);
+
+	// [[nodiscard]] attribute indicates that the return value should not be ignored by the caller.
+	[[nodiscard]] bool isEmpty() const override;
+
 	[[nodiscard]] int getCapacity() const;
 
 	[[nodiscard]] int getElement(int position) const; // Only for testing purpose
-
-	void setSize(int newSize);
 };
 
 #endif //GUI_DYNAMIC_ARRAY_H
