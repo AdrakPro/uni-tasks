@@ -1,4 +1,5 @@
 #include "singly_linked_list.h"
+#include <iostream>
 
 SLinkedList::SLinkedList() {
 	this->head = nullptr;
@@ -14,21 +15,21 @@ SLinkedList::~SLinkedList() {
 	}
 }
 
-bool SLinkedList::add(const int &element, int index) {
-	if (isIndexNotValid(index, size)) {
+bool SLinkedList::add(const int &element, int position) {
+	if (isIndexNotValid(position, size)) {
 		return false;
 	}
 
-	if (index == 0) {
+	if (position == 0) {
 		return addFront(element);
 	}
 
-	if (index == size) {
+	if (position == size - 1) {
 		return addBack(element);
 	}
 
 	Node* node = new Node;
-	Node* old = getNode(index - 1);
+	Node* old = getNode(position - 1);
 
 	// Set new node's value and link it after old node
 	node->value = element;
@@ -79,21 +80,21 @@ bool SLinkedList::addBack(const int &element) {
 	return true;
 }
 
-bool SLinkedList::remove(int index) {
-	if (isIndexNotValid(index, size)) {
+bool SLinkedList::remove(int position) {
+	if (isIndexNotValid(position, size)) {
 		return false;
 	}
 
-	if (index == 0) {
+	if (position == 0) {
 		return removeFront();
 	}
 
-	if (index == size) {
+	if (position == size - 1) {
 		return removeBack();
 	}
 
 	// Get old's previous and node to remove
-	Node* old = getNode(index - 1);
+	Node* old = getNode(position - 1);
 	Node* temp = old->next;
 
 
@@ -159,15 +160,15 @@ bool SLinkedList::isEmpty() const {
 	return head == nullptr;
 }
 
-Node* SLinkedList::getNode(int index) const {
-	if (isIndexNotValid(index, size)) {
+Node* SLinkedList::getNode(int position) const {
+	if (isIndexNotValid(position, size)) {
 		return nullptr;
 	}
 
 	Node* current = head;
 	int i = 0;
 
-	while (i < index) {
+	while (i < position) {
 		current = current->next;
 		++i;
 	}
@@ -175,8 +176,8 @@ Node* SLinkedList::getNode(int index) const {
 	return current;
 }
 
-int SLinkedList::getNodeValue(int index) const {
-	Node* node = getNode(index);
+int SLinkedList::getNodeValue(int position) const {
+	Node* node = getNode(position);
 
 	if (node == nullptr) {
 		return -1;

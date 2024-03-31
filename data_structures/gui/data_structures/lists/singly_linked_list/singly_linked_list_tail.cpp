@@ -15,22 +15,21 @@ SLinkedListWithTail::~SLinkedListWithTail() {
 	}
 }
 
-
-bool SLinkedListWithTail::add(const int &element, int index) {
-	if (isIndexNotValid(index, size)) {
+bool SLinkedListWithTail::add(const int &element, int position) {
+	if (isIndexNotValid(position, size)) {
 		return false;
 	}
 
-	if (index == 0) {
+	if (position == 0) {
 		return addFront(element);
 	}
 
-	if (index == size) {
+	if (position == size) {
 		return addBack(element);
 	}
 
 	Node* node = new Node;
-	Node* old = getNode(index - 1);
+	Node* old = getNode(position - 1);
 
 	// Set new node's value and link it after old node
 	node->value = element;
@@ -42,7 +41,6 @@ bool SLinkedListWithTail::add(const int &element, int index) {
 	return true;
 }
 
-// TODO: Change the bool (interfere with ADT :v)
 bool SLinkedListWithTail::addFront(const int &element) {
 	Node* node = new Node;
 
@@ -82,21 +80,21 @@ bool SLinkedListWithTail::addBack(const int &element) {
 	return true;
 }
 
-bool SLinkedListWithTail::remove(int index) {
-	if (isIndexNotValid(index, size)) {
+bool SLinkedListWithTail::remove(int position) {
+	if (isIndexNotValid(position, size)) {
 		return false;
 	}
 
-	if (index == 0) {
+	if (position == 0) {
 		return removeFront();
 	}
 
-	if (index == size) {
+	if (position == size) {
 		return removeBack();
 	}
 
 	// Get old's previous and node to remove
-	Node* old = getNode(index - 1);
+	Node* old = getNode(position - 1);
 	Node* temp = old->next;
 
   // Skip removed node by linking old's previous with next
@@ -170,15 +168,15 @@ bool SLinkedListWithTail::isEmpty() const {
 	return head == nullptr;
 }
 
-Node* SLinkedListWithTail::getNode(int index) const {
-	if (isIndexNotValid(index, size)) {
+Node* SLinkedListWithTail::getNode(int position) const {
+	if (isIndexNotValid(position, size)) {
 		return nullptr;
 	}
 
 	Node* current = head;
 	int i = 0;
 
-	while (i < index) {
+	while (i < position) {
 		current = current->next;
 		++i;
 	}
@@ -186,8 +184,8 @@ Node* SLinkedListWithTail::getNode(int index) const {
 	return current;
 }
 
-int SLinkedListWithTail::getNodeValue(int index) const {
-	Node* node = getNode(index);
+int SLinkedListWithTail::getNodeValue(int position) const {
+	Node* node = getNode(position);
 
 	if (node == nullptr) {
 		return -1;

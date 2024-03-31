@@ -19,13 +19,13 @@ public:
 
 	~SLinkedList();
 
-	bool add(const int &element, int index) override;
+	bool add(const int &element, int position) override;
 
 	bool addFront(const int &element) override;
 
 	bool addBack(const int &element) override;
 
-	bool remove(int index) override;
+	bool remove(int position) override;
 
 	bool removeFront() override;
 
@@ -39,9 +39,9 @@ public:
 	// Second const means it doesn't modify the object's state when called.
 	[[nodiscard]] const int &front() const;
 
-	[[nodiscard]] Node* getNode(int index) const;
+	[[nodiscard]] Node* getNode(int position) const;
 
-	[[nodiscard]] int getNodeValue(int index) const;
+	[[nodiscard]] int getNodeValue(int position) const;
 };
 
 
