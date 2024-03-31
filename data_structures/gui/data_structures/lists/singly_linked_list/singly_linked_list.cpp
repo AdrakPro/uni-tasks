@@ -20,7 +20,7 @@ bool SLinkedList::add(const int &element, int position) {
 		return addFront(element);
 	}
 
-	if (position == size - 1) {
+	if (position == size) {
 		return addBack(element);
 	}
 
@@ -85,7 +85,7 @@ bool SLinkedList::remove(int position) {
 		return removeFront();
 	}
 
-	if (position == size - 1) {
+	if (position == size) {
 		return removeBack();
 	}
 
