@@ -16,10 +16,6 @@ SLinkedListWithTail::~SLinkedListWithTail() {
 }
 
 bool SLinkedListWithTail::add(const int &element, int position) {
-	if (isIndexNotValid(position, size)) {
-		return false;
-	}
-
 	if (position == 0) {
 		return addFront(element);
 	}
@@ -30,6 +26,10 @@ bool SLinkedListWithTail::add(const int &element, int position) {
 
 	Node* node = new Node;
 	Node* old = getNode(position - 1);
+
+	if (old == nullptr) {
+		return false;
+	}
 
 	// Set new node's value and link it after old node
 	node->value = element;
@@ -81,10 +81,6 @@ bool SLinkedListWithTail::addBack(const int &element) {
 }
 
 bool SLinkedListWithTail::remove(int position) {
-	if (isIndexNotValid(position, size)) {
-		return false;
-	}
-
 	if (position == 0) {
 		return removeFront();
 	}
@@ -95,6 +91,11 @@ bool SLinkedListWithTail::remove(int position) {
 
 	// Get old's previous and node to remove
 	Node* old = getNode(position - 1);
+
+	if (old == nullptr) {
+		return false;
+	}
+
 	Node* temp = old->next;
 
   // Skip removed node by linking old's previous with next
