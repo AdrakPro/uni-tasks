@@ -45,6 +45,8 @@ public:
 	[[nodiscard]] Node* getNode(int position) const;
 
 	[[nodiscard]] int getNodeValue(int position) const;
+
+	[[nodiscard]] int getSize() const;
 };
 
 

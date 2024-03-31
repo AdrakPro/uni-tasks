@@ -190,6 +190,10 @@ const int &SLinkedList::front() const {
 	return head->value;
 }
 
+int SLinkedList::getSize() const {
+	return size;
+}
+
 #define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_FAST_COMPILE
 

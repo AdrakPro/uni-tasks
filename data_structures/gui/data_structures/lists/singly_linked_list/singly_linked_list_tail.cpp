@@ -195,6 +195,10 @@ int SLinkedListWithTail::getNodeValue(int position) const {
 	return node->value;
 }
 
+int SLinkedListWithTail::getSize() const {
+	return size;
+}
+
 #define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_FAST_COMPILE
 
