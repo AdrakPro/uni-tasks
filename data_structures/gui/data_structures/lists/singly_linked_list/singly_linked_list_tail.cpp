@@ -8,6 +8,7 @@ SLinkedListWithTail::SLinkedListWithTail() {
 
 SLinkedListWithTail::~SLinkedListWithTail() {
 	Node* current = head;
+
 	while (current != nullptr) {
 		Node* next = current->next;
 		delete current;
@@ -16,15 +17,14 @@ SLinkedListWithTail::~SLinkedListWithTail() {
 }
 
 bool SLinkedListWithTail::add(const int &element, int position) {
-	if (position == 0) {
+	if (position <= 0) {
 		return addFront(element);
 	}
 
-	if (position == size - 1) {
+	if (position >= size - 1) {
 		return addBack(element);
 	}
 
-	Node* node = new Node;
 	Node* old = getNode(position - 1);
 
 	if (old == nullptr) {
@@ -32,6 +32,7 @@ bool SLinkedListWithTail::add(const int &element, int position) {
 	}
 
 	// Set new node's value and link it after old node
+	Node* node = new Node;
 	node->value = element;
 	node->next = old->next;
 	old->next = node;
@@ -43,30 +44,29 @@ bool SLinkedListWithTail::add(const int &element, int position) {
 
 bool SLinkedListWithTail::addFront(const int &element) {
 	Node* node = new Node;
-
 	node->value = element;
 
 	// Set head to new node or prepend
-	if (head == nullptr) {
+	if (isEmpty()) {
 		head = node;
 		tail = node;
 	} else {
 		node->next = head;
 		head = node;
 	}
+
 	++size;
 
 	return true;
 }
 
 bool SLinkedListWithTail::addBack(const int &element) {
-	Node* node = new Node;
-
   //	Set new node's value and mark it as end
+	Node* node = new Node;
 	node->value = element;
 	node->next = nullptr;
 
-	if (head == nullptr) {
+	if (isEmpty()) {
 		head = node;
 		tail = node;
 	} else {
@@ -81,11 +81,11 @@ bool SLinkedListWithTail::addBack(const int &element) {
 }
 
 bool SLinkedListWithTail::remove(int position) {
-	if (position == 0) {
+	if (position <= 0) {
 		return removeFront();
 	}
 
-	if (position == size - 1) {
+	if (position >= size - 1) {
 		return removeBack();
 	}
 
@@ -96,9 +96,8 @@ bool SLinkedListWithTail::remove(int position) {
 		return false;
 	}
 
-	Node* temp = old->next;
-
   // Skip removed node by linking old's previous with next
+	Node* temp = old->next;
 	old->next = temp->next;
 	delete temp;
 
@@ -112,9 +111,8 @@ bool SLinkedListWithTail::removeFront() {
 		return false;
 	}
 
-	Node* temp = head;
-
   // Assign head to the next node and delete current head
+	Node* temp = head;
 	head = temp->next;
 	delete temp;
 
@@ -140,6 +138,7 @@ bool SLinkedListWithTail::removeBack() {
 	tail = previous;
 	previous->next = nullptr;
 	delete current;
+
 	--size;
 
 	return true;
@@ -225,8 +224,10 @@ TEST_CASE("Singly linked list with head and tail") {
 		}
 
 		SECTION("Add element to the end") {
-			REQUIRE(list.addBack(4));
+			REQUIRE(list.add(4, 3));
 			REQUIRE(list.back() == 4);
+			REQUIRE(list.addBack(5));
+			REQUIRE(list.back() == 5);
 		}
 	}
 

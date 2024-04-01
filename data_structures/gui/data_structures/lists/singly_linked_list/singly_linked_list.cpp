@@ -8,6 +8,7 @@ SLinkedList::SLinkedList() {
 
 SLinkedList::~SLinkedList() {
 	Node* current = head;
+
 	while (current != nullptr) {
 		Node* next = current->next;
 		delete current;
@@ -16,15 +17,14 @@ SLinkedList::~SLinkedList() {
 }
 
 bool SLinkedList::add(const int &element, int position) {
-	if (position == 0) {
+	if (position <= 0) {
 		return addFront(element);
 	}
 
-	if (position == size - 1) {
+	if (position >= size - 1) {
 		return addBack(element);
 	}
 
-	Node* node = new Node;
 	Node* old = getNode(position - 1);
 
 	if (old == nullptr) {
@@ -32,6 +32,7 @@ bool SLinkedList::add(const int &element, int position) {
 	}
 
 	// Set new node's value and link it after old node
+	Node* node = new Node;
 	node->value = element;
 	node->next = old->next;
 	old->next = node;
@@ -43,7 +44,6 @@ bool SLinkedList::add(const int &element, int position) {
 
 bool SLinkedList::addFront(const int &element) {
 	Node* node = new Node;
-
 	node->value = element;
 
 	// Set head to new node or prepend
@@ -60,12 +60,12 @@ bool SLinkedList::addFront(const int &element) {
 }
 
 bool SLinkedList::addBack(const int &element) {
+	// Set new node's value and mark it as end
 	Node* node = new Node;
-	Node* old = getNode(size - 1);
-
-	//	Set new node's value and mark it as end
 	node->value = element;
 	node->next = nullptr;
+
+	Node* old = getNode(size - 1);
 
 	if (isEmpty()) {
 		head = node;
@@ -80,11 +80,11 @@ bool SLinkedList::addBack(const int &element) {
 }
 
 bool SLinkedList::remove(int position) {
-	if (position == 0) {
+	if (position <= 0) {
 		return removeFront();
 	}
 
-	if (position == size - 1) {
+	if (position >= size - 1) {
 		return removeBack();
 	}
 
@@ -95,9 +95,8 @@ bool SLinkedList::remove(int position) {
 		return false;
 	}
 
-	Node* temp = old->next;
-
 	// Skip removed node by linking old's previous with next
+	Node* temp = old->next;
 	old->next = temp->next;
 	delete temp;
 
@@ -111,9 +110,8 @@ bool SLinkedList::removeFront() {
 		return false;
 	}
 
-	Node* temp = head;
-
 	// Assign head to the next node and delete current head
+	Node* temp = head;
 	head = temp->next;
 	delete temp;
 
