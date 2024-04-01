@@ -20,7 +20,7 @@ bool SLinkedList::add(const int &element, int position) {
 		return addFront(element);
 	}
 
-	if (position == size) {
+	if (position == size - 1) {
 		return addBack(element);
 	}
 
@@ -47,7 +47,7 @@ bool SLinkedList::addFront(const int &element) {
 	node->value = element;
 
 	// Set head to new node or prepend
-	if (head == nullptr) {
+	if (isEmpty()) {
 		head = node;
 	} else {
 		node->next = head;
@@ -67,12 +67,11 @@ bool SLinkedList::addBack(const int &element) {
 	node->value = element;
 	node->next = nullptr;
 
-	if (head == nullptr) {
+	if (isEmpty()) {
 		head = node;
 	} else {
 		// Update old's pointer
 		old->next = node;
-
 	}
 
 	++size;
@@ -85,7 +84,7 @@ bool SLinkedList::remove(int position) {
 		return removeFront();
 	}
 
-	if (position == size) {
+	if (position == size - 1) {
 		return removeBack();
 	}
 
@@ -99,7 +98,7 @@ bool SLinkedList::remove(int position) {
 	Node* temp = old->next;
 
 	// Skip removed node by linking old's previous with next
-	old->next = old->next->next;
+	old->next = temp->next;
 	delete temp;
 
 	--size;
@@ -115,7 +114,7 @@ bool SLinkedList::removeFront() {
 	Node* temp = head;
 
 	// Assign head to the next node and delete current head
-	head = head->next;
+	head = temp->next;
 	delete temp;
 
 	--size;

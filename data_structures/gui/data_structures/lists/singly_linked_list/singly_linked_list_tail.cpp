@@ -20,7 +20,7 @@ bool SLinkedListWithTail::add(const int &element, int position) {
 		return addFront(element);
 	}
 
-	if (position == size) {
+	if (position == size - 1) {
 		return addBack(element);
 	}
 
@@ -85,7 +85,7 @@ bool SLinkedListWithTail::remove(int position) {
 		return removeFront();
 	}
 
-	if (position == size) {
+	if (position == size - 1) {
 		return removeBack();
 	}
 
@@ -131,7 +131,6 @@ bool SLinkedListWithTail::removeBack() {
 	Node* current = head;
 	Node* previous = new Node;
 
-	// At each step we set the previous pointer to the current node, and the current pointer at the next node.
 	while (current->next != nullptr) {
 		previous = current;
 		current = current->next;
@@ -141,7 +140,6 @@ bool SLinkedListWithTail::removeBack() {
 	tail = previous;
 	previous->next = nullptr;
 	delete current;
-
 	--size;
 
 	return true;
@@ -240,7 +238,7 @@ TEST_CASE("Singly linked list with head and tail") {
 			REQUIRE(list.front() == 3);
 		}
 
-			// In singly linked list it is not advised to add elements in middle
+		// In singly linked list it is not advised to add elements in middle
 		SECTION("Remove element in middle") {
 			REQUIRE(list.remove(1));
 			REQUIRE(list.getNodeValue(1) == 3);
@@ -250,7 +248,7 @@ TEST_CASE("Singly linked list with head and tail") {
 		}
 
 		SECTION("Remove element from the end") {
-			REQUIRE(list.remove(3));
+			REQUIRE(list.remove(2));
 			REQUIRE(list.back() == 2);
 			REQUIRE(list.removeBack());
 			REQUIRE(list.back() == 1);
