@@ -5,7 +5,9 @@
 #include <memory>
 #include <optional>
 
-std::vector<int> generate_numbers(int size, int seed = 2137);
+int generateNumber(int lower_bound, int upper_bound, int seed = 2137);
+
+int* generateNumbers(int capacity, int seed = 2137);
 
 
 #endif //GUI_NUMBER_GENERATOR_H
