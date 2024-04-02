@@ -9,16 +9,13 @@
 class DynamicArray : public ADT {
 private:
 	int* array;
-	int size;
 	int capacity;
-	int start;
+	int size;
+	int startingSize;
 
-	void expand();
-
-	void expandWithOffset();
-
+	void isResizeNeeded();
 public:
-	DynamicArray(int* array, int capacity);
+	DynamicArray(const int* array, int capacity);
 
 	~DynamicArray();
 
@@ -36,8 +33,6 @@ public:
 
 	bool find(const int &element) override;
 
-	void setSize(int newSize);
-
 	// [[nodiscard]] attribute indicates that the return value should not be ignored by the caller.
 	[[nodiscard]] bool isEmpty() const override;
 
@@ -45,7 +40,7 @@ public:
 
 	[[nodiscard]] int getSize() const;
 
-	[[nodiscard]] int getElement(int index) const; // Only for testing purpose
+	[[nodiscard]] int getElement(int index) const;
 };
 
 #endif //GUI_DYNAMIC_ARRAY_H
