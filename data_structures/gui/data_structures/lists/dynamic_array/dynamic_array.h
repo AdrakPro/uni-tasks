@@ -11,7 +11,7 @@ private:
 	int* array;
 	int capacity;
 	int size;
-	int startingSize;
+	int starting_size;
 
 	void isResizeNeeded();
 public:
@@ -32,6 +32,8 @@ public:
 	bool removeBack() override;
 
 	bool find(const int &element) override;
+
+	void display() const;
 
 	// [[nodiscard]] attribute indicates that the return value should not be ignored by the caller.
 	[[nodiscard]] bool isEmpty() const override;

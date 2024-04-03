@@ -12,6 +12,8 @@
 #include "utils/browser.h"
 #include "utils/number_generator.h"
 
+#include "data_structures/lists/dynamic_array/dynamic_array.h"
+
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -31,14 +33,27 @@
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
 
-static void
-glfw_error_callback(int error, const char* description) {
+static void glfw_error_callback(int error, const char* description) {
 	fprintf(
 			stderr,
 			"GLFW Error %d: %s\n",
 			error,
 			description
 	);
+}
+
+template<typename T, typename Func>
+double performOperation(const T &data, int operations_number, Func operation) {
+	std::vector<T> list(operations_number, data);
+	clock_t start, duration;
+
+	start = clock();
+	for (int i = 0; i < operations_number; ++i) {
+		operation(list[i]);
+	}
+	duration = clock() - start;
+
+	return static_cast<double>(duration) / CLOCKS_PER_SEC;
 }
 
 // Main code
@@ -129,8 +144,10 @@ int main(int, char**) {
 	const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize |
 																 ImGuiWindowFlags_NoCollapse;
 
-	// Setup data structures (ogólny obiekt (absract) ilosc danych, ilosc guzikow dla operacji)
-	int* data = new int[10];
+	int* data = nullptr;
+	int id = -1;
+	int capacity = 0;
+	std::vector<std::string> history;
 
 	// MAIN LOOP
 #ifdef __EMSCRIPTEN__
@@ -164,10 +181,10 @@ int main(int, char**) {
 				viewport_size.x / 2.0f, viewport_size.y / 2.0f
 		);
 		const ImVec2 operations_window_size(
-				viewport_size.x / 2.0f, viewport_size.y / 3.4f
+				viewport_size.x / 2.0f, viewport_size.y / 3.0f
 		);
 		const ImVec2 history_window_size(
-				viewport_size.x / 6.0f, viewport_size.y - 2 * offset.y
+				viewport_size.x / 5.0f, viewport_size.y - 2 * offset.y
 		);
 
 		ImVec2 left_pos(offset.x, offset.y);
@@ -180,7 +197,7 @@ int main(int, char**) {
 		);
 		ImGui::ShowDemoWindow(nullptr);
 
-		// Loading data window
+		// DATA WINDOW
 		ImGui::SetNextWindowPos(left_pos);
 		ImGui::SetNextWindowSize(data_window_size, ImGuiCond_Once);
 		ImGui::Begin("Data", nullptr, flags);
@@ -201,22 +218,22 @@ int main(int, char**) {
 		if (ImGui::BeginPopupModal(
 				"Generate random data", nullptr, ImGuiWindowFlags_AlwaysAutoResize
 		)) {
-			static int size = 0;
 			ImGui::Text("How much data to generate?");
-			ImGui::InputInt("",&size);
+			ImGui::InputInt("##", &capacity);
 			ImGui::Separator();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 			ImGui::PopStyleVar();
 
-			if (ImGui::Button("Ok", ImVec2(120, 0)) && size != 0) {
-				generate_numbers(size);
+			if (ImGui::Button("Ok", ImVec2(120, 0)) && capacity != 0) {
+				data = generateNumbers(capacity, 130);
 				ImGui::CloseCurrentPopup();
 			}
+
 			ImGui::SetItemDefaultFocus();
 			ImGui::SameLine();
-			if (ImGui::Button(
-					"Cancel", ImVec2(120, 0))) {
+
+			if (ImGui::Button("Cancel", ImVec2(120, 0))) {
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -225,17 +242,19 @@ int main(int, char**) {
 		if (ImGui::Button("Show data table", button_size)) {
 
 		}
-		ImGui::End();
+		ImGui::End(); // END DATA WINDOW
 
-
-
-		// Data structures window
+		// DATA STRUCTURE WINDOW
 		ImGui::SetNextWindowPos(center_pos);
 		ImGui::SetNextWindowSize(structure_window_size, ImGuiCond_Once);
 		ImGui::Begin(
 				"Data structures", nullptr, flags
 		);
-		ImGui::Text("Center content");
+
+		if (ImGui::Button("Dynamic array", button_size)) {
+			id = 0;
+		}
+
 		ImGui::End();
 
 		ImGui::SetNextWindowPos(under_center_pos);
@@ -243,20 +262,124 @@ int main(int, char**) {
 		ImGui::Begin(
 				"Operations", nullptr, flags
 		);
-		ImGui::Text("Center content");
-		ImGui::End();
 
-		// History window
+		if (data != nullptr) {
+			switch (id) {
+				case 0:
+					auto* dynamic_array = new DynamicArray(data, capacity);
+					int number_to_add = 100;
+					int random_index = generateNumber(0, capacity);
+					int random_element = dynamic_array->getElement(random_index);
+
+					if (ImGui::Button("Add front", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[number_to_add](DynamicArray &arr) {
+									arr.addFront(number_to_add);
+								}
+						);
+						history.push_back("Add front took " + std::to_string(time) + " s!");
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Add back", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[number_to_add](DynamicArray &arr) {
+									arr.addBack(number_to_add);
+								}
+						);
+						history.push_back("Add back took " + std::to_string(time) + " s!");
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Add", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[number_to_add, random_index](DynamicArray &arr) {
+									arr.add(number_to_add, random_index);
+								}
+						);
+						history.push_back("Add took " + std::to_string(time) + " s!");
+					}
+
+					if (ImGui::Button("Remove front", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[](DynamicArray &arr) {
+									arr.removeFront();
+								}
+						);
+						history.push_back(
+								"Remove front took " + std::to_string(time) + " s!"
+						);
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Remove back", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[](DynamicArray &arr) {
+									arr.removeBack();
+								}
+						);
+						history.push_back(
+								"Remove back took " + std::to_string(time) + " s!"
+						);
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Remove", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[random_index](DynamicArray &arr) {
+									arr.remove(random_index);
+								}
+						);
+						history.push_back("Remove took " + std::to_string(time) + " s!");
+					}
+
+					if (ImGui::Button("Find", button_size)) {
+						double time = performOperation(
+								*dynamic_array, 1000,
+								[random_element](DynamicArray &arr) {
+									arr.find(random_element);
+								}
+						);
+						history.push_back("Find took " + std::to_string(time) + " s!");
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Display", button_size)) {
+						dynamic_array->display();
+					}
+					// Problem jezeli dwa razy generujesz date, bo pamiec sie rozpierdala
+					break;
+			}
+		}
+
+		ImGui::End(); // END DATA STRUCTURE WINDOW
+
+		// HISTORY WINDOW
 		ImGui::SetNextWindowPos(right_pos);
 		ImGui::SetNextWindowSize(history_window_size, ImGuiCond_Once);
 		ImGui::Begin(
 				"History", nullptr,
 				flags
 		);
-		ImGui::Text("Right content");
-		ImGui::End();
 
-		// Rendering
+		for (size_t i = 0; i < history.size(); ++i) {
+			ImGui::Text("[%zu] %s", i, history[i].c_str());
+		}
+
+		ImGui::End(); // END HISTORY WINDOW
+
+		// RENDERING
 		ImGui::Render();
 		int display_w, display_h;
 		glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -272,16 +395,20 @@ int main(int, char**) {
 
 		glfwSwapBuffers(window);
 	}
+
 #ifdef __EMSCRIPTEN__
 	EMSCRIPTEN_MAINLOOP_END;
 #endif
 
-	// CLEANUP
+// CLEANUP
 	ImGui_ImplOpenGL3_Shutdown();
+
 	ImGui_ImplGlfw_Shutdown();
+
 	ImGui::DestroyContext();
 
 	glfwDestroyWindow(window);
+
 	glfwTerminate();
 
 	return 0;

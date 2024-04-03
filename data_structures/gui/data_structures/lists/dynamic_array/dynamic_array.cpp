@@ -3,7 +3,7 @@
 
 DynamicArray::DynamicArray(const int* array, int capacity) {
 	this->size = 0;
-	this->startingSize = capacity;
+	this->starting_size = capacity;
 	this->capacity = capacity;
 	this->array = new int[capacity];
 
@@ -14,6 +14,7 @@ DynamicArray::DynamicArray(const int* array, int capacity) {
 }
 
 DynamicArray::~DynamicArray() {
+//	It causes double free error. why?
 //	delete[] array;
 }
 
@@ -55,7 +56,7 @@ bool DynamicArray::remove(int index) {
 	}
 
 	for (int i = index; i < size - 1; ++i) {
-		this->array[i] = this->array[i + 1];
+		array[i] = array[i + 1];
 	}
 
 	--size;
@@ -96,12 +97,27 @@ bool DynamicArray::find(const int &element) {
 void DynamicArray::isResizeNeeded() {
 	if (capacity == size) {
 		capacity *= 2;
-		array = static_cast<int*>(realloc(this->array, capacity * sizeof(int)));
+		int* tmp = new int[capacity];
+
+		// memcopy?
+		for (int i = 0; i < size; ++i) {
+			tmp[i] = array[i];
+		}
+
+		array = tmp;
+
+		return;
 	}
 
-	if (size <= capacity / 4 && capacity >= startingSize * 2) {
+	if (size <= capacity / 4 && capacity >= starting_size * 2) {
 		capacity /= 2;
-		array = static_cast<int*>(realloc(this->array, capacity * sizeof(int)));
+		int* tmp = new int[capacity];
+
+		for (int j = 0; j < size; ++j) {
+			tmp[j] = array[j];
+		}
+
+		return;
 	}
 }
 
@@ -119,6 +135,14 @@ bool DynamicArray::isEmpty() const {
 
 int DynamicArray::getSize() const {
 	return size;
+}
+
+void DynamicArray::display() const {
+	for (int i = 0; i < size; ++i) {
+		std::cout << "[" << i << "] " << array[i] << " ";
+	}
+
+	std::cout << std::endl;
 }
 
 //#define CATCH_CONFIG_MAIN
