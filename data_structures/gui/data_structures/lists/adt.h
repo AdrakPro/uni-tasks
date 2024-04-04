@@ -1,6 +1,10 @@
 #ifndef GUI_ADT_H
 #define GUI_ADT_H
 
+#include "../utils.h"
+#include <iostream>
+#include "nodes.h"
+
 class ADT {
 public:
 	virtual bool add(const int &element, int index) = 0;

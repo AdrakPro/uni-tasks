@@ -2,9 +2,6 @@
 #define GUI_DYNAMIC_ARRAY_H
 
 #include "../adt.h"
-#include "../../utils.h"
-#include <cstdlib>
-#include <cstring>
 
 class DynamicArray : public ADT {
 private:

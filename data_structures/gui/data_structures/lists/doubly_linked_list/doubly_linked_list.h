@@ -2,22 +2,17 @@
 #define GUI_DOUBLY_LINKED_LIST_H
 
 #include "../adt.h"
-#include "../../utils.h"
-
-struct Node {
-	int value;
-	Node* next;
-	Node* prev;
-};
 
 class DLinkedList : public ADT {
 private:
-	Node* head;
-	Node* tail;
+	DNode* head;
+	DNode* tail;
 	int size;
 
 public:
 	DLinkedList();
+
+	DLinkedList(const int* data, int size);
 
 	~DLinkedList();
 
@@ -35,13 +30,15 @@ public:
 
 	bool find(const int &element) override;
 
+	void display() const;
+
 	[[nodiscard]] bool isEmpty() const override;
 
 	[[nodiscard]] const int &front() const;
 
 	[[nodiscard]] const int &back() const;
 
-	[[nodiscard]] Node* getNode(int position, bool fromHead) const;
+	[[nodiscard]] DNode* getNode(int position, bool fromHead) const;
 
 	[[nodiscard]] int getNodeValue(int position, bool fromHead) const;
 

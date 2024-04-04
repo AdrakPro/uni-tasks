@@ -2,21 +2,18 @@
 #define GUI_SINGLY_LINKED_LIST_TAIL_H
 
 #include "../adt.h"
-#include "../../utils.h"
-
-struct Node {
-	int value;
-	Node* next;
-};
 
 class SLinkedListWithTail : public ADT {
 private:
-	Node* head;
-	Node* tail;
+	SNode* head;
+	SNode* tail;
 	int size;
 
 public:
 	SLinkedListWithTail();
+
+	SLinkedListWithTail(const int* data, int size);
+
 
 	~SLinkedListWithTail();
 
@@ -34,6 +31,8 @@ public:
 
 	bool find(const int &element) override;
 
+	void display() const;
+
 	[[nodiscard]] bool isEmpty() const override;
 
 	// First const means the value referred to by the return value cannot be modified.
@@ -42,7 +41,7 @@ public:
 
 	[[nodiscard]] const int &back() const;
 
-	[[nodiscard]] Node* getNode(int position) const;
+	[[nodiscard]] SNode* getNode(int position) const;
 
 	[[nodiscard]] int getNodeValue(int position) const;
 

@@ -1,5 +1,4 @@
 #include "dynamic_array.h"
-#include <iostream>
 
 DynamicArray::DynamicArray(const int* array, int capacity) {
 	this->size = 0;

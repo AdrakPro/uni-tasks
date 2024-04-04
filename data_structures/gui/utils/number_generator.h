@@ -2,8 +2,6 @@
 #define GUI_NUMBER_GENERATOR_H
 
 #include <random>
-#include <memory>
-#include <optional>
 
 int generateNumber(int lower_bound, int upper_bound, int seed = 2137);
 

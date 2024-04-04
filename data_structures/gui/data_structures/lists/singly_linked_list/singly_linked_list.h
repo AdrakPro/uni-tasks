@@ -2,20 +2,16 @@
 #define GUI_SINGLY_LINKED_LIST_H
 
 #include "../adt.h"
-#include "../../utils.h"
-
-struct Node {
-	int value;
-	Node* next;
-};
 
 class SLinkedList : public ADT {
 private:
-	Node* head;
+	SNode* head;
 	int size;
 
 public:
 	SLinkedList();
+
+	SLinkedList(const int* data, int size);
 
 	~SLinkedList();
 
@@ -35,11 +31,13 @@ public:
 
 	[[nodiscard]] bool isEmpty() const override;
 
+	void display() const;
+
 	// First const means the value referred to by the return value cannot be modified.
 	// Second const means it doesn't modify the object's state when called.
 	[[nodiscard]] const int &front() const;
 
-	[[nodiscard]] Node* getNode(int position) const;
+	[[nodiscard]] SNode* getNode(int position) const;
 
 	[[nodiscard]] int getNodeValue(int position) const;
 
