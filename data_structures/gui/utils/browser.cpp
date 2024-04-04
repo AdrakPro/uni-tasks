@@ -1,69 +1,25 @@
 #include "browser.h"
 
 void Browser::init() {
-	browser.SetTitle("Select data file to load");
-	browser.SetTypeFilters({".txt"});
+	this->browser.SetTitle("Select data file to load");
+	this->browser.SetTypeFilters({ ".txt", ".json" });
 }
 
 void Browser::open() {
-	browser.Open();
+	this->browser.Open();
 }
 
-void Browser::selectPathAndLoad(int* &array, int &size) {
+
+std::string Browser::getSelectedItemPath() {
 	std::string path;
 
-	browser.Display();
+	this->browser.Display();
 
-	if (browser.HasSelected()) {
-		path = browser.GetSelected().string();
-		std::cout << "Selected file: " << path << std::endl;
+	if (this->browser.HasSelected()) {
+		path = this->browser.GetSelected().string();
+		std::cout << "Selected path: " << path << std::endl;
 		browser.ClearSelected();
-		load(path, array, size);
-	}
-}
-
-void Browser::load(const std::string &path, int* &array, int &size) {
-	std::ifstream file(path);
-
-	if (!file.is_open()) {
-		std::cout << "Error opening file!" << std::endl;
-		return;
 	}
 
-	loadedData.clear();
-
-	int lines;
-
-	while (file >> lines) {
-		loadedData.push_back(lines);
-	}
-
-	file.close();
-
-	delete[] array;
-	size = 0;
-
-	array = new int[loadedData.size()];
-
-	for (size_t i = 0; i < loadedData.size(); ++i) {
-		array[i] = loadedData[i];
-		++size;
-	}
-
-}
-
-void Browser::save(const int* data, int size) {
-	const std::string fileName = "data/data.txt";
-	std::ofstream file(fileName, std::ios::trunc);
-
-	if (!file.is_open()) {
-		std::cerr << "Error opening file for writing! " << std::endl;
-		return;
-	}
-
-	for (int i = 0; i < size; ++i) {
-		file << data[i] << "\n";
-	}
-
-	file.close();
+	return path;
 }

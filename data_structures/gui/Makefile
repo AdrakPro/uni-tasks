@@ -20,15 +20,15 @@ UTILS_DIR = ./utils
 DS_DIR = ./data_structures/lists
 DA_DIR = $(DS_DIR)/dynamic_array
 SLL_DIR = $(DS_DIR)/singly_linked_list
-DSL_DIR = $(DS_DIR)/doubly_linked_list
+DSL_DIR = $(DS_DIR)/doubly_lined_list
 SOURCES = main.cpp
-SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp $(UTILS_DIR)/browser.cpp $(UTILS_DIR)/number_generator.cpp ./data_structures/utils.cpp $(DA_DIR)/dynamic_array.cpp $(DS_DIR)/singly_linked_list.cpp $(DS_DIR)/singly_linked_list_tail.cpp $(DSL_DIR)/doubly_linked_list.cpp
+SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp $(UTILS_DIR)/browser.cpp $(UTILS_DIR)/number_generator.cpp ./data_structures/utils.cpp $(DA_DIR)/dynamic_array.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++17 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(UTILS_DIR) -I./data_structures  -I$(DS_DIR) -I$(DA_DIR) -I$(SLL_DIR) -I$(DSL_DIR)
+CXXFLAGS = -std=c++17 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(UTILS_DIR) -I./data_structures -I$(DA_DIR)
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -88,12 +88,6 @@ endif
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:data_structures/lists/dynamic_array/%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-%.o:data_structures/lists/singly_linked_list/%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-%.o:data_structures/lists/doubly_linked_list/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:data_structures/utils.cpp
