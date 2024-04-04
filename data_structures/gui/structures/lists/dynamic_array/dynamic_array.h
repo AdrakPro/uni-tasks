@@ -11,6 +11,7 @@ private:
 	int starting_size;
 
 	void isResizeNeeded();
+
 public:
 	DynamicArray(const int* array, int capacity);
 

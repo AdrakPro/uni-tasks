@@ -1,7 +1,7 @@
 #ifndef GUI_ADT_H
 #define GUI_ADT_H
 
-#include "../utils.h"
+#include "../validate.h"
 #include <iostream>
 #include "nodes.h"
 

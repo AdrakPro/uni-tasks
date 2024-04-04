@@ -19,7 +19,7 @@ public:
 
 	void selectPathAndLoad(int* &array, int &size);
 
-	void load(const std::string& path, int*& array, int &size);
+	void load(const std::string &path, int* &array, int &size);
 
 	static void save(const int* data, int size);
 };

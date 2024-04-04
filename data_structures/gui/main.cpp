@@ -14,10 +14,10 @@
 
 #include <chrono>
 
-#include "data_structures/lists/dynamic_array/dynamic_array.h"
-#include "data_structures/lists/singly_linked_list/singly_linked_list.h"
-#include "data_structures/lists/singly_linked_list/singly_linked_list_tail.h"
-#include "data_structures/lists/doubly_linked_list/doubly_linked_list.h"
+#include "structures/lists/dynamic_array/dynamic_array.h"
+#include "structures/lists/singly_linked_list/singly_linked_list.h"
+#include "structures/lists/singly_linked_list/singly_linked_list_tail.h"
+#include "structures/lists/doubly_linked_list/doubly_linked_list.h"
 
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)

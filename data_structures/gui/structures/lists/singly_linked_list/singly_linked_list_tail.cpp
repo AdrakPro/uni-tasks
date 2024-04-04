@@ -65,7 +65,7 @@ bool SLinkedListWithTail::addFront(const int &element) {
 }
 
 bool SLinkedListWithTail::addBack(const int &element) {
-  //	Set new node's value and mark it as end
+	//	Set new node's value and mark it as end
 	auto* node = new SNode;
 	node->value = element;
 	node->next = nullptr;
@@ -74,7 +74,7 @@ bool SLinkedListWithTail::addBack(const int &element) {
 		head = node;
 		tail = node;
 	} else {
-    // Update tail's pointer and link old tail to new
+		// Update tail's pointer and link old tail to new
 		tail->next = node;
 		tail = tail->next;
 	}
@@ -100,7 +100,7 @@ bool SLinkedListWithTail::remove(int position) {
 		return false;
 	}
 
-  // Skip removed node by linking old's previous with next
+	// Skip removed node by linking old's previous with next
 	SNode* temp = old->next;
 	old->next = temp->next;
 //	delete temp;
@@ -115,7 +115,7 @@ bool SLinkedListWithTail::removeFront() {
 		return false;
 	}
 
-  // Assign head to the next node and delete current head
+	// Assign head to the next node and delete current head
 	SNode* temp = head;
 	head = temp->next;
 //	delete temp;
