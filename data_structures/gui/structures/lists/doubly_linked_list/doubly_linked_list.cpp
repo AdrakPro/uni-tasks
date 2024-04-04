@@ -109,7 +109,7 @@ bool DLinkedList::remove(int position) {
 	}
 
 
-	DNode* next= old->next;
+	DNode* next = old->next;
 	DNode* prev = old->prev;
 
 	if (prev == nullptr || next == nullptr) {
