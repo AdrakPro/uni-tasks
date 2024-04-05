@@ -9,7 +9,7 @@ void Browser::open() {
 	browser.Open();
 }
 
-void Browser::selectPathAndLoad(int* &array, int &size) {
+void Browser::selectPathAndLoad(int* &array, int &size, int &random_index) {
 	std::string path;
 
 	browser.Display();
@@ -18,11 +18,11 @@ void Browser::selectPathAndLoad(int* &array, int &size) {
 		path = browser.GetSelected().string();
 		std::cout << "Selected file: " << path << std::endl;
 		browser.ClearSelected();
-		load(path, array, size);
+		load(path, array, size, random_index);
 	}
 }
 
-void Browser::load(const std::string &path, int* &array, int &size) {
+void Browser::load(const std::string &path, int* &array, int &size, int &random_index) {
 	std::ifstream file(path);
 
 	if (!file.is_open()) {
@@ -50,6 +50,9 @@ void Browser::load(const std::string &path, int* &array, int &size) {
 		++size;
 	}
 
+	random_index = generateNumber(0, size, 50);
+
+	std::cout << "Generated index: " << random_index << std::endl;
 }
 
 void Browser::save(const int* data, int size) {

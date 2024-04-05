@@ -71,14 +71,24 @@ void addButtonCallback(const T &structure, const std::string &buttonLabel,
 											 const Func &func, const std::string &actionDescription,
 											 std::vector<std::string> &history) {
 	if (ImGui::Button(buttonLabel.c_str(), ImVec2(190.0f, 50.0f))) {
-		long time = performOperation(
-				structure, 1000,
-				[&func](T &structure) {
-					func(structure);
-				}
-		);
+		long result = 0;
+		const int NUMBER_OF_SAMPLES = 12;
+
+		for (int i = 0; i < NUMBER_OF_SAMPLES; ++i) {
+			long time = performOperation(
+					structure, 100,
+					[&func](T &structure) {
+						func(structure);
+					}
+			);
+
+			result += time;
+		}
+
+		result /= NUMBER_OF_SAMPLES;
+
 		history.push_back(
-				actionDescription + " took " + std::to_string(time) + " \xC2\xB5s!"
+				actionDescription + " took avg " + std::to_string(result) + " \xC2\xB5s!"
 		);
 	}
 }
@@ -275,7 +285,7 @@ int main(int, char**) {
 		}
 		ImGui::End(); // END DATA WINDOW
 
-		fileBrowser.selectPathAndLoad(data, size);
+		fileBrowser.selectPathAndLoad(data, size, random_index);
 
 		// DATA STRUCTURE WINDOW
 		ImGui::SetNextWindowPos(center_pos);

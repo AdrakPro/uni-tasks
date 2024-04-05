@@ -4,6 +4,7 @@
 #include "../imgui/imfilebrowser.h"
 #include <iostream>
 #include <fstream>
+#include "number_generator.h"
 
 class Browser {
 private:
@@ -17,9 +18,9 @@ public:
 
 	void open();
 
-	void selectPathAndLoad(int* &array, int &size);
+	void selectPathAndLoad(int* &array, int &size, int &random_index);
 
-	void load(const std::string &path, int* &array, int &size);
+	void load(const std::string &path, int* &array, int &size, int &random_index);
 
 	static void save(const int* data, int size);
 };
