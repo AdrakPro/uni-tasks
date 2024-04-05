@@ -5,7 +5,7 @@ DynamicArray::~DynamicArray() {
 }
 
 // Copy constructor
-DynamicArray::DynamicArray(const DynamicArray& other) {
+DynamicArray::DynamicArray(const DynamicArray &other) {
 	this->size = other.size;
 	this->capacity = other.capacity;
 	this->starting_size = other.starting_size;
@@ -19,7 +19,7 @@ DynamicArray::DynamicArray(const int* array, int capacity) {
 	this->capacity = capacity;
 	this->array = new int[capacity];
 
-	for (int i = 0; i < capacity; ++i) {
+	for (int i = 0; i < capacity - 1; ++i) {
 		this->array[i] = array[i];
 		this->size++;
 	}

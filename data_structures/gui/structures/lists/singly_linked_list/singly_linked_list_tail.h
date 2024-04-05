@@ -13,7 +13,7 @@ public:
 	~SLinkedListWithTail();
 
 	// Copy constructor
-	SLinkedListWithTail(const SLinkedListWithTail& other);
+	SLinkedListWithTail(const SLinkedListWithTail &other);
 
 	SLinkedListWithTail();
 

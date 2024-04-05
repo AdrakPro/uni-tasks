@@ -16,7 +16,7 @@ public:
 	~DynamicArray();
 
 	// Copy constructor
-	DynamicArray(const DynamicArray& other);
+	DynamicArray(const DynamicArray &other);
 
 	DynamicArray(const int* array, int capacity);
 

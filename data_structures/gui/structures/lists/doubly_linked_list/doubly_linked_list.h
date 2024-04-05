@@ -13,7 +13,7 @@ public:
 	~DLinkedList();
 
 	// Copy constructor
-	DLinkedList(const DLinkedList& other);
+	DLinkedList(const DLinkedList &other);
 
 	DLinkedList();
 
