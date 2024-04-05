@@ -73,10 +73,11 @@ void addButtonCallback(const T &structure, const std::string &buttonLabel,
 	if (ImGui::Button(buttonLabel.c_str(), ImVec2(190.0f, 50.0f))) {
 		long result = 0;
 		const int NUMBER_OF_SAMPLES = 12;
+		const int NUMBER_OF_OPERATIONS = 100;
 
 		for (int i = 0; i < NUMBER_OF_SAMPLES; ++i) {
 			long time = performOperation(
-					structure, 100,
+					structure, NUMBER_OF_OPERATIONS,
 					[&func](T &structure) {
 						func(structure);
 					}
