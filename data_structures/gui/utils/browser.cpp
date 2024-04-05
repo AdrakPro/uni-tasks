@@ -9,7 +9,7 @@ void Browser::open() {
 	browser.Open();
 }
 
-void Browser::selectPathAndLoad(int* &array, int &size, int &random_index) {
+void Browser::selectPathAndLoad(int* &array, int &size, int &random_index, const std::function<void()>& reset) {
 	std::string path;
 
 	browser.Display();
@@ -19,6 +19,7 @@ void Browser::selectPathAndLoad(int* &array, int &size, int &random_index) {
 		std::cout << "Selected file: " << path << std::endl;
 		browser.ClearSelected();
 		load(path, array, size, random_index);
+		reset();
 	}
 }
 

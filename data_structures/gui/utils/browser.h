@@ -18,7 +18,7 @@ public:
 
 	void open();
 
-	void selectPathAndLoad(int* &array, int &size, int &random_index);
+	void selectPathAndLoad(int* &array, int &size, int &random_index, const std::function<void()>& reset);
 
 	void load(const std::string &path, int* &array, int &size, int &random_index);
 

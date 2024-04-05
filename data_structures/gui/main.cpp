@@ -59,7 +59,7 @@ long performOperation(const T &structure, const int &operations_number, Func ope
 	}
 	end = std::chrono::high_resolution_clock::now();
 
-	auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(
+	auto time = std::chrono::duration_cast<std::chrono::microseconds>(
 			end - start
 	).count();
 
@@ -201,6 +201,18 @@ int main(int, char**) {
 	SLinkedListWithTail* linked_list_tail = nullptr;
 	DLinkedList* double_linked_list = nullptr;
 
+	auto reset = [&dynamic_array, &linked_list, &linked_list_tail, &double_linked_list]() {
+		delete dynamic_array;
+		delete linked_list;
+		delete linked_list_tail;
+		delete double_linked_list;
+
+		dynamic_array = nullptr;
+		linked_list = nullptr;
+		linked_list_tail = nullptr;
+		double_linked_list = nullptr;
+	};
+
 	// MAIN LOOP
 #ifdef __EMSCRIPTEN__
 	// For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
@@ -236,7 +248,7 @@ int main(int, char**) {
 				viewport_size.x / 2.07f, viewport_size.y / 3.0f
 		);
 		const ImVec2 history_window_size(
-				viewport_size.x / 5.0f, viewport_size.y - 2 * offset.y
+				viewport_size.x / 4.8f, viewport_size.y - 2 * offset.y
 		);
 
 		ImVec2 left_pos(offset.x, offset.y);
@@ -281,6 +293,7 @@ int main(int, char**) {
 				data = generateNumbers(size, 50);
 				Browser::save(data, size);
 				random_index = generateNumber(0, size, 50);
+				reset();
 				std::cout << "Generated index: " << random_index << std::endl;
 				ImGui::CloseCurrentPopup();
 			}
@@ -295,7 +308,9 @@ int main(int, char**) {
 		}
 		ImGui::End(); // END DATA WINDOW
 
-		fileBrowser.selectPathAndLoad(data, size, random_index);
+		fileBrowser.selectPathAndLoad(
+				data, size, random_index, reset
+		);
 
 		// DATA STRUCTURE WINDOW
 		ImGui::SetNextWindowPos(center_pos);
