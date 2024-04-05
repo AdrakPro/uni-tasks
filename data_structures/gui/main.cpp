@@ -49,7 +49,7 @@ static void glfw_error_callback(int error, const char* description) {
 
 // Measure functions
 template<typename T, typename Func>
-long performOperation(const T &structure, int operations_number, Func operation) {
+long performOperation(const T &structure, const int &operations_number, Func operation) {
 	std::vector<T> list(operations_number, structure);
 	std::chrono::high_resolution_clock::time_point start, end;
 
@@ -59,7 +59,7 @@ long performOperation(const T &structure, int operations_number, Func operation)
 	}
 	end = std::chrono::high_resolution_clock::now();
 
-	auto time = std::chrono::duration_cast<std::chrono::microseconds>(
+	auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(
 			end - start
 	).count();
 
@@ -91,7 +91,7 @@ void addButtonCallback(const T &structure, const std::string &buttonLabel,
 		result /= NUMBER_OF_SAMPLES;
 
 		history.push_back(
-				actionDescription + " took avg " + std::to_string(result) + " \xC2\xB5s!"
+				actionDescription + " took avg " + std::to_string(result) + " ns!"
 		);
 	}
 }
@@ -188,11 +188,18 @@ int main(int, char**) {
 	const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize |
 																 ImGuiWindowFlags_NoCollapse;
 
+	const int NUMBER_TO_ADD = 100;
+
 	int* data = nullptr;
 	int id = -1;
 	int size = 0;
 	int random_index = 0;
 	std::vector<std::string> history;
+
+	DynamicArray* dynamic_array = nullptr;
+	SLinkedList* linked_list = nullptr;
+	SLinkedListWithTail* linked_list_tail = nullptr;
+	DLinkedList* double_linked_list = nullptr;
 
 	// MAIN LOOP
 #ifdef __EMSCRIPTEN__
@@ -329,226 +336,229 @@ int main(int, char**) {
 				"Operations", nullptr, flags
 		);
 
-		if (data != nullptr) {
-			int number_to_add = 100;
-			int random_element;
-
-			switch (id) {
-				case 0: {
-					auto* dynamic_array = new DynamicArray(data, size);
-					random_element = dynamic_array->getElement(random_index);
-
-					addButtonCallback(
-							*dynamic_array, "Add front", [number_to_add](DynamicArray &arr) {
-								arr.addFront(number_to_add);
-							}, "Add front", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*dynamic_array, "Add back", [number_to_add](DynamicArray &arr) {
-								arr.addBack(number_to_add);
-							}, "Add back", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*dynamic_array, "Add", [number_to_add, random_index](
-									DynamicArray &arr) {
-								arr.add(
-										number_to_add, random_index
-								);
-							}, "Add", history
-					);
-					addButtonCallback(
-							*dynamic_array, "Remove front",
-							[](DynamicArray &arr) { arr.removeFront(); }, "Remove front",
-							history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*dynamic_array, "Remove back",
-							[](DynamicArray &arr) { arr.removeBack(); }, "Remove back",
-							history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*dynamic_array, "Remove", [random_index](DynamicArray &arr) {
-								arr.remove(random_index);
-							}, "Remove", history
-					);
-					addButtonCallback(
-							*dynamic_array, "Find", [random_element](DynamicArray &arr) {
-								arr.find(random_element);
-							}, "Find", history
-					);
-					ImGui::SameLine();
-
-					if (ImGui::Button("Display", button_size)) {
-						dynamic_array->display();
-					}
-					break;
-				}
-				case 1: {
-					auto* linked_list = new SLinkedList(data, size);
-					random_element = linked_list->getNodeValue(random_index);
-
-					addButtonCallback(
-							*linked_list, "Add front", [number_to_add](SLinkedList &list) {
-								list.addFront(number_to_add);
-							}, "Add front", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list, "Add back", [number_to_add](SLinkedList &list) {
-								list.addBack(number_to_add);
-							}, "Add back", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list, "Add", [number_to_add, random_index](
-									SLinkedList &list) { list.add(number_to_add, random_index); },
-							"Add", history
-					);
-					addButtonCallback(
-							*linked_list, "Remove front",
-							[](SLinkedList &list) { list.removeFront(); }, "Remove front",
-							history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list, "Remove back",
-							[](SLinkedList &list) { list.removeBack(); }, "Remove back",
-							history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list, "Remove", [random_index](SLinkedList &list) {
-								list.remove(random_index);
-							}, "Remove", history
-					);
-					addButtonCallback(
-							*linked_list, "Find", [random_element](SLinkedList &list) {
-								list.find(random_element);
-							}, "Find", history
-					);
-					ImGui::SameLine();
-
-					if (ImGui::Button("Display", button_size)) {
-						linked_list->display();
-					}
-					break;
-				}
-				case 2: {
-					auto* linked_list_tail = new SLinkedListWithTail(data, size);
-					random_element = linked_list_tail->getNodeValue(random_index);
-
-					addButtonCallback(
-							*linked_list_tail, "Add front", [number_to_add](
-									SLinkedListWithTail &list) { list.addFront(number_to_add); },
-							"Add front", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list_tail, "Add back", [number_to_add](
-									SLinkedListWithTail &list) { list.addBack(number_to_add); },
-							"Add back", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list_tail, "Add", [number_to_add, random_index](
-									SLinkedListWithTail &list) {
-								list.add(
-										number_to_add, random_index
-								);
-							}, "Add", history
-					);
-					addButtonCallback(
-							*linked_list_tail, "Remove front",
-							[](SLinkedListWithTail &list) { list.removeFront(); },
-							"Remove front", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list_tail, "Remove back",
-							[](SLinkedListWithTail &list) { list.removeBack(); },
-							"Remove back", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*linked_list_tail, "Remove", [random_index](
-									SLinkedListWithTail &list) { list.remove(random_index); },
-							"Remove", history
-					);
-					addButtonCallback(
-							*linked_list_tail, "Find", [random_element](
-									SLinkedListWithTail &list) { list.find(random_element); },
-							"Find", history
-					);
-					ImGui::SameLine();
-
-					if (ImGui::Button("Display", button_size)) {
-						linked_list_tail->display();
-					}
-					break;
+		switch (id) {
+			case 0: {
+				if (dynamic_array == nullptr) {
+					dynamic_array = new DynamicArray(data, size);
 				}
 
-				case 3: {
-					auto* double_linked_list = new DLinkedList(data, size);
-					random_element = double_linked_list->getNodeValue(random_index, true);
+				addButtonCallback(
+						*dynamic_array, "Add front", [NUMBER_TO_ADD](DynamicArray &arr) {
+							arr.addFront(NUMBER_TO_ADD);
+						}, "Add front", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*dynamic_array, "Add back", [NUMBER_TO_ADD](DynamicArray &arr) {
+							arr.addBack(NUMBER_TO_ADD);
+						}, "Add back", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*dynamic_array, "Add", [NUMBER_TO_ADD, random_index](
+								DynamicArray &arr) {
+							arr.add(
+									NUMBER_TO_ADD, random_index
+							);
+						}, "Add", history
+				);
+				addButtonCallback(
+						*dynamic_array, "Remove front",
+						[](DynamicArray &arr) { arr.removeFront(); }, "Remove front",
+						history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*dynamic_array, "Remove back",
+						[](DynamicArray &arr) { arr.removeBack(); }, "Remove back",
+						history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*dynamic_array, "Remove", [random_index](DynamicArray &arr) {
+							arr.remove(random_index);
+						}, "Remove", history
+				);
+				addButtonCallback(
+						*dynamic_array, "Find", [random_index](DynamicArray &arr) {
+							arr.find(arr.getElement(random_index));
+						}, "Find", history
+				);
+				ImGui::SameLine();
 
-					addButtonCallback(
-							*double_linked_list, "Add front",
-							[number_to_add](DLinkedList &list) {
-								list.addFront(number_to_add);
-							}, "Add front", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*double_linked_list, "Add back",
-							[number_to_add](DLinkedList &list) {
-								list.addBack(number_to_add);
-							}, "Add back", history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*double_linked_list, "Add", [number_to_add, random_index](
-									DLinkedList &list) {
-								list.add(
-										number_to_add, random_index
-								);
-							}, "Add", history
-					);
-					addButtonCallback(
-							*double_linked_list, "Remove front",
-							[](DLinkedList &list) { list.removeFront(); }, "Remove front",
-							history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*double_linked_list, "Remove back",
-							[](DLinkedList &list) { list.removeBack(); }, "Remove back",
-							history
-					);
-					ImGui::SameLine();
-					addButtonCallback(
-							*double_linked_list, "Remove", [random_index](DLinkedList &list) {
-								list.remove(random_index);
-							}, "Remove", history
-					);
-					addButtonCallback(
-							*double_linked_list, "Find", [random_element](DLinkedList &list) {
-								list.find(random_element);
-							}, "Find", history
-					);
-					ImGui::SameLine();
-
-					if (ImGui::Button("Display", button_size)) {
-						double_linked_list->display();
-					}
-					break;
+				if (ImGui::Button("Display", button_size)) {
+					dynamic_array->display();
 				}
-				default:
-					break;
+				break;
 			}
+			case 1: {
+				if (linked_list == nullptr) {
+					linked_list = new SLinkedList(data, size);
+				}
+
+				addButtonCallback(
+						*linked_list, "Add front", [NUMBER_TO_ADD](SLinkedList &list) {
+							list.addFront(NUMBER_TO_ADD);
+						}, "Add front", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list, "Add back", [NUMBER_TO_ADD](SLinkedList &list) {
+							list.addBack(NUMBER_TO_ADD);
+						}, "Add back", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list, "Add", [NUMBER_TO_ADD, random_index](
+								SLinkedList &list) { list.add(NUMBER_TO_ADD, random_index); },
+						"Add", history
+				);
+				addButtonCallback(
+						*linked_list, "Remove front",
+						[](SLinkedList &list) { list.removeFront(); }, "Remove front",
+						history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list, "Remove back",
+						[](SLinkedList &list) { list.removeBack(); }, "Remove back",
+						history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list, "Remove", [random_index](SLinkedList &list) {
+							list.remove(random_index);
+						}, "Remove", history
+				);
+				addButtonCallback(
+						*linked_list, "Find", [random_index](SLinkedList &list) {
+							list.find(list.getNodeValue(random_index));
+						}, "Find", history
+				);
+				ImGui::SameLine();
+
+				if (ImGui::Button("Display", button_size)) {
+					linked_list->display();
+				}
+				break;
+			}
+			case 2: {
+				if (linked_list_tail == nullptr) {
+					linked_list_tail = new SLinkedListWithTail(data, size);
+				}
+
+				addButtonCallback(
+						*linked_list_tail, "Add front", [NUMBER_TO_ADD](
+								SLinkedListWithTail &list) { list.addFront(NUMBER_TO_ADD); },
+						"Add front", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list_tail, "Add back", [NUMBER_TO_ADD](
+								SLinkedListWithTail &list) { list.addBack(NUMBER_TO_ADD); },
+						"Add back", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list_tail, "Add", [NUMBER_TO_ADD, random_index](
+								SLinkedListWithTail &list) {
+							list.add(
+									NUMBER_TO_ADD, random_index
+							);
+						}, "Add", history
+				);
+				addButtonCallback(
+						*linked_list_tail, "Remove front",
+						[](SLinkedListWithTail &list) { list.removeFront(); },
+						"Remove front", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list_tail, "Remove back",
+						[](SLinkedListWithTail &list) { list.removeBack(); },
+						"Remove back", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*linked_list_tail, "Remove", [random_index](
+								SLinkedListWithTail &list) { list.remove(random_index); },
+						"Remove", history
+				);
+				addButtonCallback(
+						*linked_list_tail, "Find", [random_index](
+								SLinkedListWithTail &list) {
+							list.find(
+									list.getNodeValue(random_index));
+						},
+						"Find", history
+				);
+				ImGui::SameLine();
+
+				if (ImGui::Button("Display", button_size)) {
+					linked_list_tail->display();
+				}
+				break;
+			}
+
+			case 3: {
+				if (double_linked_list == nullptr) {
+					double_linked_list = new DLinkedList(data, size);
+				}
+
+				addButtonCallback(
+						*double_linked_list, "Add front",
+						[NUMBER_TO_ADD](DLinkedList &list) {
+							list.addFront(NUMBER_TO_ADD);
+						}, "Add front", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*double_linked_list, "Add back",
+						[NUMBER_TO_ADD](DLinkedList &list) {
+							list.addBack(NUMBER_TO_ADD);
+						}, "Add back", history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*double_linked_list, "Add", [NUMBER_TO_ADD, random_index](
+								DLinkedList &list) {
+							list.add(
+									NUMBER_TO_ADD, random_index
+							);
+						}, "Add", history
+				);
+				addButtonCallback(
+						*double_linked_list, "Remove front",
+						[](DLinkedList &list) { list.removeFront(); }, "Remove front",
+						history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*double_linked_list, "Remove back",
+						[](DLinkedList &list) { list.removeBack(); }, "Remove back",
+						history
+				);
+				ImGui::SameLine();
+				addButtonCallback(
+						*double_linked_list, "Remove", [random_index](DLinkedList &list) {
+							list.remove(random_index);
+						}, "Remove", history
+				);
+				addButtonCallback(
+						*double_linked_list, "Find", [random_index](DLinkedList &list) {
+							list.find(list.getNodeValue(random_index, true));
+						}, "Find", history
+				);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Display", button_size)) {
+					double_linked_list->display();
+				}
+				break;
+			}
+			default:
+				break;
 		}
 		ImGui::End(); // END DATA STRUCTURE WINDOW
 
