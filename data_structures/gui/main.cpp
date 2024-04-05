@@ -63,6 +63,8 @@ long performOperation(const T &structure, int operations_number, Func operation)
 			end - start
 	).count();
 
+	list.clear();
+
 	return time;
 }
 
