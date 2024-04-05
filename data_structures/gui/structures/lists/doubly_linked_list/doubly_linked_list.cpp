@@ -165,7 +165,7 @@ bool DLinkedList::removeFront() {
 		head->prev = nullptr;
 	}
 
-//	delete temp;
+	delete temp;
 
 	--size;
 
@@ -187,8 +187,7 @@ bool DLinkedList::removeBack() {
 		tail->next = nullptr;
 	}
 
-//	Vector (performOperation) takes care of freeing up memory after a variable goes out of scope. Uncommenting will give free memory error
-//	delete temp;
+	delete temp;
 
 	--size;
 

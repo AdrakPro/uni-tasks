@@ -137,7 +137,7 @@ bool SLinkedListWithTail::remove(int position) {
 	// Skip removed node by linking old's previous with next
 	SNode* temp = old->next;
 	old->next = temp->next;
-//	delete temp;
+	delete temp;
 
 	--size;
 
@@ -152,7 +152,7 @@ bool SLinkedListWithTail::removeFront() {
 	// Assign head to the next node and delete current head
 	SNode* temp = head;
 	head = temp->next;
-//	delete temp;
+	delete temp;
 
 	--size;
 
@@ -175,7 +175,7 @@ bool SLinkedListWithTail::removeBack() {
 	// Assign new tail which points to nullptr and delete current tail
 	tail = previous;
 	previous->next = nullptr;
-//	delete current;
+	delete current;
 
 	--size;
 
