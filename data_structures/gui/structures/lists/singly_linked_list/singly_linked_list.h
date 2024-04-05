@@ -9,11 +9,14 @@ private:
 	int size;
 
 public:
+	~SLinkedList();
+
+	// Copy constructor
+	SLinkedList(const SLinkedList &other);
+
 	SLinkedList();
 
 	SLinkedList(const int* data, int size);
-
-	~SLinkedList();
 
 	bool add(const int &element, int position) override;
 

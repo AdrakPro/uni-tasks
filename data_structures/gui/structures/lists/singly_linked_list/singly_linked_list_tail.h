@@ -10,12 +10,14 @@ private:
 	int size;
 
 public:
+	~SLinkedListWithTail();
+
+	// Copy constructor
+	SLinkedListWithTail(const SLinkedListWithTail& other);
+
 	SLinkedListWithTail();
 
 	SLinkedListWithTail(const int* data, int size);
-
-
-	~SLinkedListWithTail();
 
 	bool add(const int &element, int position) override;
 

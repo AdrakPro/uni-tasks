@@ -13,9 +13,12 @@ private:
 	void isResizeNeeded();
 
 public:
-	DynamicArray(const int* array, int capacity);
-
 	~DynamicArray();
+
+	// Copy constructor
+	DynamicArray(const DynamicArray& other);
+
+	DynamicArray(const int* array, int capacity);
 
 	bool add(const int &element, int index) override;
 

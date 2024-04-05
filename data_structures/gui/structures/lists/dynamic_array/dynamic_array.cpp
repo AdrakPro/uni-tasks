@@ -1,5 +1,18 @@
 #include "dynamic_array.h"
 
+DynamicArray::~DynamicArray() {
+	delete[] array;
+}
+
+// Copy constructor
+DynamicArray::DynamicArray(const DynamicArray& other) {
+	this->size = other.size;
+	this->capacity = other.capacity;
+	this->starting_size = other.starting_size;
+	this->array = new int[other.capacity];
+	std::copy(other.array, other.array + other.size, this->array);
+}
+
 DynamicArray::DynamicArray(const int* array, int capacity) {
 	this->size = 0;
 	this->starting_size = capacity;
@@ -8,13 +21,8 @@ DynamicArray::DynamicArray(const int* array, int capacity) {
 
 	for (int i = 0; i < capacity; ++i) {
 		this->array[i] = array[i];
-		++size;
+		this->size++;
 	}
-}
-
-DynamicArray::~DynamicArray() {
-//	It causes double free error. why?
-//	delete[] array;
 }
 
 bool DynamicArray::add(const int &element, int index) {
@@ -98,7 +106,6 @@ void DynamicArray::isResizeNeeded() {
 		capacity *= 2;
 		int* tmp = new int[capacity];
 
-		// memcopy?
 		for (int i = 0; i < size; ++i) {
 			tmp[i] = array[i];
 		}

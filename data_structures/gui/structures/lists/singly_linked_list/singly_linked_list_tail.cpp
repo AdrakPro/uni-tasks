@@ -1,5 +1,49 @@
 #include "singly_linked_list_tail.h"
 
+SLinkedListWithTail::~SLinkedListWithTail() {
+	SNode* current = head;
+	while (current) {
+		SNode* next = current->next;
+		delete current;
+		current = next;
+	}
+}
+
+// Copy constructor
+SLinkedListWithTail::SLinkedListWithTail(const SLinkedListWithTail &other) {
+	this->head = nullptr;
+	this->tail = nullptr;
+	this->size = other.size;
+
+	if (other.head == nullptr) {
+		return;
+	}
+
+	SNode* temp = other.head;
+	auto* new_node = new SNode();
+	new_node->value = temp->value;
+
+	head = new_node;
+	tail = new_node;
+	temp = temp->next;
+
+	while (temp) {
+		new_node->next = new SNode();
+		new_node->next->value = temp->value;
+
+		new_node = new_node->next;
+		tail = new_node;
+		temp = temp->next;
+	}
+}
+
+// Normal constructor
+SLinkedListWithTail::SLinkedListWithTail() {
+	this->head = nullptr;
+	this->tail = nullptr;
+	this->size = 0;
+}
+
 SLinkedListWithTail::SLinkedListWithTail(const int* data, int size) {
 	this->head = nullptr;
 	this->tail = nullptr;
@@ -8,16 +52,6 @@ SLinkedListWithTail::SLinkedListWithTail(const int* data, int size) {
 	for (int i = 0; i < size; ++i) {
 		add(data[i], i);
 	}
-}
-
-SLinkedListWithTail::~SLinkedListWithTail() {
-//	SNode* current = head;
-//
-//	while (current != nullptr) {
-//		SNode* next = current->next;
-//		delete current;
-//		current = next;
-//	}
 }
 
 bool SLinkedListWithTail::add(const int &element, int position) {

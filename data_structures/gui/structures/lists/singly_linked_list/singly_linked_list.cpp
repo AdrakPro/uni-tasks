@@ -1,12 +1,32 @@
 #include "singly_linked_list.h"
 
-SLinkedList::SLinkedList(const int* data, int size) {
-	this->head = nullptr;
-	this->size = 0;
+SLinkedList::~SLinkedList() {
+	SNode* current = head;
+	while (current) {
+		SNode* next = current->next;
+		delete current;
+		current = next;
+	}
+}
 
-	// Initialize data
-	for (int i = 0; i < size; ++i) {
-		add(data[i], i);
+// Copy constructor
+SLinkedList::SLinkedList(const SLinkedList &other) {
+	this->head = nullptr;
+	this->size = other.size;
+
+	SNode* temp = other.head;
+	auto* new_node = new SNode();
+	new_node->value = temp->value;
+
+	head = new_node;
+	temp = temp->next;
+
+	while (temp) {
+		new_node->next = new SNode();
+		new_node->next->value = temp->value;
+
+		new_node = new_node->next;
+		temp = temp->next;
 	}
 }
 
@@ -15,15 +35,13 @@ SLinkedList::SLinkedList() {
 	this->size = 0;
 }
 
+SLinkedList::SLinkedList(const int* data, int size) {
+	this->head = nullptr;
+	this->size = 0;
 
-SLinkedList::~SLinkedList() {
-//	SNode* current = head;
-//
-//	while (current != nullptr) {
-//		SNode* next = current->next;
-//		delete current;
-//		current = next;
-//	}
+	for (int i = 0; i < size; ++i) {
+		add(data[i], i);
+	}
 }
 
 bool SLinkedList::add(const int &element, int position) {
@@ -41,11 +59,10 @@ bool SLinkedList::add(const int &element, int position) {
 		return false;
 	}
 
-	// Set new node's value and link it after old node
-	auto* node = new SNode;
-	node->value = element;
-	node->next = old->next;
-	old->next = node;
+	auto* new_node = new SNode;
+	new_node->value = element;
+	new_node->next = old->next;
+	old->next = new_node;
 
 	++size;
 
@@ -53,15 +70,14 @@ bool SLinkedList::add(const int &element, int position) {
 }
 
 bool SLinkedList::addFront(const int &element) {
-	auto* node = new SNode;
-	node->value = element;
+	auto* new_node = new SNode;
+	new_node->value = element;
 
-	// Set head to new node or prepend
 	if (isEmpty()) {
-		head = node;
+		head = new_node;
 	} else {
-		node->next = head;
-		head = node;
+		new_node->next = head;
+		head = new_node;
 	}
 
 	++size;
@@ -70,18 +86,16 @@ bool SLinkedList::addFront(const int &element) {
 }
 
 bool SLinkedList::addBack(const int &element) {
-	// Set new node's value and mark it as end
-	auto* node = new SNode;
-	node->value = element;
-	node->next = nullptr;
+	auto* new_node = new SNode;
+	new_node->value = element;
+	new_node->next = nullptr;
 
 	SNode* old = getNode(size - 1);
 
 	if (isEmpty()) {
-		head = node;
+		head = new_node;
 	} else {
-		// Update old's pointer
-		old->next = node;
+		old->next = new_node;
 	}
 
 	++size;
@@ -98,17 +112,15 @@ bool SLinkedList::remove(int position) {
 		return removeBack();
 	}
 
-	// Get old's previous and node to remove
 	SNode* old = getNode(position - 1);
 
 	if (old == nullptr || old->next == nullptr) {
 		return false;
 	}
 
-	// Skip removed node by linking old's previous with next
 	SNode* temp = old->next;
 	old->next = temp->next;
-//	delete temp;
+	delete temp;
 
 	--size;
 
@@ -120,10 +132,9 @@ bool SLinkedList::removeFront() {
 		return false;
 	}
 
-	// Assign head to the next node and delete current head
 	SNode* temp = head;
 	head = temp->next;
-//	delete temp;
+	delete temp;
 
 	--size;
 
@@ -138,15 +149,13 @@ bool SLinkedList::removeBack() {
 	SNode* current = head;
 	auto* previous = new SNode;
 
-	// At each step we set the previous pointer to the current node, and the current pointer at the next node.
 	while (current->next != nullptr) {
 		previous = current;
 		current = current->next;
 	}
 
-	// Previous node which points to nullptr and delete current
 	previous->next = nullptr;
-//	delete current;
+	delete current;
 
 	--size;
 

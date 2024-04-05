@@ -1,13 +1,40 @@
 #include "doubly_linked_list.h"
 
-DLinkedList::DLinkedList(const int* data, int size) {
+DLinkedList::~DLinkedList() {
+	DNode* current = head;
+	while (current) {
+		DNode* next = current->next;
+		delete current;
+		current = next;
+	}
+}
+
+// Copy constructor
+DLinkedList::DLinkedList(const DLinkedList &other) {
 	this->head = nullptr;
 	this->tail = nullptr;
-	this->size = 0;
+	this->size = other.size;
 
-	// Initialize data
-	for (int i = 0; i < size; ++i) {
-		add(data[i], i);
+	if (other.head == nullptr) {
+		return;
+	}
+
+	DNode* temp = other.head;
+	auto* new_node = new DNode();
+	new_node->value = temp->value;
+
+	head = new_node;
+	tail = new_node;
+	temp = temp->next;
+
+	while (temp) {
+		new_node->next = new DNode();
+		new_node->next->value = temp->value;
+
+		new_node->next->prev = new_node;
+		new_node = new_node->next;
+		tail = new_node;
+		temp = temp->next;
 	}
 }
 
@@ -17,14 +44,14 @@ DLinkedList::DLinkedList() {
 	this->size = 0;
 }
 
-DLinkedList::~DLinkedList() {
-//	DNode* current = head;
-//
-//	while (current != nullptr) {
-//		DNode* next = current->next;
-//		delete current;
-//		current = next;
-//	}
+DLinkedList::DLinkedList(const int* data, int size) {
+	this->head = nullptr;
+	this->tail = nullptr;
+	this->size = 0;
+
+	for (int i = 0; i < size; ++i) {
+		add(data[i], i);
+	}
 }
 
 bool DLinkedList::add(const int &element, int position) {

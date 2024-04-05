@@ -10,11 +10,14 @@ private:
 	int size;
 
 public:
+	~DLinkedList();
+
+	// Copy constructor
+	DLinkedList(const DLinkedList& other);
+
 	DLinkedList();
 
 	DLinkedList(const int* data, int size);
-
-	~DLinkedList();
 
 	bool add(const int &element, int position) override;
 
