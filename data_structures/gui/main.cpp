@@ -91,7 +91,7 @@ void addButtonCallback(const T &structure, const std::string &buttonLabel,
 		result /= NUMBER_OF_SAMPLES;
 
 		history.push_back(
-				actionDescription + " took avg " + std::to_string(result) + " ns!"
+				actionDescription + " took avg " + std::to_string(result) + " \xC2\xB5s!"
 		);
 	}
 }
