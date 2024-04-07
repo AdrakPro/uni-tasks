@@ -7,10 +7,10 @@ int generateNumber(int lower_bound, int upper_bound, int seed) {
 	return dist(engine);
 }
 
-int* generateNumbers(int capacity, int seed) {
-	int* array = new int[capacity];
+int* generateNumbers(int data_size, int seed) {
+	int* array = new int[data_size];
 
-	for (int i = 0; i < capacity; ++i) {
+	for (int i = 0; i < data_size; ++i) {
 		seed += 1;
 		array[i] = generateNumber(INT32_MIN, INT32_MAX, seed);
 	}

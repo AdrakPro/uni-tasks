@@ -18,11 +18,13 @@ public:
 
 	void open();
 
-	void selectPathAndLoad(int* &array, int &size, int &random_index, const std::function<void()>& reset);
+	void selectPathAndLoad(int*&array, int &size, int &random_index,
+												 const std::function<void()> &reset);
 
-	void load(const std::string &path, int* &array, int &size, int &random_index);
+	void load(const std::string &path, int*&array, int &size, int &random_index);
 
-	static void save(const int* data, int size);
+	static void save(const int* data, int data_size, const std::string &file_name);
+
 };
 
 #endif // GUI_BROWSER_H

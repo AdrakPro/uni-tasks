@@ -23,7 +23,7 @@ void Browser::selectPathAndLoad(int* &array, int &size, int &random_index, const
 	}
 }
 
-void Browser::load(const std::string &path, int* &array, int &size, int &random_index) {
+void Browser::load(const std::string &path, int*&array, int &size, int &random_index) {
 	std::ifstream file(path);
 
 	if (!file.is_open()) {
@@ -56,16 +56,16 @@ void Browser::load(const std::string &path, int* &array, int &size, int &random_
 	std::cout << "Generated index: " << random_index << std::endl;
 }
 
-void Browser::save(const int* data, int size) {
-	const std::string fileName = "data/data.txt";
-	std::ofstream file(fileName, std::ios::trunc);
+void Browser::save(const int* data, int data_size, const std::string &file_name) {
+	const std::string path = "data/" + file_name + ".txt";
+	std::ofstream file(path, std::ios::trunc);
 
 	if (!file.is_open()) {
 		std::cerr << "Error opening file for writing! " << std::endl;
 		return;
 	}
 
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < data_size; ++i) {
 		file << data[i] << "\n";
 	}
 
