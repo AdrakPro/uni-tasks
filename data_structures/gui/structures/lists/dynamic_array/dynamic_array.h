@@ -5,10 +5,10 @@
 
 class DynamicArray : public ADT {
 private:
-	int* array;
-	int capacity;
-	int size;
-	int starting_size;
+	int* array{};
+	int capacity{};
+	int size{};
+	int starting_size{};
 
 	void isResizeNeeded();
 
@@ -18,7 +18,7 @@ public:
 	// Copy constructor
 	DynamicArray(const DynamicArray &other);
 
-	DynamicArray(const int* array, int capacity);
+	DynamicArray();
 
 	bool add(const int &element, int index) override;
 
@@ -33,6 +33,8 @@ public:
 	bool removeBack() override;
 
 	bool find(const int &element) override;
+
+	void setData(const int* data, int data_size) override;
 
 	void display() const;
 

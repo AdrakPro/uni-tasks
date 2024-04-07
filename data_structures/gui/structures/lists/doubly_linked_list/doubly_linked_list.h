@@ -5,9 +5,9 @@
 
 class DLinkedList : public ADT {
 private:
-	DNode* head;
-	DNode* tail;
-	int size;
+	DNode* head{};
+	DNode* tail{};
+	int size{};
 
 public:
 	~DLinkedList();
@@ -16,8 +16,6 @@ public:
 	DLinkedList(const DLinkedList &other);
 
 	DLinkedList();
-
-	DLinkedList(const int* data, int size);
 
 	bool add(const int &element, int position) override;
 
@@ -34,6 +32,8 @@ public:
 	bool find(const int &element) override;
 
 	void display() const;
+
+	void setData(const int* data, int data_size) override;
 
 	[[nodiscard]] bool isEmpty() const override;
 

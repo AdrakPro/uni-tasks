@@ -38,18 +38,21 @@ SLinkedListWithTail::SLinkedListWithTail(const SLinkedListWithTail &other) {
 }
 
 // Normal constructor
-SLinkedListWithTail::SLinkedListWithTail() {
+SLinkedListWithTail::SLinkedListWithTail() = default;
+
+void SLinkedListWithTail::setData(const int* data, int data_size) {
+	SNode* current = head;
+	while (current) {
+		SNode* next = current->next;
+		delete current;
+		current = next;
+	}
+
 	this->head = nullptr;
 	this->tail = nullptr;
 	this->size = 0;
-}
 
-SLinkedListWithTail::SLinkedListWithTail(const int* data, int size) {
-	this->head = nullptr;
-	this->tail = nullptr;
-	this->size = 0;
-
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < data_size; ++i) {
 		add(data[i], i);
 	}
 }

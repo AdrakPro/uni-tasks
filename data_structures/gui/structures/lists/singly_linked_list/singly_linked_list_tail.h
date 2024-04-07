@@ -5,9 +5,9 @@
 
 class SLinkedListWithTail : public ADT {
 private:
-	SNode* head;
-	SNode* tail;
-	int size;
+	SNode* head{};
+	SNode* tail{};
+	int size{};
 
 public:
 	~SLinkedListWithTail();
@@ -16,8 +16,6 @@ public:
 	SLinkedListWithTail(const SLinkedListWithTail &other);
 
 	SLinkedListWithTail();
-
-	SLinkedListWithTail(const int* data, int size);
 
 	bool add(const int &element, int position) override;
 
@@ -34,6 +32,8 @@ public:
 	bool find(const int &element) override;
 
 	void display() const;
+
+	void setData(const int* data, int data_size) override;
 
 	[[nodiscard]] bool isEmpty() const override;
 

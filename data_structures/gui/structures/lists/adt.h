@@ -21,6 +21,8 @@ public:
 
 	virtual bool find(const int &element) = 0;
 
+	virtual void setData(const int* data, int data_size) = 0;
+
 	[[nodiscard]] virtual bool isEmpty() const = 0;
 };
 

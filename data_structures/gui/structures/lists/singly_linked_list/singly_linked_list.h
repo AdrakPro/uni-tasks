@@ -16,8 +16,6 @@ public:
 
 	SLinkedList();
 
-	SLinkedList(const int* data, int size);
-
 	bool add(const int &element, int position) override;
 
 	bool addFront(const int &element) override;
@@ -33,6 +31,8 @@ public:
 	bool find(const int &element) override;
 
 	[[nodiscard]] bool isEmpty() const override;
+
+	void setData(const int* data, int data_size) override;
 
 	void display() const;
 

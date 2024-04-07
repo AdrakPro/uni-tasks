@@ -35,11 +35,18 @@ SLinkedList::SLinkedList() {
 	this->size = 0;
 }
 
-SLinkedList::SLinkedList(const int* data, int size) {
+void SLinkedList::setData(const int* data, int data_size) {
+	SNode* current = head;
+	while (current) {
+		SNode* next = current->next;
+		delete current;
+		current = next;
+	}
+
 	this->head = nullptr;
 	this->size = 0;
 
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < data_size; ++i) {
 		add(data[i], i);
 	}
 }

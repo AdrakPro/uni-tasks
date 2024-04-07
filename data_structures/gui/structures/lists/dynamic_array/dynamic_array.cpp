@@ -13,14 +13,18 @@ DynamicArray::DynamicArray(const DynamicArray &other) {
 	std::copy(other.array, other.array + other.size, this->array);
 }
 
-DynamicArray::DynamicArray(const int* array, int capacity) {
-	this->size = 0;
-	this->starting_size = capacity;
-	this->capacity = capacity;
-	this->array = new int[capacity];
+DynamicArray::DynamicArray() = default;
 
-	for (int i = 0; i < capacity - 1; ++i) {
-		this->array[i] = array[i];
+void DynamicArray::setData(const int* data, int data_size) {
+	delete[] array;
+
+	this->starting_size = data_size;
+	this->capacity = data_size;
+	this->array = new int[data_size];
+	this->size = 0;
+
+	for (int i = 0; i < data_size; ++i) {
+		this->array[i] = data[i];
 		this->size++;
 	}
 }

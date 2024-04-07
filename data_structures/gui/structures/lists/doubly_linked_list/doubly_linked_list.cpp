@@ -38,18 +38,21 @@ DLinkedList::DLinkedList(const DLinkedList &other) {
 	}
 }
 
-DLinkedList::DLinkedList() {
+DLinkedList::DLinkedList() = default;
+
+void DLinkedList::setData(const int* data, int data_size) {
+	DNode* current = head;
+	while (current) {
+		DNode* next = current->next;
+		delete current;
+		current = next;
+	}
+
 	this->head = nullptr;
 	this->tail = nullptr;
 	this->size = 0;
-}
 
-DLinkedList::DLinkedList(const int* data, int size) {
-	this->head = nullptr;
-	this->tail = nullptr;
-	this->size = 0;
-
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < data_size; ++i) {
 		add(data[i], i);
 	}
 }
