@@ -257,7 +257,6 @@ void SLinkedListWithTail::display() const {
 //
 //#include "../../../tests/catch.hpp"
 //
-//// g++ -o test singly_linked_list/singly_linked_list_tail.cpp ../utils.cpp -std=c++17 && ./test
 //TEST_CASE("Singly linked list with head and tail") {
 //	SLinkedListWithTail list;
 //	list.add(1, 0);
