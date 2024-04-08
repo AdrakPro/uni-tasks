@@ -73,10 +73,10 @@ bool SLinkedListWithTail::add(const int &element, int position) {
 	}
 
 	// Set new node's value and link it after old node
-	auto* node = new SNode;
-	node->value = element;
-	node->next = old->next;
-	old->next = node;
+	auto* new_node = new SNode;
+	new_node->value = element;
+	new_node->next = old->next;
+	old->next = new_node;
 
 	++size;
 
@@ -84,16 +84,16 @@ bool SLinkedListWithTail::add(const int &element, int position) {
 }
 
 bool SLinkedListWithTail::addFront(const int &element) {
-	auto* node = new SNode;
-	node->value = element;
+	auto* new_node = new SNode;
+	new_node->value = element;
 
 	// Set head to new node or prepend
 	if (isEmpty()) {
-		head = node;
-		tail = node;
+		head = new_node;
+		tail = new_node;
 	} else {
-		node->next = head;
-		head = node;
+		new_node->next = head;
+		head = new_node;
 	}
 
 	++size;
@@ -103,16 +103,16 @@ bool SLinkedListWithTail::addFront(const int &element) {
 
 bool SLinkedListWithTail::addBack(const int &element) {
 	//	Set new node's value and mark it as end
-	auto* node = new SNode;
-	node->value = element;
-	node->next = nullptr;
+	auto* new_node = new SNode;
+	new_node->value = element;
+	new_node->next = nullptr;
 
 	if (isEmpty()) {
-		head = node;
-		tail = node;
+		head = new_node;
+		tail = new_node;
 	} else {
 		// Update tail's pointer and link old tail to new
-		tail->next = node;
+		tail->next = new_node;
 		tail = tail->next;
 	}
 

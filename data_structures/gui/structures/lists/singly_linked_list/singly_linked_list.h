@@ -5,8 +5,8 @@
 
 class SLinkedList : public ADT {
 private:
-	SNode* head;
-	int size;
+	SNode* head{};
+	int size{};
 
 public:
 	~SLinkedList();

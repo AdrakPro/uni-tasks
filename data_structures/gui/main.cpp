@@ -49,6 +49,7 @@ static void glfw_error_callback(int error, const char* description) {
 
 // GLOBALS
 const int NUMBER_OF_SAMPLES = 12;
+const int OPERATIONS_PER_SAMPLE = 1;
 
 int* data = nullptr;
 int size = 0;
@@ -75,17 +76,17 @@ void reset() {
 
 // Measure functions
 template<typename T, typename Func>
-long performOperation(T &structure, const int &operations_number, Func operation) {
-	std::vector<T> list(operations_number, structure);
+long performOperation(T &structure, Func operation) {
+	std::vector<T> list(OPERATIONS_PER_SAMPLE, structure);
 	std::chrono::high_resolution_clock::time_point start, end;
 
 	start = std::chrono::high_resolution_clock::now();
-	for (int i = 0; i < operations_number; ++i) {
+	for (int i = 0; i < OPERATIONS_PER_SAMPLE; ++i) {
 		operation(list[i]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 
-	auto time = std::chrono::duration_cast<std::chrono::microseconds>(
+	auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(
 			end - start
 	).count();
 
@@ -97,12 +98,11 @@ long performOperation(T &structure, const int &operations_number, Func operation
 template<typename T, typename Func>
 void addButtonCallback(T &structure, const std::string &buttonLabel, const Func &func) {
 	if (ImGui::Button(buttonLabel.c_str(), ImVec2(190.0f, 50.0f))) {
-		const int NUMBER_OF_OPERATIONS = 100;
 		long result = 0;
 
 		for (int i = 0; i < NUMBER_OF_SAMPLES; ++i) {
 			long time = performOperation(
-					structure, NUMBER_OF_OPERATIONS,
+					structure,
 					[&func](T &structure) {
 						func(structure);
 					}
@@ -116,7 +116,7 @@ void addButtonCallback(T &structure, const std::string &buttonLabel, const Func 
 		result /= NUMBER_OF_SAMPLES;
 
 		history.push_back(
-				buttonLabel + " took avg " + std::to_string(result) + " \xC2\xB5s!"
+				buttonLabel + " took avg " + std::to_string(result) + " ns!"
 		);
 	}
 }

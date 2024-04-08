@@ -72,13 +72,13 @@ bool DLinkedList::add(const int &element, int position) {
 		return false;
 	}
 
-	auto* node = new DNode;
-	node->value = element;
-	node->next = old->next;
+	auto* new_node = new DNode;
+	new_node->value = element;
+	new_node->next = old->next;
 
-	old->next = node;
-	node->prev = old;
-	node->next->prev = node;
+	old->next = new_node;
+	new_node->prev = old;
+	new_node->next->prev = new_node;
 
 	++size;
 
@@ -86,16 +86,16 @@ bool DLinkedList::add(const int &element, int position) {
 }
 
 bool DLinkedList::addFront(const int &element) {
-	auto* node = new DNode;
-	node->value = element;
+	auto* new_node = new DNode;
+	new_node->value = element;
 
 	if (isEmpty()) {
-		head = node;
+		head = new_node;
 		tail = head;
 	} else {
-		node->next = head;
-		head->prev = node;
-		head = node;
+		new_node->next = head;
+		head->prev = new_node;
+		head = new_node;
 	}
 
 	++size;
@@ -104,18 +104,18 @@ bool DLinkedList::addFront(const int &element) {
 }
 
 bool DLinkedList::addBack(const int &element) {
-	auto* node = new DNode;
+	auto* new_node = new DNode;
 
-	node->value = element;
-	node->next = nullptr;
+	new_node->value = element;
+	new_node->next = nullptr;
 
 	if (isEmpty()) {
-		head = node;
+		head = new_node;
 		tail = head;
 	} else {
-		tail->next = node;
-		node->prev = tail;
-		tail = node;
+		tail->next = new_node;
+		new_node->prev = tail;
+		tail = new_node;
 	}
 
 	++size;

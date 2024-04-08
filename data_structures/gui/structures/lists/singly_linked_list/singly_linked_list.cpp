@@ -14,6 +14,10 @@ SLinkedList::SLinkedList(const SLinkedList &other) {
 	this->head = nullptr;
 	this->size = other.size;
 
+	if (other.head == nullptr) {
+		return;
+	}
+
 	SNode* temp = other.head;
 	auto* new_node = new SNode();
 	new_node->value = temp->value;
@@ -30,10 +34,7 @@ SLinkedList::SLinkedList(const SLinkedList &other) {
 	}
 }
 
-SLinkedList::SLinkedList() {
-	this->head = nullptr;
-	this->size = 0;
-}
+SLinkedList::SLinkedList() = default;
 
 void SLinkedList::setData(const int* data, int data_size) {
 	SNode* current = head;
