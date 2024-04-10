@@ -20,7 +20,7 @@ std::vector<Movie> Browser::loadMovies(int max_size) {
 	std::vector<Movie> movies;
 
 	std::ifstream file(
-			"/home/adam/Desktop/Materiały/uni-tasks/algorithms/movies/data/dane.csv"
+			"data/dane.csv"
 	);
 	if (!file.is_open()) {
 		std::cerr << "Error opening file." << std::endl;
