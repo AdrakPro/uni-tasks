@@ -54,8 +54,8 @@ void Sorting::swap(std::vector<Movie> &data, int i1, int i2) {
 	}
 }
 
-int Sorting::medianOfThree(std::vector<Movie>&data, int left, int right) {
-	int mid = left + (right-left) / 2;
+int Sorting::medianOfThree(std::vector<Movie> &data, int left, int right) {
+	int mid = left + (right - left) / 2;
 
 	if (data[right].rating < data[left].rating) {
 		swap(data, left, right);
@@ -72,39 +72,37 @@ int Sorting::medianOfThree(std::vector<Movie>&data, int left, int right) {
 	return mid;
 }
 
-std::vector<Movie> Sorting::quickSort(std::vector<Movie>& data, int left, int right) {
-	if (right <= left + 16 - 1) {
-		insertionSort(data);
+std::vector<Movie> Sorting::quickSort(std::vector<Movie> &data, int low, int high) {
+	if (high <= low + 16 - 1) {
+		insertionSort(data, low, high);
 		return data;
 	}
 
-	int median = medianOfThree(data, left, right);
-	swap(data, left, median);
-	int partition_index = partition(data, left, right);
-	quickSort(data, left, partition_index-1);
-	quickSort(data, partition_index+1, right);
+	int median = medianOfThree(data, low, high);
+	swap(data, low, median);
+	int partition_index = partition(data, low, high);
+	quickSort(data, low, partition_index - 1);
+	quickSort(data, partition_index + 1, high);
 
 	return data;
 }
 
-int Sorting::partition(std::vector<Movie>& data, int left, int right) {
-	int pivot_index = choosePivot(left, right);
-	int pivot_value = data[pivot_index].rating;
+int Sorting::partition(std::vector<Movie> &data, int low, int high) {
+	int i = low, j = high + 1;
+	int v = data[low].rating;
 
-	swap(data, pivot_index, right);
-
-	int partition_index = left;
-
-	for (int i = left; i < right; ++i) {
-		if (data[i].rating < pivot_value) {
-			swap(data, i, partition_index);
-			++partition_index;
+	while (true) {
+		while (data[++i].rating < v) {
+			if (i == high) break;
 		}
+		while (v < data[--j].rating) {
+			if (j == low) break;
+		}
+		if (i >= j) break;
+		swap(data, i, j);
 	}
-
-	swap(data, partition_index, right);
-
-	return partition_index;
+	swap(data, low, j);
+	return j;
 }
 
 // Choose mid index
@@ -184,15 +182,19 @@ std::vector<Movie> Sorting::heapSort(std::vector<Movie> &data) {
 	return data;
 }
 
-std::vector<Movie> Sorting::insertionSort(std::vector<Movie> &data) {
-	for (int i = 1; i < data.size(); ++i) {
-		Movie key = data[i];
-		int j = i - 1;
-		while (j >= 0 && data[j].rating > key.rating) {
-			data[j + 1] = data[j];
-			--j;
+std::vector<Movie> Sorting::insertionSort(std::vector<Movie> &data, int low, int high) {
+	for (int i = high; i > low; i--) {
+		if (data[i].rating < data[i - 1].rating) swap(data, i - 1, i);
+	}
+
+	for (int i = low + 2; i <= high; i++) {
+		int j = i;
+		Movie v = data[i];
+		while (v.rating < data[j - 1].rating) {
+			data[j] = data[j - 1];
+			j--;
 		}
-		data[j + 1] = key;
+		data[j] = v;
 	}
 
 	return data;
@@ -200,15 +202,15 @@ std::vector<Movie> Sorting::insertionSort(std::vector<Movie> &data) {
 
 std::vector<Movie> Sorting::introSort(std::vector<Movie> &data, int max_depth) {
 	int size = static_cast<int>(data.size());
+	int low = 0;
+	int high = size - 1;
 
 	if (size <= 16) {
-		insertionSort(data);
+		insertionSort(data, low, high);
 	} else if (max_depth == 0) {
 		heapSort(data);
 	} else {
-		int left = 0;
-		int right = size - 1;
-		int partition_index = partition(data, left, right);
+		int partition_index = partition(data, low, high);
 
 		std::vector<Movie> left_partition(data.begin(), data.begin() + partition_index);
 		std::vector<Movie> right_partition(data.begin() + partition_index + 1, data.end());
@@ -239,11 +241,11 @@ std::vector<Movie> Sorting::introSort(std::vector<Movie> &data, int max_depth) {
 //
 //TEST_CASE("Sorting movies by title in ascending order") {
 //	std::vector<Movie> movies = {
-//			Movie(0, "Supermen", 5.8),
-//			Movie(1, "Batman", 8.6),
-//			Movie(2, "Chlopiec w pasiastej pizamie", 10.0),
-//			Movie(3, "Kobiety Mafii", 2.0),
-//			Movie(4, "Szeregowiec Rayan", 8.7),
+//			Movie(0, "Supermen", 5),
+//			Movie(1, "Batman", 8),
+//			Movie(2, "Chlopiec w pasiastej pizamie", 10),
+//			Movie(3, "Kobiety Mafii", 2),
+//			Movie(4, "Szeregowiec Rayan", 8),
 //	};
 //
 //	Sorting sorting;

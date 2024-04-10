@@ -40,20 +40,6 @@ int main(int argc, char* argv[]) {
 	}
 
 	{
-		std::chrono::high_resolution_clock::time_point start, end;
-
-		start = std::chrono::high_resolution_clock::now();
-		sorting.quickSort(movies, 0, size - 1);
-		end = std::chrono::high_resolution_clock::now();
-
-		auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
-				end - start
-		).count();
-
-		std::cout << "Quick sort took " << time << " ms!" << std::endl;
-	}
-
-	{
 		int max_depth = 2 * floor(log2(size));
 		std::chrono::high_resolution_clock::time_point start, end;
 
@@ -86,7 +72,7 @@ int main(int argc, char* argv[]) {
 		std::chrono::high_resolution_clock::time_point start, end;
 
 		start = std::chrono::high_resolution_clock::now();
-		sorting.insertionSort(movies);
+		sorting.insertionSort(movies, 0, size - 1);
 		end = std::chrono::high_resolution_clock::now();
 
 		auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -98,7 +84,7 @@ int main(int argc, char* argv[]) {
 
 	{
 		std::vector<Movie> sorted;
-		const int BUCKETS_NUM = 11;
+		const int BUCKETS_NUM = 10;
 		std::chrono::high_resolution_clock::time_point start, end;
 
 		start = std::chrono::high_resolution_clock::now();
@@ -113,8 +99,21 @@ int main(int argc, char* argv[]) {
 
 
 		movie_manager->averageRating();
-
 		movie_manager->medianRating(sorted);
+
+		{
+			std::chrono::high_resolution_clock::time_point start, end;
+
+			start = std::chrono::high_resolution_clock::now();
+			sorting.quickSort(movies, 0, size - 1);
+			end = std::chrono::high_resolution_clock::now();
+
+			auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
+					end - start
+			).count();
+
+			std::cout << "Quick sort took " << time << " ms!" << std::endl;
+		}
 	}
 	return EXIT_SUCCESS;
 }

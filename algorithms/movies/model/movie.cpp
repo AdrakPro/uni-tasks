@@ -1,8 +1,10 @@
 #include "movie.h"
 
-Movie::Movie(int id, std::string &title, int rating) {
+#include <utility>
+
+Movie::Movie(int id, std::string title, int rating) {
 	this->id = id;
-	this->title = title;
+	this->title = std::move(title);
 	this->rating = rating;
 }
 

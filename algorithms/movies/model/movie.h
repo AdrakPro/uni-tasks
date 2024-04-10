@@ -11,7 +11,7 @@ public:
 	std::string title;
 	int rating;
 
-	Movie(int id, std::string &title, int rating);
+	Movie(int id, std::string title, int rating);
 
 	Movie();
 };
