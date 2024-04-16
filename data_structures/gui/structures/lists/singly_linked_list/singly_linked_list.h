@@ -34,7 +34,7 @@ public:
 
 	void setData(const int* data, int data_size) override;
 
-	void display() const;
+	void display() const override;
 
 	// First const means the value referred to by the return value cannot be modified.
 	// Second const means it doesn't modify the object's state when called.

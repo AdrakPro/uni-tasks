@@ -36,7 +36,7 @@ public:
 
 	void setData(const int* data, int data_size) override;
 
-	void display() const;
+	void display() const override;
 
 	// [[nodiscard]] attribute indicates that the return value should not be ignored by the caller.
 	[[nodiscard]] bool isEmpty() const override;

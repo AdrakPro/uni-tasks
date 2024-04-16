@@ -31,7 +31,7 @@ public:
 
 	bool find(const int &element) override;
 
-	void display() const;
+	void display() const override;
 
 	void setData(const int* data, int data_size) override;
 

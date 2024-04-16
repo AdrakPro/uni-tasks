@@ -23,6 +23,8 @@ public:
 
 	virtual void setData(const int* data, int data_size) = 0;
 
+	virtual void display() const;
+
 	[[nodiscard]] virtual bool isEmpty() const = 0;
 };
 
