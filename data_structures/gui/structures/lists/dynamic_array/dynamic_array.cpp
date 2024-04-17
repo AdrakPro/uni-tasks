@@ -115,6 +115,7 @@ void DynamicArray::isResizeNeeded() {
 		}
 
 		array = tmp;
+		delete[] tmp;
 
 		return;
 	}
@@ -126,6 +127,9 @@ void DynamicArray::isResizeNeeded() {
 		for (int j = 0; j < size; ++j) {
 			tmp[j] = array[j];
 		}
+
+		array = tmp;
+		delete[] tmp;
 
 		return;
 	}
