@@ -10,7 +10,10 @@ DynamicArray::DynamicArray(const DynamicArray &other) {
 	this->capacity = other.capacity;
 	this->starting_size = other.starting_size;
 	this->array = new int[other.capacity];
-	std::copy(other.array, other.array + other.size, this->array);
+
+	for (int i = 0; i < other.size; ++i) {
+		this->array[i] = other.array[i];
+	}
 }
 
 DynamicArray::DynamicArray() = default;
@@ -115,7 +118,6 @@ void DynamicArray::isResizeNeeded() {
 		}
 
 		array = tmp;
-		delete[] tmp;
 
 		return;
 	}
@@ -127,9 +129,6 @@ void DynamicArray::isResizeNeeded() {
 		for (int j = 0; j < size; ++j) {
 			tmp[j] = array[j];
 		}
-
-		array = tmp;
-		delete[] tmp;
 
 		return;
 	}

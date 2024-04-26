@@ -309,28 +309,6 @@ void DLinkedList::display() const {
 //			REQUIRE(list.back() == 4);
 //			REQUIRE(list.addBack(5));
 //			REQUIRE(list.back() == 5);
-//		}
-//	}
-//
-//	SECTION("Remove element") {
-//		SECTION("Remove element from the front") {
-//			REQUIRE(list.removeFront());
-//			REQUIRE(list.front() == 2);
-//			REQUIRE(list.removeFront());
-//			REQUIRE(list.front() == 3);
-//		}
-//
-//		SECTION("Remove element in middle") {
-//			REQUIRE(list.remove(1));
-//			REQUIRE(list.getNodeValue(1, true) == 3);
-//			REQUIRE(list.remove(1));
-//			REQUIRE(list.getNodeValue(0, true) == 1);
-//			list.addBack(5);
-//			list.addBack(6);
-//			list.addBack(7);
-////			list.addBack(6);
-////			list.remove();
-////			REQUIRE(list.back() == 5);
 //			std::cout << list.getSize() << std::endl;
 //			std::cout << list.getSize() << std::endl;
 //			list.display();

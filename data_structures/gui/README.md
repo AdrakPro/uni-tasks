@@ -8,9 +8,11 @@
 ![Alt text](showcase.jpg)
 
 ## Implemented data structures/algorithms
-- Dynamic array
-- Linked list (with/without tail)
-- Double linked list
+- Dynamic Array
+- Linked List (with/without tail)
+- Double Linked List
+- Max Heap Priority Queue
+- BST Priority Queue
 
 
 ## Run Locally

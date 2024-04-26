@@ -19,6 +19,9 @@
 #include "structures/lists/singly_linked_list/singly_linked_list_tail.h"
 #include "structures/lists/doubly_linked_list/doubly_linked_list.h"
 
+#include "structures/queue/heap_queue/heap_queue.h"
+#include "structures/queue/qnodes.h"
+
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -49,7 +52,7 @@ static void glfw_error_callback(int error, const char* description) {
 
 // GLOBALS
 const int NUMBER_OF_SAMPLES = 12;
-const int OPERATIONS_PER_SAMPLE = 1;
+const int OPERATIONS_PER_SAMPLE = 50;
 
 int* data = nullptr;
 int size = 0;
@@ -62,6 +65,7 @@ DynamicArray* dynamic_array = nullptr;
 SLinkedList* linked_list = nullptr;
 SLinkedListWithTail* linked_list_tail = nullptr;
 DLinkedList* double_linked_list = nullptr;
+MaxHeapPriorityQueue* max_heap_queue = nullptr;
 
 void reset() {
 	cached_data.clear();
@@ -72,17 +76,25 @@ void reset() {
 	linked_list = nullptr;
 	linked_list_tail = nullptr;
 	double_linked_list = nullptr;
+	max_heap_queue = nullptr;
 }
 
 // Measure functions
 template<typename T, typename Func>
 long performOperation(T &structure, Func operation) {
-	std::vector<T> list(OPERATIONS_PER_SAMPLE, structure);
+	std::vector<std::unique_ptr<T>> list;
+
+	list.reserve(OPERATIONS_PER_SAMPLE);
+
+	for (int i = 0; i < OPERATIONS_PER_SAMPLE; ++i) {
+		list.push_back(std::make_unique<T>(structure));
+	}
+
 	std::chrono::high_resolution_clock::time_point start, end;
 
 	start = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < OPERATIONS_PER_SAMPLE; ++i) {
-		operation(list[i]);
+		operation(*list[i]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 
@@ -333,28 +345,36 @@ int main(int, char**) {
 				"Data structures", nullptr, flags
 		);
 
-		if (ImGui::Button("Dynamic array", button_size)) {
+		if (ImGui::Button("Dynamic Array", button_size)) {
 			history.clear();
 			id = 0;
 		}
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Linked list (head)", button_size)) {
+		if (ImGui::Button("Linked List (head)", button_size)) {
 			history.clear();
 			id = 1;
 		}
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Linked list (head, tail)", button_size)) {
+		if (ImGui::Button("Linked List (head, tail)", button_size)) {
 			history.clear();
 			id = 2;
 		}
 
-		if (ImGui::Button("Double linked list", button_size)) {
+
+		if (ImGui::Button("Double Linked List", button_size)) {
 			history.clear();
 			id = 3;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Max Heap Priority Queue", button_size)) {
+			history.clear();
+			id = 4;
 		}
 
 		ImGui::End();
@@ -367,8 +387,10 @@ int main(int, char**) {
 
 		if (data != nullptr) {
 			const int NUMBER_TO_ADD = 100;
+			const QNode Q_NODE(5, 2137, 50);
 
 			switch (id) {
+				// 0-3 Lists structures
 				case 0: {
 					if (dynamic_array == nullptr) {
 						dynamic_array = new DynamicArray();
@@ -578,6 +600,58 @@ int main(int, char**) {
 					if (ImGui::Button("Display", button_size)) {
 						double_linked_list->display();
 					}
+					break;
+				}
+					// 4-5 Queue
+				case 4: {
+					if (max_heap_queue == nullptr) {
+						max_heap_queue = new MaxHeapPriorityQueue();
+						max_heap_queue->setData(data, size);
+					}
+
+					addButtonCallback(
+							*max_heap_queue, "Insert",
+							[Q_NODE](MaxHeapPriorityQueue &queue) {
+								queue.insert(Q_NODE);
+							}
+					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*max_heap_queue, "Extract Max",
+							[](MaxHeapPriorityQueue &queue) {
+								queue.extractMax();
+							}
+					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*max_heap_queue, "Peek",
+							[](MaxHeapPriorityQueue &queue) {
+								queue.peek();
+							}
+					);
+
+					addButtonCallback(
+							*max_heap_queue, "Modify Key",
+							[Q_NODE](MaxHeapPriorityQueue &queue) {
+								queue.modifyKey(random_index, Q_NODE.getPriority());
+							}
+					);
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Get size", button_size)) {
+						std::cout << "Size of heap: " << max_heap_queue->getSize() << std::endl;
+					}
+
+					ImGui::SameLine();
+					if (ImGui::Button("Display", button_size)) {
+						max_heap_queue->display();
+					}
+
 					break;
 				}
 				default:
