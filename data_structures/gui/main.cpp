@@ -20,7 +20,6 @@
 #include "structures/lists/doubly_linked_list/doubly_linked_list.h"
 
 #include "structures/queue/heap_queue/heap_queue.h"
-#include "structures/queue/qnodes.h"
 
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -637,7 +636,7 @@ int main(int, char**) {
 					addButtonCallback(
 							*max_heap_queue, "Modify Key",
 							[Q_NODE](MaxHeapPriorityQueue &queue) {
-								queue.modifyKey(random_index, Q_NODE.getPriority());
+								queue.modifyKey(random_index, Q_NODE.priority);
 							}
 					);
 

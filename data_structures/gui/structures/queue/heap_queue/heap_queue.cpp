@@ -46,7 +46,7 @@ void MaxHeapPriorityQueue::display() {
 			power += 1;
 			value += (1 << power);
 		}
-		std::cout << heap[i].getValue() << " (" << heap[i].getPriority() << ") ";
+		std::cout << heap[i].value << " (" << heap[i].priority << ") ";
 	}
 	std::cout << std::endl;
 }
@@ -68,9 +68,9 @@ void MaxHeapPriorityQueue::setData(const int* data, int data_size) {
 void MaxHeapPriorityQueue::heapifyUp(int index) {
 	while (index > 0) {
 		int parent = (index - 1) / 2;
-		if (heap[parent].getPriority() < heap[index].getPriority() ||
-				(heap[parent].getPriority() == heap[index].getPriority() &&
-				 heap[parent].getIndex() < heap[index].getIndex())) {
+		if (heap[parent].priority < heap[index].priority ||
+				(heap[parent].priority == heap[index].priority &&
+				 heap[parent].priority < heap[index].index)) {
 			swap(parent, index);
 			index = parent;
 		} else {
@@ -85,16 +85,16 @@ void MaxHeapPriorityQueue::heapifyDown(int index) {
 	int right = 2 * index + 2;
 
 	if (left < size &&
-			(heap[left].getPriority() > heap[max].getPriority() ||
-			 (heap[left].getPriority() == heap[max].getPriority() &&
-				heap[left].getIndex() > heap[max].getIndex()))) {
+			(heap[left].priority > heap[max].priority ||
+			 (heap[left].priority == heap[max].priority &&
+				heap[left].index > heap[max].index))) {
 		max = left;
 	}
 
 	if (right < size &&
-			(heap[right].getPriority() > heap[max].getPriority() ||
-			 (heap[right].getPriority() == heap[max].getPriority() &&
-				heap[right].getIndex() > heap[max].getIndex()))) {
+			(heap[right].priority > heap[max].priority ||
+			 (heap[right].priority == heap[max].priority &&
+				heap[right].index > heap[max].index))) {
 		max = right;
 	}
 
@@ -132,8 +132,8 @@ bool MaxHeapPriorityQueue::modifyKey(int index, int new_priority) {
 		return false;
 	}
 
-	int old_priority = heap[index].getPriority();
-	heap[index].setPriority(new_priority);
+	int old_priority = heap[index].priority;
+	heap[index].priority = new_priority;
 
 	if (new_priority > old_priority) {
 		heapifyUp(index);
@@ -178,13 +178,13 @@ QNode MaxHeapPriorityQueue::peek() {
 //		heap_queue.setData(data, data_size);
 //
 //		heap_queue.display();
-//		REQUIRE(heap_queue.extractMax().getPriority() == 8);
+//		REQUIRE(heap_queue.extractMax().priority == 8);
 //		REQUIRE(heap_queue.getSize() == data_size - 1);
 //
-//		REQUIRE(heap_queue.extractMax().getPriority() == 8);
+//		REQUIRE(heap_queue.extractMax().priority == 8);
 //		REQUIRE(heap_queue.getSize() == data_size - 2);
 //
-//		REQUIRE(heap_queue.peek().getPriority() == 6);
+//		REQUIRE(heap_queue.peek().priority == 6);
 //	}
 //
 //	SECTION("Modify key") {
@@ -192,7 +192,7 @@ QNode MaxHeapPriorityQueue::peek() {
 //		heap_queue.setData(data, data_size);
 //
 //		REQUIRE(heap_queue.modifyKey(3, 90) == true);
-//		REQUIRE(heap_queue.peek().getPriority() == 90);
+//		REQUIRE(heap_queue.peek().priority == 90);
 //
 //		// Attempting to modify out of range index
 //		REQUIRE(heap_queue.modifyKey(10, 50) == false);
@@ -202,19 +202,19 @@ QNode MaxHeapPriorityQueue::peek() {
 //		MaxHeapPriorityQueue heap_queue;
 //		heap_queue.setData(data, data_size);
 //
-//		REQUIRE(heap_queue.getDataByIndex(3).getPriority() == 1);
+//		REQUIRE(heap_queue.getDataByIndex(3).priority == 1);
 //	}
 //
 //	SECTION("Peek") {
 //		MaxHeapPriorityQueue heap_queue;
 //		heap_queue.setData(data, data_size);
 //
-//		REQUIRE(heap_queue.peek().getPriority() == 8);
+//		REQUIRE(heap_queue.peek().priority == 8);
 //
 //		heap_queue.extractMax();
-//		REQUIRE(heap_queue.peek().getPriority() == 8);
+//		REQUIRE(heap_queue.peek().priority == 8);
 //
 //		heap_queue.extractMax();
-//		REQUIRE(heap_queue.peek().getPriority() == 6);
+//		REQUIRE(heap_queue.peek().priority == 6);
 //	}
 //}
