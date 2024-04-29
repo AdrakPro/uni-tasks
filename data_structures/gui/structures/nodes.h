@@ -27,4 +27,20 @@ struct QNode {
 																							priority(priority) {}
 };
 
+struct BNode {
+	int index;
+	int value;
+	int priority;
+	BNode* left;
+	BNode* right;
+
+	BNode() = default;
+
+	BNode(int index, int value, int priority) : index(index),
+																							value(value),
+																							priority(priority),
+																							left(nullptr),
+																							right(nullptr) {}
+};
+
 #endif //GUI_NODES_H
