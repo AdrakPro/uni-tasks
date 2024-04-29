@@ -1,7 +1,7 @@
 #ifndef GUI_HEAP_QUEUE_H
 #define GUI_HEAP_QUEUE_H
 
-#include "../adt.h"
+#include "../../nodes.h"
 #include "../../../utils/number_generator.h"
 
 #include <iostream>

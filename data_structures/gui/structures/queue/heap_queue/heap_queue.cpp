@@ -4,6 +4,8 @@ MaxHeapPriorityQueue::~MaxHeapPriorityQueue() {
 	delete[] heap;
 }
 
+MaxHeapPriorityQueue::MaxHeapPriorityQueue() = default;
+
 MaxHeapPriorityQueue::MaxHeapPriorityQueue(const MaxHeapPriorityQueue &other) {
 	this->size = other.size;
 	this->capacity = other.capacity;
@@ -13,8 +15,6 @@ MaxHeapPriorityQueue::MaxHeapPriorityQueue(const MaxHeapPriorityQueue &other) {
 		this->heap[i] = other.heap[i];
 	}
 }
-
-MaxHeapPriorityQueue::MaxHeapPriorityQueue() = default;
 
 void MaxHeapPriorityQueue::isResizeNeeded() {
 	if (capacity == size) {
@@ -40,6 +40,7 @@ void MaxHeapPriorityQueue::swap(int old_index, int new_index) {
 void MaxHeapPriorityQueue::display() {
 	int power = 0;
 	int value = 1;
+
 	for (int i = 0; i < size; i++) {
 		if (i == value) {
 			std::cout << std::endl;
@@ -112,13 +113,11 @@ void MaxHeapPriorityQueue::insert(const QNode &node) {
 }
 
 QNode MaxHeapPriorityQueue::extractMax() {
-	QNode max{};
-
 	if (size == 0) {
-		return max;
+		return {};
 	}
 
-	max = heap[0];
+	QNode max = heap[0];
 	heap[0] = heap[size - 1];
 	--size;
 	heapifyDown(0);
@@ -154,15 +153,12 @@ int MaxHeapPriorityQueue::getSize() const {
 }
 
 QNode MaxHeapPriorityQueue::peek() {
-	QNode peeked{};
-
 	if (size == 0) {
-		return peeked;
+		return {};
 	}
 
 	return heap[0];
 }
-
 
 //#define CATCH_CONFIG_MAIN
 //#define CATCH_CONFIG_FAST_COMPILE
