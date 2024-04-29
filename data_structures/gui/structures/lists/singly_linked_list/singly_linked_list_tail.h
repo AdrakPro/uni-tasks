@@ -10,7 +10,7 @@ private:
 	int size{};
 
 public:
-	~SLinkedListWithTail();
+	virtual ~SLinkedListWithTail();
 
 	// Copy constructor
 	SLinkedListWithTail(const SLinkedListWithTail &other);

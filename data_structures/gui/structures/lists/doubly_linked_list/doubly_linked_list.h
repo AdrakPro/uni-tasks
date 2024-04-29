@@ -10,7 +10,7 @@ private:
 	int size{};
 
 public:
-	~DLinkedList();
+	virtual ~DLinkedList();
 
 	// Copy constructor
 	DLinkedList(const DLinkedList &other);

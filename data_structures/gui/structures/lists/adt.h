@@ -3,7 +3,7 @@
 
 #include "../validate.h"
 #include <iostream>
-#include "nodes.h"
+#include "../nodes.h"
 
 class ADT {
 public:

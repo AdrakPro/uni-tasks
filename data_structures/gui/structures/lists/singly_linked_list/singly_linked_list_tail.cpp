@@ -9,6 +9,8 @@ SLinkedListWithTail::~SLinkedListWithTail() {
 	}
 }
 
+SLinkedListWithTail::SLinkedListWithTail() = default;
+
 // Copy constructor
 SLinkedListWithTail::SLinkedListWithTail(const SLinkedListWithTail &other) {
 	this->head = nullptr;
@@ -36,9 +38,6 @@ SLinkedListWithTail::SLinkedListWithTail(const SLinkedListWithTail &other) {
 		temp = temp->next;
 	}
 }
-
-// Normal constructor
-SLinkedListWithTail::SLinkedListWithTail() = default;
 
 void SLinkedListWithTail::setData(const int* data, int data_size) {
 	SNode* current = head;

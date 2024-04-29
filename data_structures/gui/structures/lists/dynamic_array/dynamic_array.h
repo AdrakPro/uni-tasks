@@ -13,7 +13,7 @@ private:
 	void isResizeNeeded();
 
 public:
-	~DynamicArray();
+	virtual ~DynamicArray();
 
 	// Copy constructor
 	DynamicArray(const DynamicArray &other);

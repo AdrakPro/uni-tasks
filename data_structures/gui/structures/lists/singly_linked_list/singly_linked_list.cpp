@@ -9,6 +9,8 @@ SLinkedList::~SLinkedList() {
 	}
 }
 
+SLinkedList::SLinkedList() = default;
+
 // Copy constructor
 SLinkedList::SLinkedList(const SLinkedList &other) {
 	this->head = nullptr;
@@ -33,8 +35,6 @@ SLinkedList::SLinkedList(const SLinkedList &other) {
 		temp = temp->next;
 	}
 }
-
-SLinkedList::SLinkedList() = default;
 
 void SLinkedList::setData(const int* data, int data_size) {
 	SNode* current = head;
