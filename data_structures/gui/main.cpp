@@ -20,6 +20,7 @@
 #include "structures/lists/doubly_linked_list/doubly_linked_list.h"
 
 #include "structures/queue/heap_queue/heap_queue.h"
+#include "structures/queue/bst_queue/bst_queue.h"
 
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -65,6 +66,7 @@ SLinkedList* linked_list = nullptr;
 SLinkedListWithTail* linked_list_tail = nullptr;
 DLinkedList* double_linked_list = nullptr;
 MaxHeapPriorityQueue* max_heap_queue = nullptr;
+BSTQueue* bst_queue = nullptr;
 
 void reset() {
 	cached_data.clear();
@@ -76,6 +78,7 @@ void reset() {
 	linked_list_tail = nullptr;
 	double_linked_list = nullptr;
 	max_heap_queue = nullptr;
+	bst_queue = nullptr;
 }
 
 // Measure functions
@@ -376,6 +379,13 @@ int main(int, char**) {
 			id = 4;
 		}
 
+		ImGui::SameLine();
+
+		if (ImGui::Button("BST Priority Queue", button_size)) {
+			history.clear();
+			id = 5;
+		}
+
 		ImGui::End();
 
 		ImGui::SetNextWindowPos(under_center_pos);
@@ -387,6 +397,7 @@ int main(int, char**) {
 		if (data != nullptr) {
 			const int NUMBER_TO_ADD = 100;
 			const QNode Q_NODE(5, 2137, 50);
+			const BNode B_NODE(5, 2137, 50);
 
 			switch (id) {
 				// 0-3 Lists structures
@@ -642,13 +653,71 @@ int main(int, char**) {
 
 					ImGui::SameLine();
 
-					if (ImGui::Button("Get size", button_size)) {
-						std::cout << "Size of heap: " << max_heap_queue->getSize() << std::endl;
-					}
+					addButtonCallback(
+							*max_heap_queue, "Get Size",
+							[](MaxHeapPriorityQueue &queue) {
+								queue.getSize();
+							}
+					);
 
 					ImGui::SameLine();
 					if (ImGui::Button("Display", button_size)) {
 						max_heap_queue->display();
+					}
+
+					break;
+				}
+
+				case 5: {
+					if (bst_queue == nullptr) {
+						bst_queue = new BSTQueue();
+						bst_queue->setData(data, size);
+					}
+
+					addButtonCallback(
+							*bst_queue, "Insert",
+							[B_NODE](BSTQueue &queue) {
+								queue.insert(B_NODE);
+							}
+					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*bst_queue, "Extract Max",
+							[](BSTQueue &queue) {
+								queue.extractMax();
+							}
+					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*bst_queue, "Peek",
+							[](BSTQueue &queue) {
+								queue.peek();
+							}
+					);
+
+					addButtonCallback(
+							*bst_queue, "Modify Key",
+							[B_NODE](BSTQueue &queue) {
+								queue.modifyPriority(random_index, B_NODE.priority);
+							}
+					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*bst_queue, "Get Size",
+							[](BSTQueue &queue) {
+								queue.getSize();
+							}
+					);
+
+					ImGui::SameLine();
+					if (ImGui::Button("Display", button_size)) {
+						bst_queue->display();
 					}
 
 					break;
