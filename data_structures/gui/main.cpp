@@ -52,7 +52,7 @@ static void glfw_error_callback(int error, const char* description) {
 
 // GLOBALS
 const int NUMBER_OF_SAMPLES = 12;
-const int OPERATIONS_PER_SAMPLE = 50;
+const int OPERATIONS_PER_SAMPLE = 100;
 
 int* data = nullptr;
 int size = 0;
@@ -84,19 +84,13 @@ void reset() {
 // Measure functions
 template<typename T, typename Func>
 long performOperation(T &structure, Func operation) {
-	std::vector<std::unique_ptr<T>> list;
-
-	list.reserve(OPERATIONS_PER_SAMPLE);
-
-	for (int i = 0; i < OPERATIONS_PER_SAMPLE; ++i) {
-		list.push_back(std::make_unique<T>(structure));
-	}
+	std::vector<T> list(OPERATIONS_PER_SAMPLE, structure);
 
 	std::chrono::high_resolution_clock::time_point start, end;
 
 	start = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < OPERATIONS_PER_SAMPLE; ++i) {
-		operation(*list[i]);
+		operation(list[i]);
 	}
 	end = std::chrono::high_resolution_clock::now();
 
@@ -381,7 +375,7 @@ int main(int, char**) {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("BST Priority Queue", button_size)) {
+		if (ImGui::Button("Max BST Priority Queue", button_size)) {
 			history.clear();
 			id = 5;
 		}
@@ -396,8 +390,6 @@ int main(int, char**) {
 
 		if (data != nullptr) {
 			const int NUMBER_TO_ADD = 100;
-			const QNode Q_NODE(5, 2137, 50);
-			const BNode B_NODE(5, 2137, 50);
 
 			switch (id) {
 				// 0-3 Lists structures
@@ -614,6 +606,8 @@ int main(int, char**) {
 				}
 					// 4-5 Queue
 				case 4: {
+					QNode Q_NODE(size + 1, 2137, generateNumber(0, 2 * size, 50));
+
 					if (max_heap_queue == nullptr) {
 						max_heap_queue = new MaxHeapPriorityQueue();
 						max_heap_queue->setData(data, size);
@@ -669,6 +663,8 @@ int main(int, char**) {
 				}
 
 				case 5: {
+					BNode B_NODE(size + 1, 2137, generateNumber(0, 2 * size, 50));
+
 					if (bst_queue == nullptr) {
 						bst_queue = new BSTQueue();
 						bst_queue->setData(data, size);
@@ -718,6 +714,10 @@ int main(int, char**) {
 					ImGui::SameLine();
 					if (ImGui::Button("Display", button_size)) {
 						bst_queue->display();
+					}
+
+					if (ImGui::Button("Get Height", button_size)) {
+						std::cout << "Height: " << bst_queue->getRootHeight() << std::endl;
 					}
 
 					break;

@@ -11,6 +11,24 @@ BSTQueue::BSTQueue(const BSTQueue &other) {
 	size = other.size;
 }
 
+void BSTQueue::display() {
+	displayHelper("", root, false);
+}
+
+void BSTQueue::setData(const int* data, int data_size) {
+	destroyTree(root);
+
+	this->size = 0;
+
+	for (int i = 0; i < data_size; ++i) {
+		int priority = generateNumber(0, 2 * data_size, 50 + i);
+		BNode node(i, data[i], priority);
+		insert(node);
+	}
+
+	balance();
+}
+
 BNode* BSTQueue::deepCopy(const BNode* node) {
 	if (node == nullptr) {
 		return nullptr;
@@ -34,6 +52,9 @@ void BSTQueue::destroyTree(BNode* current) {
 	root = nullptr;
 }
 
+void BSTQueue::insert(const BNode &new_node) {
+	root = insertHelper(root, new_node);
+}
 
 BNode* BSTQueue::insertHelper(BNode* current, const BNode &new_node) {
 	if (current == nullptr) {
@@ -51,36 +72,26 @@ BNode* BSTQueue::insertHelper(BNode* current, const BNode &new_node) {
 	return current;
 }
 
-void BSTQueue::insert(const BNode &new_node) {
-	root = insertHelper(root, new_node);
-}
-
-BNode* BSTQueue::extractMaxHelper(BNode* node) {
-	if (node == nullptr)
-		return nullptr;
-
-	if (node->right == nullptr) {
-		--size;
-		BNode* temp = node->left;
-		delete node;
-
-		return temp;
-	}
-
-	node->right = extractMaxHelper(node->right);
-
-	return node;
-}
-
 BNode BSTQueue::extractMax() {
 	if (size == 0) {
 		return {};
 	}
 
-	BNode max = *root;
-	root = extractMaxHelper(root);
+	BNode* current = root;
+	BNode* parent = nullptr;
 
-	return max;
+	while (current->right != nullptr) {
+		parent = current;
+		current = current->right;
+	}
+
+	if (parent == nullptr) {
+		root = deleteNode(root, current->index);
+	} else {
+		parent->right = deleteNode(parent->right, current->index);
+	}
+
+	return *current;
 }
 
 BNode BSTQueue::peek() const {
@@ -97,11 +108,6 @@ BNode BSTQueue::peek() const {
 	return *current;
 }
 
-int BSTQueue::getSize() const {
-	return size;
-}
-
-
 void BSTQueue::displayHelper(const std::string &prefix, BNode* node, bool isLeft) const {
 	if (node != nullptr) {
 		std::cout << prefix;
@@ -111,22 +117,6 @@ void BSTQueue::displayHelper(const std::string &prefix, BNode* node, bool isLeft
 
 		displayHelper(prefix + (isLeft ? "|   " : "    "), node->right, true);
 		displayHelper(prefix + (isLeft ? "|   " : "    "), node->left, false);
-	}
-}
-
-void BSTQueue::display() {
-	displayHelper("", root, false);
-}
-
-void BSTQueue::setData(const int* data, int data_size) {
-	destroyTree(root);
-
-	this->size = 0;
-
-	for (int i = 0; i < data_size; ++i) {
-		int priority = generateNumber(0, 2 * data_size, 2137 + i);
-		BNode node(i, data[i], priority);
-		insert(node);
 	}
 }
 
@@ -144,32 +134,31 @@ BNode* BSTQueue::deleteNode(BNode* current, int index) {
 	}
 
 	if (index == current->index) {
-		// Node with only one child or no child
 		if (current->left == nullptr) {
-			BNode* temp = current->right;
+			BNode* tmp = current->right;
+
 			delete current;
 			--size;
-			return temp;
+			return tmp;
 		} else if (current->right == nullptr) {
-			BNode* temp = current->left;
+			BNode* tmp = current->left;
+
 			delete current;
 			--size;
-			return temp;
+			return tmp;
 		}
 
-		BNode* temp = minValueNode(current->right);
+		BNode* tmp = minValueNode(current->right);
 
-		current->index = temp->index;
-		current->value = temp->value;
-		current->priority = temp->priority;
+		current->index = tmp->index;
+		current->value = tmp->value;
+		current->priority = tmp->priority;
 
-		current->right = deleteNode(current->right, temp->index);
+		current->right = deleteNode(current->right, tmp->index);
 
 	} else if (index < current->index) {
 		current->left = deleteNode(current->left, index);
-	}
-		// If the index to be deleted is greater, go to right subtree
-	else {
+	} else {
 		current->right = deleteNode(current->right, index);
 	}
 
@@ -185,7 +174,96 @@ BNode* BSTQueue::minValueNode(BNode* node) {
 	return current;
 }
 
-//
+// Convert tree to sorted linked list
+void BSTQueue::treeToVine(BNode* grand) {
+	BNode* tmp = grand->right;
+
+	while (tmp != nullptr) {
+		// Right rotate
+		if (tmp->left != nullptr) {
+			BNode* old_tmp = tmp;
+			tmp = tmp->left;
+			old_tmp->left = tmp->right;
+			tmp->right = old_tmp;
+			grand->right = tmp;
+		} else {
+			grand = tmp;
+			tmp = tmp->right;
+		}
+	}
+}
+
+// Compress the vine
+void compress(BNode* grand, int count) {
+	BNode* tmp = grand->right;
+
+	// Traverse and left rotate 	
+	for (int i = 0; i < count; ++i) {
+		BNode* old_tmp = tmp;
+		tmp = tmp->right;
+		grand->right = tmp;
+		old_tmp->right = tmp->left;
+		tmp->left = old_tmp;
+		grand = tmp;
+		tmp = tmp->right;
+	}
+}
+
+// DSW algorithm
+BNode* BSTQueue::vineToTree(BNode* root) {
+	auto* grand = new BNode();
+	grand->right = root;
+
+	treeToVine(grand);
+
+	// Height of tree
+	int h = log2(size + 1);
+	// Number of nodes until second last level
+	int m = pow(2, h) - 1;
+
+	compress(grand, size - m);
+
+	for (int i = m / 2; i > 0; i /= 2) {
+		compress(grand, i);
+	}
+
+	return grand->right;
+}
+
+int BSTQueue::height(BNode* node) {
+	if (node == nullptr) {
+		return 0;
+	}
+
+	int left_height = height(node->left);
+	int right_height = height(node->right);
+
+	if (left_height > right_height) {
+		return left_height + 1;
+	} else {
+		return right_height + 1;
+	}
+}
+
+int BSTQueue::getRootHeight() {
+	if (root == nullptr) {
+		return 0;
+	}
+
+	return height(root);
+}
+
+void BSTQueue::balance() {
+	// Height is greater than log2(size), balance tree
+	if (ceil(log2(size)) < height(root)) {
+		root = vineToTree(root);
+	}
+}
+
+int BSTQueue::getSize() const {
+	return size;
+}
+
 //#define CATCH_CONFIG_MAIN
 //#define CATCH_CONFIG_FAST_COMPILE
 //
@@ -198,6 +276,8 @@ BNode* BSTQueue::minValueNode(BNode* node) {
 //		queue.insert(BNode(1, 10, 20));
 //		queue.insert(BNode(2, 20, 5));
 //		queue.insert(BNode(3, 30, 15));
+//
+//		queue.balance();
 //
 //		REQUIRE(queue.peek().priority == 20);
 //		queue.extractMax();
@@ -228,14 +308,14 @@ BNode* BSTQueue::minValueNode(BNode* node) {
 //
 //	SECTION("Extracting nodes from an empty BSTQueue returns empty node") {
 //		BNode empty_node = queue.extractMax();
-//		REQUIRE(empty_node.index == 0); // Assuming default constructor sets index to 0
-//		REQUIRE(empty_node.priority == 0); // Assuming default constructor sets priority to 0
+//		REQUIRE(empty_node.index == 0);
+//		REQUIRE(empty_node.priority == 0);
 //	}
 //
 //	SECTION("Peeking into an empty BSTQueue returns empty node") {
 //		BNode empty_node = queue.peek();
 //		REQUIRE(empty_node.index == 0);
-//		REQUIRE(empty_node.priority == 0); // Assuming default constructor sets priority to 0
+//		REQUIRE(empty_node.priority == 0);
 //	}
 //
 //	SECTION("Modifying key updates priority of existing node") {
@@ -248,6 +328,3 @@ BNode* BSTQueue::minValueNode(BNode* node) {
 //		REQUIRE(queue.peek().priority == 25);
 //	}
 //}
-//
-//
-//

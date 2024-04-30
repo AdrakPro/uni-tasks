@@ -60,7 +60,7 @@ void MaxHeapPriorityQueue::setData(const int* data, int data_size) {
 	this->size = 0;
 
 	for (int i = 0; i < data_size; ++i) {
-		int priority = generateNumber(0, 2 * data_size, 2137 * i);
+		int priority = generateNumber(0, 2 * data_size, 50 + i);
 		QNode node(i, data[i], priority);
 		insert(node);
 	}
@@ -71,7 +71,7 @@ void MaxHeapPriorityQueue::heapifyUp(int index) {
 		int parent = (index - 1) / 2;
 		if (heap[parent].priority < heap[index].priority ||
 				(heap[parent].priority == heap[index].priority &&
-				 heap[parent].priority < heap[index].index)) {
+				 heap[index].index < heap[parent].index)) {
 			swap(parent, index);
 			index = parent;
 		} else {
@@ -88,14 +88,14 @@ void MaxHeapPriorityQueue::heapifyDown(int index) {
 	if (left < size &&
 			(heap[left].priority > heap[max].priority ||
 			 (heap[left].priority == heap[max].priority &&
-				heap[left].index > heap[max].index))) {
+				heap[left].index < heap[max].index))) {
 		max = left;
 	}
 
 	if (right < size &&
 			(heap[right].priority > heap[max].priority ||
 			 (heap[right].priority == heap[max].priority &&
-				heap[right].index > heap[max].index))) {
+				heap[right].index < heap[max].index))) {
 		max = right;
 	}
 
@@ -106,7 +106,7 @@ void MaxHeapPriorityQueue::heapifyDown(int index) {
 }
 
 void MaxHeapPriorityQueue::insert(const QNode &node) {
-	isResizeNeeded();
+ 	isResizeNeeded();
 	++size;
 	heap[size - 1] = node;
 	heapifyUp(size - 1);
