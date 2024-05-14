@@ -1,5 +1,7 @@
 #include "bst_queue.h"
 
+// Using DSW algorithm
+
 BSTQueue::~BSTQueue() {
 	destroyTree(root);
 }

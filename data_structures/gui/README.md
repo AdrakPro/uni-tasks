@@ -12,7 +12,7 @@
 - Linked List (with/without tail)
 - Double Linked List
 - Max Heap Priority Queue
-- BST Priority Queue
+- Max BST Priority Queue (with DSW)
 
 
 ## Run Locally
