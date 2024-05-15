@@ -1,64 +1,11 @@
 #include "red_black_tree_dict.h"
 
-bool RBTree::isNodeNil(RBNode* x) const {
-	return x == nil;
-}
-
-void RBTree::leftRotate(RBNode* x) {
-	RBNode* y = x->right;
-
-	x->right = y->left;
-	y->parent = x->parent;
-
-	if (isNodeNil(x->parent)) {
-		root = y;
-	} else if (x == x->parent->left) {
-		x->parent->left = y;
-	} else {
-		x->parent->right = y;
-	}
-
-	y->left = x;
-	x->parent = y;
-}
-
-void RBTree::rightRotate(RBNode* x) {
-	RBNode* y = x->left;
-
-	x->left = y->right;
-	x->parent = x->parent;
-
-	if (isNodeNil(x->parent)) {
-		root = x;
-	} else if (x == x->parent->right) {
-		x->parent->right = y;
-	} else {
-		x->parent->left = y;
-	}
-
-	x->right = x;
-	x->parent = y;
-}
-
-void RBTree::transplant(RBNode* u, RBNode* v) {
-	if (u->parent == nil) {
-		root = v;
-	} else if (u == u->parent->left) {
-		u->parent->left = v;
-	} else {
-		u->parent->right = v;
-	}
-	v->parent = u->parent;
-}
-
-RBNode* RBTree::minimum(RBNode* x) const {
-	RBNode* curr = x;
-
-	while (!isNodeNil(curr->left)) {
-		curr = curr->left;
-	}
-
-	return curr;
+RBTree::RBTree() {
+	nil = new RBNode("", -1);
+	nil->color = Color::BLACK;
+	current = nil;
+	root = nil;
+	size = 0;
 }
 
 void RBTree::insertHelper(RBNode* z) {
@@ -144,6 +91,261 @@ void RBTree::insert(RBNode* z) {
 	insertHelper(z);
 }
 
+void Dictionary::insert(const std::string &key, int value) {
+	RBNode* n = tree->containsNode(key);
+
+	if (!tree->isNodeNil(n)) {
+		n->value = value;
+	} else {
+		auto* z = new RBNode(key, value);
+		tree->incrementSize();
+		tree->insert(z);
+	}
+}
+
+void RBTree::removeHelper(RBNode* x) {
+	RBNode* w;
+
+	while (x != root && x->color == Color::BLACK) {
+		if (x == x->parent->left) {
+			w = x->parent->right;
+
+			if (w->color == Color::RED) {
+				w->color = Color::BLACK;
+				x->parent->color = Color::RED;
+				leftRotate(x->parent);
+				w = x->parent->right;
+			}
+
+			if ((w->left->color == Color::BLACK) && w->right->color == Color::BLACK) {
+				w->color = Color::RED;
+				x = x->parent;
+			} else {
+				if (w->right->color == Color::BLACK) {
+					w->left->color = Color::BLACK;
+					w->color = Color::RED;
+					rightRotate(w);
+					w = x->parent->right;
+				}
+
+				w->color = x->parent->color;
+				x->parent->color = Color::BLACK;
+				w->right->color = Color::BLACK;
+				leftRotate(x->parent);
+				x = root;
+			}
+		} else {
+			w = x->parent->left;
+
+			if (w->color == Color::RED) {
+				w->color = Color::BLACK;
+				x->parent->color = Color::RED;
+				rightRotate(x->parent);
+				w = x->parent->left;
+			}
+
+			if ((w->right->color == Color::BLACK) && w->left->color == Color::BLACK) {
+				w->color = Color::RED;
+				x = x->parent;
+			} else {
+				if (w->left->color == Color::BLACK) {
+					w->right->color = Color::BLACK;
+					w->color = Color::RED;
+					leftRotate(w);
+					w = x->parent->left;
+				}
+
+				w->color = x->parent->color;
+				x->parent->color = Color::BLACK;
+				w->left->color = Color::BLACK;
+				rightRotate(x->parent);
+				x = root;
+			}
+		}
+	}
+
+	x->color = Color::BLACK;
+}
+
+void RBTree::remove(RBNode* z) {
+	RBNode* x;
+	RBNode* y = z;
+	Color y_original_color = y->color;
+
+	if (isNodeNil(z->left)) {
+		x = z->right;
+		transplant(z, z->right);
+	} else if (isNodeNil(z->right)) {
+		x = z->left;
+		transplant(z, z->left);
+	} else {
+		y = minimum(z->right);
+		y_original_color = y->color;
+		x = y->right;
+
+		if (y->parent == z) {
+			x->parent = y;
+		} else {
+			transplant(y, y->right);
+			y->right = z->right;
+			y->right->parent = y;
+		}
+
+		transplant(z, y);
+		y->left = z->left;
+		y->left->parent = y;
+		y->color = z->color;
+	}
+
+	if (z == current) {
+		current = nil;
+	}
+
+	delete z;
+
+	if (y_original_color == Color::BLACK) {
+		removeHelper(x);
+	}
+}
+
+void RBTree::destroy() {
+	postOrderDelete(root);
+	delete nil;
+}
+
+void RBTree::postOrderDelete(RBNode* r) {
+	if (isNodeNil(r)) {
+		return;
+	}
+
+	if (!isNodeNil(r->left)) {
+		postOrderDelete(r->left);
+	}
+
+	if (!isNodeNil(r->right)) {
+		postOrderDelete(r->right);
+	}
+
+	if (isNodeNil(r->parent)) {
+		root = nil;
+	} else if (r->key == r->parent->left->key) {
+		r->parent->left = nil;
+	} else {
+		r->parent->right = nil;
+	}
+
+	delete r;
+}
+
+void RBTree::clear() {
+	postOrderDelete(root);
+	root = nil;
+	current = nil;
+	setSize(0);
+}
+
+bool RBTree::isBalancedHelper(RBNode* r, int &max_height, int &min_height) {
+	if (isNodeNil(r)) {
+		max_height = min_height = 0;
+		return true;
+	}
+
+	int left_max_height, left_min_height;
+	int right_max_height, right_min_height;
+
+	if (!isBalancedHelper(r->left, left_max_height, left_min_height)) {
+		return false;
+	}
+
+	if (!isBalancedHelper(r->right, right_max_height, right_min_height)) {
+		return false;
+	}
+
+	max_height = std::max(left_max_height, right_max_height) + 1;
+	min_height = std::max(left_min_height, right_min_height) + 1;
+
+	if (max_height <= 2 * min_height) {
+		return true;
+	}
+
+	return false;
+}
+
+bool RBTree::isBalanced() {
+	int max_height, min_height;
+
+	return isBalancedHelper(root, max_height, min_height);
+}
+
+bool RBTree::isNodeNil(RBNode* x) const {
+	return x == nil;
+}
+
+void RBTree::leftRotate(RBNode* x) {
+	RBNode* y = x->right;
+
+	x->right = y->left;
+
+	if (!isNodeNil(y->left)) {
+		y->left->parent = x;
+	}
+
+	y->parent = x->parent;
+
+	if (isNodeNil(x->parent)) {
+		root = y;
+	} else if (x == x->parent->left) {
+		x->parent->left = y;
+	} else {
+		x->parent->right = y;
+	}
+
+	y->left = x;
+	x->parent = y;
+}
+
+void RBTree::rightRotate(RBNode* x) {
+	RBNode* y = x->left;
+
+	x->left = y->right;
+
+	y->right->parent = x;
+
+	y->parent = x->parent;
+
+	if (isNodeNil(x->parent)) {
+		root = y;
+	} else if (x == x->parent->right) {
+		x->parent->right = y;
+	} else {
+		x->parent->left = y;
+	}
+	y->right = x;
+	x->parent = y;
+}
+
+void RBTree::transplant(RBNode* u, RBNode* v) {
+	if (u->parent == nil) {
+		root = v;
+	} else if (u == u->parent->left) {
+		u->parent->left = v;
+	} else {
+		u->parent->right = v;
+	}
+
+	v->parent = u->parent;
+}
+
+RBNode* RBTree::minimum(RBNode* x) const {
+	RBNode* curr = x;
+
+	while (!isNodeNil(curr->left)) {
+		curr = curr->left;
+	}
+
+	return curr;
+}
+
 RBNode* RBTree::containsNode(const std::string &key) const {
 	RBNode* curr = root;
 
@@ -170,38 +372,110 @@ RBNode* RBTree::containsNode(const std::string &key) const {
 	}
 }
 
-void Dictionary::insert(const std::string &key, int value) {
-	RBNode* n = tree.containsNode(key);
+Dictionary::Dictionary() {
+	tree = new RBTree();
+}
 
-	if (!tree.isNodeNil(n)) {
-		n->value = value;
-	} else {
-		auto* z = new RBNode(key, value);
-		incrementSize();
-		tree.insert(z);
-	}
+Dictionary::Dictionary(const Dictionary &dict) {
+	tree->clear();
+	auto* nil = new RBNode("", -1);
+	preOrderCopy(dict.tree->getRoot(), nil);
+}
+
+Dictionary::~Dictionary() {
+	tree->destroy();
+	delete tree;
+	tree->setSize(0);
 }
 
 void Dictionary::remove(const std::string &key) {
-	RBNode* z = tree.containsNode(key);
+	RBNode* z = tree->containsNode(key);
 
-	if (tree.isNodeNil(z)) {
+	if (tree->isNodeNil(z)) {
 		return;
 	}
 
-	decreaseSize();
+	tree->decreaseSize();
 
-	tree.remove(z);
+	tree->remove(z);
 }
 
-int Dictionary::getSize() const {
+int RBTree::getSize() const {
 	return size;
 }
 
-void Dictionary::incrementSize() {
+void RBTree::incrementSize() {
 	this->size++;
 }
 
-void Dictionary::decreaseSize() {
+void RBTree::decreaseSize() {
 	this->size--;
 }
+
+void RBTree::setSize(int s) {
+	this->size = s;
+}
+
+RBNode* RBTree::getRoot() const {
+	return root;
+}
+
+void Dictionary::preOrderCopy(RBNode* r, RBNode* n) {
+	if (r->key == n->key) {
+		return;
+	}
+
+	insert(r->key, r->value);
+
+	preOrderCopy(r->left, n);
+	preOrderCopy(r->right, n);
+}
+
+RBTree* Dictionary::getTree() const {
+	return tree;
+}
+
+#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_FAST_COMPILE
+
+#include "../../tests/catch.hpp"
+
+TEST_CASE("Insert elements and check Red-Black Tree properties") {
+	Dictionary dict;
+	dict.insert("key1", 1);
+	dict.insert("key2", 2);
+	dict.insert("key3", 3);
+	dict.insert("key4", 4);
+	dict.insert("key5", 5);
+
+	REQUIRE(dict.getTree()->getSize() == 5);
+	REQUIRE(dict.getTree()->isBalanced());
+}
+
+TEST_CASE("Remove elements and check Red-Black Tree properties") {
+	Dictionary dict;
+	dict.insert("key1", 1);
+	dict.insert("key2", 2);
+	dict.insert("key3", 3);
+	dict.insert("key4", 4);
+	dict.insert("key5", 5);
+
+	dict.remove("key2");
+	dict.remove("key4");
+
+	REQUIRE(dict.getTree()->getSize() == 3);
+	REQUIRE(dict.getTree()->isBalanced());
+}
+
+TEST_CASE("Clear the tree") {
+	Dictionary dict;
+	dict.insert("key1", 1);
+	dict.insert("key2", 2);
+	dict.insert("key3", 3);
+	REQUIRE(dict.getTree()->isBalanced());
+
+	dict.getTree()->clear();
+
+	REQUIRE(dict.getTree()->getSize() == 0);
+}
+
