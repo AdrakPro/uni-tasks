@@ -4,7 +4,7 @@
 #include "../imgui/imfilebrowser.h"
 #include <iostream>
 #include <fstream>
-#include "number_generator.h"
+#include "generators.h"
 
 class Browser {
 private:

@@ -10,7 +10,7 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "utils/browser.h"
-#include "utils/number_generator.h"
+#include "utils/generators.h"
 
 #include <chrono>
 

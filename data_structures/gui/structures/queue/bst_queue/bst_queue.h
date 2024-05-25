@@ -2,7 +2,7 @@
 #define GUI_BST_QUEUE_H
 
 #include "../../nodes.h"
-#include "../../../utils/number_generator.h"
+#include "../../../utils/generators.h"
 
 #include <iostream>
 
