@@ -1,7 +1,7 @@
-#ifndef GUI_RED_BLACK_TREE_DICT_H
-#define GUI_RED_BLACK_TREE_DICT_H
+#ifndef GUI_RED_BLACK_TREE_H
+#define GUI_RED_BLACK_TREE_H
 
-#include "../nodes.h"
+#include "../../nodes.h"
 
 class RBTree {
 private:
@@ -54,25 +54,4 @@ public:
 	[[nodiscard]] RBNode* getRoot() const;
 };
 
-class Dictionary {
-private:
-	RBTree* tree;
-
-public:
-	Dictionary();
-
-	Dictionary(const Dictionary &dict);
-
-	~Dictionary();
-
-	void insert(const std::string &key, int value);
-
-	void remove(const std::string &key);
-
-	void preOrderCopy(RBNode* r, RBNode* n);
-
-	[[nodiscard]] RBTree* getTree() const;
-};
-
-
-#endif //GUI_RED_BLACK_TREE_DICT_H
+#endif //GUI_RED_BLACK_TREE_H

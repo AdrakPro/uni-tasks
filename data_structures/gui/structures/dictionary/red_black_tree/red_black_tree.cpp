@@ -1,4 +1,4 @@
-#include "red_black_tree_dict.h"
+#include "red_black_tree.h"
 
 RBTree::RBTree() {
 	nil = new RBNode("", -1);
@@ -89,18 +89,6 @@ void RBTree::insert(RBNode* z) {
 	z->color = Color::RED;
 
 	insertHelper(z);
-}
-
-void Dictionary::insert(const std::string &key, int value) {
-	RBNode* n = tree->containsNode(key);
-
-	if (!tree->isNodeNil(n)) {
-		n->value = value;
-	} else {
-		auto* z = new RBNode(key, value);
-		tree->incrementSize();
-		tree->insert(z);
-	}
 }
 
 void RBTree::removeHelper(RBNode* x) {
@@ -210,6 +198,7 @@ void RBTree::remove(RBNode* z) {
 
 void RBTree::destroy() {
 	postOrderDelete(root);
+	setSize(0);
 	delete nil;
 }
 
@@ -372,34 +361,6 @@ RBNode* RBTree::containsNode(const std::string &key) const {
 	}
 }
 
-Dictionary::Dictionary() {
-	tree = new RBTree();
-}
-
-Dictionary::Dictionary(const Dictionary &dict) {
-	tree->clear();
-	auto* nil = new RBNode("", -1);
-	preOrderCopy(dict.tree->getRoot(), nil);
-}
-
-Dictionary::~Dictionary() {
-	tree->destroy();
-	delete tree;
-	tree->setSize(0);
-}
-
-void Dictionary::remove(const std::string &key) {
-	RBNode* z = tree->containsNode(key);
-
-	if (tree->isNodeNil(z)) {
-		return;
-	}
-
-	tree->decreaseSize();
-
-	tree->remove(z);
-}
-
 int RBTree::getSize() const {
 	return size;
 }
@@ -419,63 +380,3 @@ void RBTree::setSize(int s) {
 RBNode* RBTree::getRoot() const {
 	return root;
 }
-
-void Dictionary::preOrderCopy(RBNode* r, RBNode* n) {
-	if (r->key == n->key) {
-		return;
-	}
-
-	insert(r->key, r->value);
-
-	preOrderCopy(r->left, n);
-	preOrderCopy(r->right, n);
-}
-
-RBTree* Dictionary::getTree() const {
-	return tree;
-}
-
-#define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_FAST_COMPILE
-
-#include "../../tests/catch.hpp"
-
-TEST_CASE("Insert elements and check Red-Black Tree properties") {
-	Dictionary dict;
-	dict.insert("key1", 1);
-	dict.insert("key2", 2);
-	dict.insert("key3", 3);
-	dict.insert("key4", 4);
-	dict.insert("key5", 5);
-
-	REQUIRE(dict.getTree()->getSize() == 5);
-	REQUIRE(dict.getTree()->isBalanced());
-}
-
-TEST_CASE("Remove elements and check Red-Black Tree properties") {
-	Dictionary dict;
-	dict.insert("key1", 1);
-	dict.insert("key2", 2);
-	dict.insert("key3", 3);
-	dict.insert("key4", 4);
-	dict.insert("key5", 5);
-
-	dict.remove("key2");
-	dict.remove("key4");
-
-	REQUIRE(dict.getTree()->getSize() == 3);
-	REQUIRE(dict.getTree()->isBalanced());
-}
-
-TEST_CASE("Clear the tree") {
-	Dictionary dict;
-	dict.insert("key1", 1);
-	dict.insert("key2", 2);
-	dict.insert("key3", 3);
-	REQUIRE(dict.getTree()->isBalanced());
-
-	dict.getTree()->clear();
-
-	REQUIRE(dict.getTree()->getSize() == 0);
-}
-
