@@ -8,7 +8,7 @@
 const double CONSTANT = (std::sqrt(5) - 1) / 2.0; // Golden ratio
 
 class Dictionary {
-	virtual void insert(std::string &key, int value) = 0;
+	virtual void insert(const std::string &key, int value) = 0;
 
 	virtual void remove(const std::string &key) = 0;
 
