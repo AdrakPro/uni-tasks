@@ -1,11 +1,6 @@
 #include "open_addressing.h"
-#include "coalesced.h"
 
-OHashTable::OHashTable(int capacity) {
-	this->capacity = capacity;
-	this->size = 0;
-	this->table = new Entry[capacity];
-}
+OHashTable::OHashTable() = default;
 
 OHashTable::OHashTable(const OHashTable &other) {
 	capacity = other.capacity;
@@ -69,7 +64,7 @@ void OHashTable::remove(const std::string &key) {
 }
 
 size_t OHashTable::hash(const std::string &key) const {
-	return multiplicativeHash(key, capacity);
+	return Hash::multiplicativeHash(key, capacity);
 }
 
 int OHashTable::search(const std::string &key) {

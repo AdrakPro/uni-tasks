@@ -17,16 +17,8 @@ class Dictionary {
 	[[nodiscard]] virtual size_t hash(const std::string &key) const = 0;
 };
 
-size_t multiplicativeHash(const std::string &key, int capacity, int multiplier = 31) {
-	uint32_t hash_value = 0;
-
-	for (char c: key) {
-		hash_value = hash_value * multiplier + c;
-	}
-
-	double frac_part = hash_value * CONSTANT - std::floor(hash_value * CONSTANT);
-
-	return static_cast<size_t>(std::floor(capacity * frac_part));
-}
-
+class Hash {
+public:
+	static size_t multiplicativeHash(const std::string &key, int capacity, int multiplier = 31);
+};
 #endif //GUI_DICTIONARY_ADT_H

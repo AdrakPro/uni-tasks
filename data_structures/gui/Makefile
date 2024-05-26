@@ -22,14 +22,16 @@ DA_DIR = $(DS_DIR)/dynamic_array
 SLL_DIR = $(DS_DIR)/singly_linked_list
 DSL_DIR = $(DS_DIR)/doubly_linked_list
 QUEUE_DIR = ./structures/queue
+DICT_DIR = ./structures/dictionary
+HASH_DIR = ./structures/dictionary/hash_tables
 SOURCES = main.cpp
-SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp $(UTILS_DIR)/browser.cpp $(UTILS_DIR)/number_generator.cpp ./structures/validate.cpp $(DA_DIR)/dynamic_array.cpp $(DS_DIR)/singly_linked_list.cpp $(DS_DIR)/singly_linked_list_tail.cpp $(DSL_DIR)/doubly_linked_list.cpp $(QUEUE_DIR)/heap_queue/heap_queue.cpp $(QUEUE_DIR)/bst_queue/bst_queue.cpp
+SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp $(UTILS_DIR)/browser.cpp $(UTILS_DIR)/generators.cpp ./structures/validate.cpp $(DA_DIR)/dynamic_array.cpp $(DS_DIR)/singly_linked_list.cpp $(DS_DIR)/singly_linked_list_tail.cpp $(DSL_DIR)/doubly_linked_list.cpp $(QUEUE_DIR)/heap_queue/heap_queue.cpp $(QUEUE_DIR)/bst_queue/bst_queue.cpp $(DICT_DIR)/adt.cpp $(DICT_DIR)/red_black_tree/red_black_tree.cpp $(HASH_DIR)/closed_addressing.cpp $(HASH_DIR)/coalesced.cpp $(HASH_DIR)/cuckoo.cpp $(HASH_DIR)/open_addressing.cpp
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++17 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(UTILS_DIR) -I./structures  -I$(DS_DIR) -I$(DA_DIR) -I$(SLL_DIR) -I$(DSL_DIR) -I$(QUEUE_DIR) -I$(QUEUE_DIR)/heap_queue -I$(QUEUE_DIR)/bst_queue
+CXXFLAGS = -std=c++17 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(UTILS_DIR) -I./structures  -I$(DS_DIR) -I$(DA_DIR) -I$(SLL_DIR) -I$(DSL_DIR) -I$(QUEUE_DIR) -I$(QUEUE_DIR)/heap_queue -I$(QUEUE_DIR)/bst_queue -I$(DICT_DIR) -I$(DICT_DIR)/red_black_tree -I$(HASH_DIR)
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -104,6 +106,15 @@ endif
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:structures/queue/bst_queue/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:structures/dictionary/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:structures/dictionary/red_black_tree/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:structures/dictionary/hash_tables/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:structures/validate.cpp

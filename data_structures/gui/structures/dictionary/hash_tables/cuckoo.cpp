@@ -47,11 +47,11 @@ CuckooHashTable::~CuckooHashTable() {
 }
 
 size_t CuckooHashTable::hash(const std::string &key) const {
-	return multiplicativeHash(key, capacity);
+	return Hash::multiplicativeHash(key, capacity);
 }
 
 size_t CuckooHashTable::second_hash(const std::string &key) const {
-	return multiplicativeHash(key, capacity, 37);
+	return Hash::multiplicativeHash(key, capacity, 37);
 }
 
 void

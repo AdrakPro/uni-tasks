@@ -34,7 +34,7 @@ void CoalescedHashTable::setData(const int* data, int data_size) {
 }
 
 size_t CoalescedHashTable::hash(const std::string &key) const {
-	return multiplicativeHash(key, capacity);
+	return Hash::multiplicativeHash(key, capacity);
 }
 
 void CoalescedHashTable::resize() {
@@ -115,45 +115,45 @@ int CoalescedHashTable::search(const std::string &key) {
 	return -1;
 }
 
-#define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_FAST_COMPILE
-
-#include "../../../tests/catch.hpp"
-
-TEST_CASE("CoalescedHashTable") {
-	CoalescedHashTable table(10);
-
-	SECTION("Insertion and Search") {
-		table.insert("key1", 100);
-		table.insert("key2", 200);
-		table.insert("key3", 300);
-
-		REQUIRE(table.search("key1") == 100);
-		REQUIRE(table.search("key2") == 200);
-		REQUIRE(table.search("key3") == 300);
-		REQUIRE(table.search("key4") == -1); // key not present
-	}
-
-	SECTION("Insertion and Resize") {
-		for (int i = 0; i < 15; ++i) {
-			table.insert("key" + std::to_string(i), i * 10);
-		}
-
-		for (int i = 0; i < 15; ++i) {
-			REQUIRE(table.search("key" + std::to_string(i)) == i * 10);
-		}
-	}
-
-	SECTION("Remove") {
-		table.insert("key1", 100);
-		table.insert("key2", 200);
-		table.insert("key3", 300);
-
-		REQUIRE(table.search("key2") == 200);
-		table.remove("key2");
-		REQUIRE(table.search("key2") == -1); // key should be removed
-		REQUIRE(table.search("key1") == 100); // other keys should remain
-		REQUIRE(table.search("key3") == 300);
-	}
-
-}
+//#define CATCH_CONFIG_MAIN
+//#define CATCH_CONFIG_FAST_COMPILE
+//
+//#include "../../../tests/catch.hpp"
+//
+//TEST_CASE("CoalescedHashTable") {
+//	CoalescedHashTable table(10);
+//
+//	SECTION("Insertion and Search") {
+//		table.insert("key1", 100);
+//		table.insert("key2", 200);
+//		table.insert("key3", 300);
+//
+//		REQUIRE(table.search("key1") == 100);
+//		REQUIRE(table.search("key2") == 200);
+//		REQUIRE(table.search("key3") == 300);
+//		REQUIRE(table.search("key4") == -1); // key not present
+//	}
+//
+//	SECTION("Insertion and Resize") {
+//		for (int i = 0; i < 15; ++i) {
+//			table.insert("key" + std::to_string(i), i * 10);
+//		}
+//
+//		for (int i = 0; i < 15; ++i) {
+//			REQUIRE(table.search("key" + std::to_string(i)) == i * 10);
+//		}
+//	}
+//
+//	SECTION("Remove") {
+//		table.insert("key1", 100);
+//		table.insert("key2", 200);
+//		table.insert("key3", 300);
+//
+//		REQUIRE(table.search("key2") == 200);
+//		table.remove("key2");
+//		REQUIRE(table.search("key2") == -1); // key should be removed
+//		REQUIRE(table.search("key1") == 100); // other keys should remain
+//		REQUIRE(table.search("key3") == 300);
+//	}
+//
+//}

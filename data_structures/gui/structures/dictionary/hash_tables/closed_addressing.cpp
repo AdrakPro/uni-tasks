@@ -48,7 +48,7 @@ void CHashTable::preOrderCopy(RBNode* r, RBNode* n) {
 }
 
 size_t CHashTable::hash(const std::string &key) const {
-	return multiplicativeHash(key, capacity);
+	return Hash::multiplicativeHash(key, capacity);
 }
 
 void CHashTable::setData(const int* data, int data_size) {

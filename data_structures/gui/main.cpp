@@ -22,6 +22,11 @@
 #include "structures/queue/heap_queue/heap_queue.h"
 #include "structures/queue/bst_queue/bst_queue.h"
 
+#include "structures/dictionary/hash_tables/open_addressing.h"
+#include "structures/dictionary/hash_tables/closed_addressing.h"
+#include "structures/dictionary/hash_tables/coalesced.h"
+#include "structures/dictionary/hash_tables/cuckoo.h"
+
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -67,6 +72,10 @@ SLinkedListWithTail* linked_list_tail = nullptr;
 DLinkedList* double_linked_list = nullptr;
 MaxHeapPriorityQueue* max_heap_queue = nullptr;
 BSTQueue* bst_queue = nullptr;
+OHashTable* o_hash_table = nullptr;
+CHashTable* c_hash_table = nullptr;
+CuckooHashTable* cuckoo_hash_table = nullptr;
+CoalescedHashTable* coalesced_hash_table = nullptr;
 
 void reset() {
 	cached_data.clear();
@@ -79,6 +88,10 @@ void reset() {
 	double_linked_list = nullptr;
 	max_heap_queue = nullptr;
 	bst_queue = nullptr;
+	o_hash_table = nullptr;
+	c_hash_table = nullptr;
+	cuckoo_hash_table = nullptr;
+	coalesced_hash_table = nullptr;
 }
 
 // Measure functions
@@ -378,6 +391,11 @@ int main(int, char**) {
 		if (ImGui::Button("Max BST Priority Queue", button_size)) {
 			history.clear();
 			id = 5;
+		}
+
+		if (ImGui::Button("HashTable Open Addressing", button_size)) {
+			history.clear();
+			id = 6;
 		}
 
 		ImGui::End();
@@ -719,6 +737,32 @@ int main(int, char**) {
 					if (ImGui::Button("Get Height", button_size)) {
 						std::cout << "Height: " << bst_queue->getRootHeight() << std::endl;
 					}
+
+					break;
+				}
+
+				case 6: {
+					const std::string KEY = generateString(12, 50 + (size / 2));
+
+					if (o_hash_table == nullptr) {
+						o_hash_table = new OHashTable();
+						o_hash_table->setData(data, size);
+					}
+
+					addButtonCallback(
+							*o_hash_table, "Insert",
+							[KEY](OHashTable &hash_table) {
+								hash_table.insert(KEY, 30);
+							}
+					);
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*o_hash_table, "Remove",
+							[KEY](OHashTable &hash_table) {
+								hash_table.insert(KEY, 30);
+							}
+					);
 
 					break;
 				}

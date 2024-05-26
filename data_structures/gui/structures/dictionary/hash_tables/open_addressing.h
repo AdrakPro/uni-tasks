@@ -7,16 +7,16 @@ class OHashTable : Dictionary {
 private:
 	const double LOAD_FACTOR = 0.7;
 
-	Entry* table;
-	int capacity;
-	int size;
+	Entry* table{};
+	int capacity{};
+	int size{};
 
 	void resize();
 
 	[[nodiscard]] size_t hash(const std::string &key) const override;
 
 public:
-	explicit OHashTable(int capacity);
+	OHashTable();
 
 	OHashTable(const OHashTable &other);
 
