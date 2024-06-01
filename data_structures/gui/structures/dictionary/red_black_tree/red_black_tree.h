@@ -52,6 +52,10 @@ public:
 	[[nodiscard]] int getSize() const;
 
 	[[nodiscard]] RBNode* getRoot() const;
+
+	void preOrderCopy(RBNode* r, RBNode* x);
+
+	RBNode* getNil() const;
 };
 
 #endif //GUI_RED_BLACK_TREE_H

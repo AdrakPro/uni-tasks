@@ -8,7 +8,7 @@ private:
 	const double LOAD_FACTOR = 0.7;
 
 	Entry* table{};
-	int capacity{};
+	int buckets{};
 	int size{};
 
 	void resize();
@@ -29,6 +29,8 @@ public:
 	int search(const std::string &key) override;
 
 	void setData(const int* data, int data_size);
+
+	[[nodiscard]] int getBuckets() const;
 };
 
 

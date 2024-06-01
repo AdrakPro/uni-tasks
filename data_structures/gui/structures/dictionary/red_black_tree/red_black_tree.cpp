@@ -1,10 +1,16 @@
 #include "red_black_tree.h"
 
 RBTree::RBTree() {
-	nil = new RBNode("", -1);
-	nil->color = Color::BLACK;
-	current = nil;
+	auto* node = new RBNode("", -1);
+	node->parent = node;
+	node->left = node;
+	node->right = node;
+	node->color = Color::RED;
+
+	nil = node;
 	root = nil;
+	current = nil;
+
 	size = 0;
 }
 
@@ -198,7 +204,6 @@ void RBTree::remove(RBNode* z) {
 
 void RBTree::destroy() {
 	postOrderDelete(root);
-	setSize(0);
 	delete nil;
 }
 
@@ -223,6 +228,8 @@ void RBTree::postOrderDelete(RBNode* r) {
 		r->parent->right = nil;
 	}
 
+	--size;
+
 	delete r;
 }
 
@@ -230,7 +237,6 @@ void RBTree::clear() {
 	postOrderDelete(root);
 	root = nil;
 	current = nil;
-	setSize(0);
 }
 
 bool RBTree::isBalancedHelper(RBNode* r, int &max_height, int &min_height) {
@@ -380,3 +386,85 @@ void RBTree::setSize(int s) {
 RBNode* RBTree::getRoot() const {
 	return root;
 }
+
+RBNode* RBTree::getNil() const {
+	return nil;
+}
+
+void RBTree::preOrderCopy(RBNode* r, RBNode* x) {
+	if (r->key == x->key) {
+		return;
+	}
+
+	auto* z = new RBNode(r->key, r->value);
+	insert(z);
+
+	preOrderCopy(r->left, x);
+	preOrderCopy(r->right, x);
+}
+
+
+//#define CATCH_CONFIG_MAIN
+//
+//#include "../../../tests/catch.hpp"
+//
+//TEST_CASE("RBTree Remove Node") {
+//	RBTree tree;
+//
+//// Insert nodes
+//	tree.insert(new RBNode("a", 1));
+//	tree.incrementSize();
+//
+//	tree.insert(new RBNode("b", 2));
+//	tree.incrementSize();
+//
+//
+//	tree.insert(new RBNode("c", 3));
+//	tree.incrementSize();
+//
+//
+//// Remove node "b"
+//	RBNode* node = tree.containsNode("b");
+//	REQUIRE(node != tree.nil);
+//	tree.remove(node);
+//
+//// Check the tree structure
+//	REQUIRE(tree.containsNode("b") == tree.nil);
+//	REQUIRE(tree.getSize() == 2);
+//
+//// Check other nodes
+//	REQUIRE(tree.containsNode("a") != tree.nil);
+//	REQUIRE(tree.containsNode("c") != tree.nil);
+//}
+//
+//TEST_CASE("RBTree Remove Node From Vector") {
+//	std::vector<RBTree> trees;
+//	trees.emplace_back();
+//	trees.emplace_back();
+//
+//// Insert nodes into the second tree
+//	trees[1].insert(new RBNode("a", 1));
+//	trees[1].incrementSize();
+//
+//	trees[1].insert(new RBNode("b", 2));
+//	trees[1].incrementSize();
+//
+//	trees[1].insert(new RBNode("c", 3));
+//	trees[1].incrementSize();
+//
+//
+//
+//// Remove node "b" from the second tree
+//	RBNode* node = trees[1].containsNode("b");
+//	REQUIRE(node != trees[1].nil);
+//	trees[1].remove(node);
+//
+//// Check the tree structure
+//	REQUIRE(trees[1].containsNode("b") == trees[1].nil);
+//	REQUIRE(trees[1].getSize() == 2);
+//
+//// Check other nodes
+//	REQUIRE(trees[1].containsNode("a") != trees[1].nil);
+//	REQUIRE(trees[1].containsNode("c") != trees[1].nil);
+//}
+//

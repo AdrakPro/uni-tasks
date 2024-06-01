@@ -18,7 +18,10 @@ class Dictionary {
 };
 
 class Hash {
+private:
+	static bool isPrime(int n);
 public:
 	static size_t multiplicativeHash(const std::string &key, int capacity, int multiplier = 31);
+	static int nextPrime(int n);
 };
 #endif //GUI_DICTIONARY_ADT_H

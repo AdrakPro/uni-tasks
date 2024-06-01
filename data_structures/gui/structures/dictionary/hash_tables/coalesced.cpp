@@ -1,18 +1,30 @@
 #include "coalesced.h"
 
-CoalescedHashTable::CoalescedHashTable(int capacity) {
-	this->capacity = capacity;
-	this->size = 0;
-	this->table = new CEntry[capacity];
+CoalescedHashTable::CoalescedHashTable() = default;
+
+CoalescedHashTable::CoalescedHashTable(const CoalescedHashTable &other) {
+	buckets = other.buckets;
+	size = other.size;
+	table = new CEntry[buckets];
+
+	for (int i = 0; i < buckets; ++i) {
+		table[i] = other.table[i];
+	}
 }
 
-CoalescedHashTable::CoalescedHashTable(CoalescedHashTable &other) {
-	capacity = other.capacity;
-	size = other.size;
-	table = new CEntry[capacity];
+void CoalescedHashTable::setData(const int* data, int data_size) {
+	delete[] table;
 
-	for (int i = 0; i < capacity; ++i) {
-		table[i] = other.table[i];
+	this->buckets = data_size;
+	this->table = new CEntry[buckets];
+	this->size = 0;
+
+	for (int i = 0; i < data_size; ++i) {
+		insert(generateString(12, 50 + i), data[i]);
+	}
+
+	if (static_cast<double>(size) / buckets >= LOAD_FACTOR) {
+		resize();
 	}
 }
 
@@ -20,33 +32,21 @@ CoalescedHashTable::~CoalescedHashTable() {
 	delete[] table;
 }
 
-void CoalescedHashTable::setData(const int* data, int data_size) {
-	delete[] table;
-
-	this->capacity = data_size;
-	this->table = new CEntry[capacity];
-	this->size = 0;
-
-	for (int i = 0; i < data_size; ++i) {
-		std::string random_key = generateString(12, 50 + i);
-		insert(random_key, data[i]);
-	}
-}
-
 size_t CoalescedHashTable::hash(const std::string &key) const {
-	return Hash::multiplicativeHash(key, capacity);
+	return Hash::multiplicativeHash(key, buckets);
 }
 
 void CoalescedHashTable::resize() {
-	capacity *= 2;
-	auto* new_table = new CEntry[capacity];
+	int old_buckets = buckets;
+	buckets = Hash::nextPrime(old_buckets * 2);
+	auto* new_table = new CEntry[buckets];
 
-	for (int i = 0; i < capacity / 2; ++i) {
+	for (int i = 0; i < old_buckets; ++i) {
 		if (table[i].is_occupied) {
 			size_t index = hash(table[i].key);
 
 			while (new_table[index].is_occupied) {
-				index = (index + 1) % capacity;
+				index = (index + 1) % buckets;
 			}
 
 			new_table[index] = table[i];
@@ -58,11 +58,7 @@ void CoalescedHashTable::resize() {
 }
 
 void CoalescedHashTable::insert(const std::string &key, int value) {
-	if (static_cast<double>(size) / capacity >= LOAD_FACTOR) {
-		resize();
-	}
-
-	size_t index = hash(key) % capacity;
+	size_t index = hash(key);
 
 	if (!table[index].is_occupied) {
 		table[index] = CEntry(key, value, -1, true);
@@ -71,7 +67,7 @@ void CoalescedHashTable::insert(const std::string &key, int value) {
 
 		while (table[index].is_occupied && table[index].key != key) {
 			previous_index = index;
-			index = (index + 1) % capacity;
+			index = (index + 1) % buckets;
 		}
 
 		table[previous_index].next = static_cast<int>(index);
@@ -82,7 +78,7 @@ void CoalescedHashTable::insert(const std::string &key, int value) {
 }
 
 void CoalescedHashTable::remove(const std::string &key) {
-	size_t index = hash(key) % capacity;
+	size_t index = hash(key) % buckets;
 	size_t previous_index = -1;
 
 	while (table[index].is_occupied) {
@@ -103,7 +99,7 @@ void CoalescedHashTable::remove(const std::string &key) {
 }
 
 int CoalescedHashTable::search(const std::string &key) {
-	size_t idx = hash(key) % capacity;
+	size_t idx = hash(key) % buckets;
 
 	while (table[idx].is_occupied) {
 		if (table[idx].key == key) {
@@ -113,6 +109,10 @@ int CoalescedHashTable::search(const std::string &key) {
 	}
 
 	return -1;
+}
+
+int CoalescedHashTable::getBuckets() const {
+	return buckets;
 }
 
 //#define CATCH_CONFIG_MAIN

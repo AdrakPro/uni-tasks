@@ -1,37 +1,33 @@
 #include "cuckoo.h"
 
-CuckooHashTable::CuckooHashTable(int capacity) {
-	this->capacity = capacity;
-	this->size = 0;
-	this->table = new Entry* [2];
-	this->table[0] = new Entry[capacity];
-	this->table[1] = new Entry[capacity];
-}
+CuckooHashTable::CuckooHashTable() = default;
 
-CuckooHashTable::CuckooHashTable(CuckooHashTable &other) {
-	capacity = other.capacity;
+CuckooHashTable::CuckooHashTable(const CuckooHashTable &other) {
+	buckets = other.buckets;
 	size = other.size;
 
 	table = new Entry* [2];
-	table[0] = new Entry[capacity];
-	table[1] = new Entry[capacity];
+	table[0] = new Entry[buckets];
+	table[1] = new Entry[buckets];
 
 	for (int i = 0; i < 2; ++i) {
-		for (int j = 0; j < capacity; ++j) {
+		for (int j = 0; j < buckets; ++j) {
 			table[i][j] = other.table[i][j];
 		}
 	}
 }
 
 void CuckooHashTable::setData(const int* data, int data_size) {
-	delete[] table[0];
-	delete[] table[1];
-	delete[] table;
+	if (table != nullptr) {
+		delete[] table[0];
+		delete[] table[1];
+		delete[] table;
+	}
 
-	this->capacity = data_size;
+	this->buckets = data_size;
 	this->table = new Entry* [2];
-	this->table[0] = new Entry[capacity];
-	this->table[1] = new Entry[capacity];
+	this->table[0] = new Entry[buckets];
+	this->table[1] = new Entry[buckets];
 	this->size = 0;
 
 	for (int i = 0; i < data_size; ++i) {
@@ -47,21 +43,21 @@ CuckooHashTable::~CuckooHashTable() {
 }
 
 size_t CuckooHashTable::hash(const std::string &key) const {
-	return Hash::multiplicativeHash(key, capacity);
+	return Hash::multiplicativeHash(key, buckets);
 }
 
 size_t CuckooHashTable::second_hash(const std::string &key) const {
-	return Hash::multiplicativeHash(key, capacity, 37);
+	return Hash::multiplicativeHash(key, buckets, 37);
 }
 
 void
 CuckooHashTable::insertHelper(std::string &key, int value, Entry* table1, Entry* table2) {
-	size_t index1 = hash(key) % capacity;
-	size_t index2 = second_hash(key) % capacity;
+	size_t index1 = hash(key) % buckets;
+	size_t index2 = second_hash(key) % buckets;
 
 	Entry element = Entry(key, value, true);
 
-	for (int i = 0; i < capacity; ++i) {
+	for (int i = 0; i < buckets; ++i) {
 		if (!table1[index1].is_occupied) {
 			table1[index1] = element;
 			return;
@@ -74,17 +70,17 @@ CuckooHashTable::insertHelper(std::string &key, int value, Entry* table1, Entry*
 		std::swap(key, table1[index1].key);
 		std::swap(value, table1[index1].value);
 
-		index1 = hash(key) % capacity;
+		index1 = hash(key) % buckets;
 		std::swap(key, table2[index2].key);
 		std::swap(value, table2[index2].value);
 
-		index2 = second_hash(key) % capacity;
+		index2 = second_hash(key) % buckets;
 	}
 }
 
 
 void CuckooHashTable::insert(const std::string &key, int value) {
-	if (static_cast<double>(size) / capacity >= LOAD_FACTOR) {
+	if (static_cast<double>(size) / buckets >= LOAD_FACTOR) {
 		resize();
 	}
 
@@ -96,8 +92,8 @@ void CuckooHashTable::insert(const std::string &key, int value) {
 }
 
 void CuckooHashTable::remove(const std::string &key) {
-	size_t index1 = hash(key) % capacity;
-	size_t index2 = second_hash(key) % capacity;
+	size_t index1 = hash(key) % buckets;
+	size_t index2 = second_hash(key) % buckets;
 
 	if (table[0][index1].is_occupied && table[0][index1].key == key) {
 		table[0][index1].is_occupied = false;
@@ -113,8 +109,8 @@ void CuckooHashTable::remove(const std::string &key) {
 }
 
 int CuckooHashTable::search(const std::string &key) {
-	size_t index1 = hash(key) % capacity;
-	size_t index2 = second_hash(key) % capacity;
+	size_t index1 = hash(key) % buckets;
+	size_t index2 = second_hash(key) % buckets;
 
 	if (table[0][index1].is_occupied && table[0][index1].key == key) {
 		return table[0][index1].value;
@@ -128,11 +124,12 @@ int CuckooHashTable::search(const std::string &key) {
 }
 
 void CuckooHashTable::resize() {
-	capacity *= 2;
-	auto* first_table = new Entry[capacity];
-	auto* second_table = new Entry[capacity];
+	int old_buckets = buckets;
+	buckets = Hash::nextPrime(old_buckets * 2);
+	auto* first_table = new Entry[buckets];
+	auto* second_table = new Entry[buckets];
 
-	for (int i = 0; i < capacity / 2; ++i) {
+	for (int i = 0; i < old_buckets; ++i) {
 		if (table[0][i].is_occupied) {
 			insertHelper(
 					table[0][i].key, table[0][i].value, first_table, second_table
@@ -150,6 +147,10 @@ void CuckooHashTable::resize() {
 	delete[] table[1];
 	table[0] = first_table;
 	table[1] = second_table;
+}
+
+int CuckooHashTable::getBuckets() const {
+	return buckets;
 }
 
 //#define CATCH_CONFIG_MAIN

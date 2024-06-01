@@ -6,15 +6,15 @@
 
 class CHashTable : Dictionary {
 private:
-	RBTree* table;
-	int capacity;
+	RBTree* table{};
+	int buckets{};
 
-	[[nodiscard]] size_t hash(const std::string& key) const override;
+	[[nodiscard]] size_t hash(const std::string &key) const override;
 
 public:
-	explicit CHashTable(int capacity);
+	CHashTable();
 
-	CHashTable(const CHashTable &dict);
+	CHashTable(const CHashTable &other);
 
 	~CHashTable();
 
@@ -22,9 +22,13 @@ public:
 
 	void remove(const std::string &key) override;
 
+	int search(const std::string &key) override;
+
 	void setData(const int* data, int data_size);
 
 	void preOrderCopy(RBNode* r, RBNode* n);
+
+	[[nodiscard]] int getBuckets() const;
 };
 
 

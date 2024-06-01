@@ -7,9 +7,9 @@ class CuckooHashTable : Dictionary {
 private:
 	const double LOAD_FACTOR = 0.5;
 
-	Entry** table;
-	int capacity;
-	int size;
+	Entry** table{};
+	int buckets{};
+	int size{};
 
 	[[nodiscard]] size_t hash(const std::string &key) const override;
 
@@ -20,9 +20,9 @@ private:
 	void resize();
 
 public:
-	explicit CuckooHashTable(int capacity);
+	CuckooHashTable();
 
-	CuckooHashTable(CuckooHashTable &other);
+	CuckooHashTable(const CuckooHashTable &other);
 
 	~CuckooHashTable();
 
@@ -33,9 +33,9 @@ public:
 	int search(const std::string &key) override;
 
 	void setData(const int* data, int data_size);
+
+	[[nodiscard]] int getBuckets() const;
 };
-
-
 
 
 #endif //GUI_CUCKOO_H

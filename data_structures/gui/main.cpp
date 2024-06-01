@@ -398,6 +398,25 @@ int main(int, char**) {
 			id = 6;
 		}
 
+		ImGui::SameLine();
+
+		if (ImGui::Button("HashTable Closed Addressing", button_size)) {
+			history.clear();
+			id = 7;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("HashTable Coalesced", button_size)) {
+			history.clear();
+			id = 8;
+		}
+
+		if (ImGui::Button("HashTable Cuckoo", button_size)) {
+			history.clear();
+			id = 9;
+		}
+
 		ImGui::End();
 
 		ImGui::SetNextWindowPos(under_center_pos);
@@ -408,6 +427,7 @@ int main(int, char**) {
 
 		if (data != nullptr) {
 			const int NUMBER_TO_ADD = 100;
+			const std::string KEY = generateString(12, 50 + (size / 2));
 
 			switch (id) {
 				// 0-3 Lists structures
@@ -742,8 +762,6 @@ int main(int, char**) {
 				}
 
 				case 6: {
-					const std::string KEY = generateString(12, 50 + (size / 2));
-
 					if (o_hash_table == nullptr) {
 						o_hash_table = new OHashTable();
 						o_hash_table->setData(data, size);
@@ -755,14 +773,113 @@ int main(int, char**) {
 								hash_table.insert(KEY, 30);
 							}
 					);
+
 					ImGui::SameLine();
 
 					addButtonCallback(
 							*o_hash_table, "Remove",
 							[KEY](OHashTable &hash_table) {
+								hash_table.remove(KEY);
+							}
+					);
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Get buckets", button_size)) {
+						std::cout << "Buckets: " << o_hash_table->getBuckets() << std::endl;
+					}
+
+					break;
+				}
+
+				case 7: {
+					if (c_hash_table == nullptr) {
+						c_hash_table = new CHashTable();
+						c_hash_table->setData(data, size);
+					}
+
+					addButtonCallback(
+							*c_hash_table, "Insert",
+							[KEY](CHashTable &hash_table) {
 								hash_table.insert(KEY, 30);
 							}
 					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*c_hash_table, "Remove",
+							[KEY](CHashTable &hash_table) {
+								hash_table.remove(KEY);
+							}
+					);
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Get buckets", button_size)) {
+						std::cout << "Buckets: " << c_hash_table->getBuckets() << std::endl;
+					}
+
+					break;
+				}
+
+				case 8: {
+					if (coalesced_hash_table == nullptr) {
+						coalesced_hash_table = new CoalescedHashTable();
+						coalesced_hash_table->setData(data, size);
+					}
+
+					addButtonCallback(
+							*coalesced_hash_table, "Insert",
+							[KEY](CoalescedHashTable &hash_table) {
+								hash_table.insert(KEY, 30);
+							}
+					);
+
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*coalesced_hash_table, "Remove",
+							[KEY](CoalescedHashTable &hash_table) {
+								hash_table.remove(KEY);
+							}
+					);
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Get buckets", button_size)) {
+						std::cout << "Buckets: " << coalesced_hash_table->getBuckets() << std::endl;
+					}
+
+					break;
+				}
+
+				case 9: {
+					if (cuckoo_hash_table == nullptr) {
+						cuckoo_hash_table = new CuckooHashTable();
+						cuckoo_hash_table->setData(data, size);
+					}
+
+					addButtonCallback(
+							*cuckoo_hash_table, "Insert",
+							[KEY](CuckooHashTable &hash_table) {
+								hash_table.insert(KEY, 30);
+							}
+					);
+					ImGui::SameLine();
+
+					addButtonCallback(
+							*cuckoo_hash_table, "Remove",
+							[KEY](CuckooHashTable &hash_table) {
+								hash_table.remove(KEY);
+							}
+					);
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Get buckets", button_size)) {
+						std::cout << "Buckets: " << cuckoo_hash_table->getBuckets() << std::endl;
+					}
 
 					break;
 				}

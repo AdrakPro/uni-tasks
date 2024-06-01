@@ -7,18 +7,18 @@ class CoalescedHashTable : Dictionary {
 private:
 	const double LOAD_FACTOR = 0.7;
 
-	CEntry* table;
-	int capacity;
-	int size;
+	CEntry* table{};
+	int buckets{};
+	int size{};
 
 	void resize();
 
 	[[nodiscard]] size_t hash(const std::string &key) const override;
 
 public:
-	explicit CoalescedHashTable(int capacity);
+	CoalescedHashTable();
 
-	CoalescedHashTable(CoalescedHashTable &other);
+	CoalescedHashTable(const CoalescedHashTable &other);
 
 	~CoalescedHashTable();
 
@@ -29,6 +29,8 @@ public:
 	int search(const std::string &key) override;
 
 	void setData(const int* data, int data_size);
+
+	[[nodiscard]] int getBuckets() const;
 };
 
 
