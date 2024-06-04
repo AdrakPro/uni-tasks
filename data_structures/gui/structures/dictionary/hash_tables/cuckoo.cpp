@@ -31,8 +31,11 @@ void CuckooHashTable::setData(const int* data, int data_size) {
 	this->size = 0;
 
 	for (int i = 0; i < data_size; ++i) {
-		std::string random_key = generateString(12, 50 + i);
-		insert(random_key, data[i]);
+		insert(generateString(12, 50 + i), data[i]);
+	}
+
+	if (static_cast<double>(size) / buckets >= LOAD_FACTOR) {
+		resize();
 	}
 }
 
@@ -80,10 +83,6 @@ CuckooHashTable::insertHelper(std::string &key, int value, Entry* table1, Entry*
 
 
 void CuckooHashTable::insert(const std::string &key, int value) {
-	if (static_cast<double>(size) / buckets >= LOAD_FACTOR) {
-		resize();
-	}
-
 	// Dirty fix for keeping adt key to be const but insert helper std::swap requires non-const key
 	std::string k = key;
 

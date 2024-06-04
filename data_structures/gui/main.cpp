@@ -783,11 +783,11 @@ int main(int, char**) {
 							}
 					);
 
-					ImGui::SameLine();
-
-					if (ImGui::Button("Get buckets", button_size)) {
-						std::cout << "Buckets: " << o_hash_table->getBuckets() << std::endl;
-					}
+//					ImGui::SameLine();
+//
+//					if (ImGui::Button("Get buckets", button_size)) {
+//						std::cout << "Buckets: " << o_hash_table->getBuckets() << std::endl;
+//					}
 
 					break;
 				}
@@ -813,12 +813,12 @@ int main(int, char**) {
 								hash_table.remove(KEY);
 							}
 					);
-
-					ImGui::SameLine();
-
-					if (ImGui::Button("Get buckets", button_size)) {
-						std::cout << "Buckets: " << c_hash_table->getBuckets() << std::endl;
-					}
+//
+//					ImGui::SameLine();
+//
+//					if (ImGui::Button("Get buckets", button_size)) {
+//						std::cout << "Buckets: " << c_hash_table->getBuckets() << std::endl;
+//					}
 
 					break;
 				}
@@ -845,11 +845,11 @@ int main(int, char**) {
 							}
 					);
 
-					ImGui::SameLine();
-
-					if (ImGui::Button("Get buckets", button_size)) {
-						std::cout << "Buckets: " << coalesced_hash_table->getBuckets() << std::endl;
-					}
+//					ImGui::SameLine();
+//
+//					if (ImGui::Button("Get buckets", button_size)) {
+//						std::cout << "Buckets: " << coalesced_hash_table->getBuckets() << std::endl;
+//					}
 
 					break;
 				}
@@ -875,11 +875,11 @@ int main(int, char**) {
 							}
 					);
 
-					ImGui::SameLine();
-
-					if (ImGui::Button("Get buckets", button_size)) {
-						std::cout << "Buckets: " << cuckoo_hash_table->getBuckets() << std::endl;
-					}
+//					ImGui::SameLine();
+//
+//					if (ImGui::Button("Get buckets", button_size)) {
+//						std::cout << "Buckets: " << cuckoo_hash_table->getBuckets() << std::endl;
+//					}
 
 					break;
 				}
