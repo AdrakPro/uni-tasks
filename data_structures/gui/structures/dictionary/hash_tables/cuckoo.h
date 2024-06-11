@@ -13,7 +13,7 @@ private:
 
 	[[nodiscard]] size_t hash(const std::string &key) const override;
 
-	[[nodiscard]] size_t second_hash(const std::string &key) const;
+	[[nodiscard]] size_t secondHash(const std::string &key) const;
 
 	void insertHelper(std::string &key, int value, Entry* table1, Entry* table2);
 

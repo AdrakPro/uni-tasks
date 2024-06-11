@@ -49,14 +49,14 @@ size_t CuckooHashTable::hash(const std::string &key) const {
 	return Hash::multiplicativeHash(key, buckets);
 }
 
-size_t CuckooHashTable::second_hash(const std::string &key) const {
+size_t CuckooHashTable::secondHash(const std::string &key) const {
 	return Hash::multiplicativeHash(key, buckets, 37);
 }
 
 void
 CuckooHashTable::insertHelper(std::string &key, int value, Entry* table1, Entry* table2) {
 	size_t index1 = hash(key) % buckets;
-	size_t index2 = second_hash(key) % buckets;
+	size_t index2 = secondHash(key) % buckets;
 
 	Entry element = Entry(key, value, true);
 
@@ -77,7 +77,7 @@ CuckooHashTable::insertHelper(std::string &key, int value, Entry* table1, Entry*
 		std::swap(key, table2[index2].key);
 		std::swap(value, table2[index2].value);
 
-		index2 = second_hash(key) % buckets;
+		index2 = secondHash(key) % buckets;
 	}
 }
 
@@ -92,7 +92,7 @@ void CuckooHashTable::insert(const std::string &key, int value) {
 
 void CuckooHashTable::remove(const std::string &key) {
 	size_t index1 = hash(key) % buckets;
-	size_t index2 = second_hash(key) % buckets;
+	size_t index2 = secondHash(key) % buckets;
 
 	if (table[0][index1].is_occupied && table[0][index1].key == key) {
 		table[0][index1].is_occupied = false;
@@ -109,7 +109,7 @@ void CuckooHashTable::remove(const std::string &key) {
 
 int CuckooHashTable::search(const std::string &key) {
 	size_t index1 = hash(key) % buckets;
-	size_t index2 = second_hash(key) % buckets;
+	size_t index2 = secondHash(key) % buckets;
 
 	if (table[0][index1].is_occupied && table[0][index1].key == key) {
 		return table[0][index1].value;
