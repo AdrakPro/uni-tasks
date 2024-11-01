@@ -13,6 +13,7 @@
 - Double Linked List
 - Max Heap Priority Queue
 - Max BST Priority Queue (with DSW)
+- Hash tables (open addressing, closed addressing with red-black tree buckets, coalesced, cuckoo)
 
 
 ## Run Locally
