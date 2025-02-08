@@ -1,0 +1,3 @@
+/home/adam/Desktop/Materiały/uni-tasks/algorithms/movies/cmake-build-debug/CMakeFiles/movies.dir
+/home/adam/Desktop/Materiały/uni-tasks/algorithms/movies/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/adam/Desktop/Materiały/uni-tasks/algorithms/movies/cmake-build-debug/CMakeFiles/rebuild_cache.dir

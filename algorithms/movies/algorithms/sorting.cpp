@@ -28,22 +28,23 @@ Sorting::merge(std::vector<Movie> left, std::vector<Movie> right) {
 	return result;
 }
 
+// Avg O(n log n) Worst O(n log n)
 std::vector<Movie> Sorting::mergeSort(std::vector<Movie> &data) {
-	int size = static_cast<int>(data.size());
+	int size = static_cast<int>(data.size()); // O(1)
 
-	if (size <= 1) {
-		return data;
+	if (size <= 1) { // O(1)
+		return data; // O(1)
 	}
 
-	int mid = size / 2;
+	int mid = size / 2; // O(1)
 
-	std::vector<Movie> left_half(data.begin(), data.begin() + mid);
-	std::vector<Movie> right_half(data.begin() + mid, data.end());
+	std::vector<Movie> left_half(data.begin(), data.begin() + mid); // O(n)
+	std::vector<Movie> right_half(data.begin() + mid, data.end()); // O(n)
 
-	std::vector<Movie> left = mergeSort(left_half);
-	std::vector<Movie> right = mergeSort(right_half);
+	std::vector<Movie> left = mergeSort(left_half); // O(log n)
+	std::vector<Movie> right = mergeSort(right_half); // O(log n)
 
-	return merge(left, right);
+	return merge(left, right); // O(n)
 }
 
 void Sorting::swap(std::vector<Movie> &data, int i1, int i2) {
@@ -54,19 +55,19 @@ void Sorting::swap(std::vector<Movie> &data, int i1, int i2) {
 	}
 }
 
-int Sorting::medianOfThree(std::vector<Movie> &data, int left, int right) {
-	int mid = left + (right - left) / 2;
+int Sorting::medianOfThree(std::vector<Movie> &data, int low, int high) {
+	int mid = low + (high - low) / 2;
 
-	if (data[right].rating < data[left].rating) {
-		swap(data, left, right);
+	if (data[high].rating < data[low].rating) {
+		swap(data, low, high);
 	}
 
-	if (data[mid].rating < data[left].rating) {
-		swap(data, left, mid);
+	if (data[mid].rating < data[low].rating) {
+		swap(data, low, mid);
 	}
 
-	if (data[right].rating < data[mid].rating) {
-		swap(data, mid, right);
+	if (data[high].rating < data[mid].rating) {
+		swap(data, mid, high);
 	}
 
 	return mid;
@@ -78,36 +79,26 @@ std::vector<Movie> Sorting::quickSort(std::vector<Movie> &data, int low, int hig
 		return data;
 	}
 
-	int median = medianOfThree(data, low, high);
-	swap(data, low, median);
 	int partition_index = partition(data, low, high);
 	quickSort(data, low, partition_index - 1);
 	quickSort(data, partition_index + 1, high);
-
+	std::cout << "Huj" << std::endl;
 	return data;
 }
 
 int Sorting::partition(std::vector<Movie> &data, int low, int high) {
-	int i = low, j = high + 1;
-	int v = data[low].rating;
+	Movie pivot = data[medianOfThree(data, low, high)];
+	int i = low - 1;
 
-	while (true) {
-		while (data[++i].rating < v) {
-			if (i == high) break;
+	for (int j = low; j < high; ++j) {
+		if (data[j].rating < pivot.rating) {
+			++i;
+			swap(data, i, j);
 		}
-		while (v < data[--j].rating) {
-			if (j == low) break;
-		}
-		if (i >= j) break;
-		swap(data, i, j);
 	}
-	swap(data, low, j);
-	return j;
-}
 
-// Choose mid index
-int Sorting::choosePivot(int left, int right) {
-	return left + (right - left) / 2;
+	swap(data, i + 1, high);
+	return i + 1;
 }
 
 // std::list.sort is O(n log n) https://cplusplus.com/reference/list/list/sort/
@@ -119,32 +110,33 @@ void Sorting::nextSort(std::list<Movie> &bucket) {
 	);
 }
 
-//16004799
+// Avg O(n log m) Worst O(n^2)
 std::vector<Movie> Sorting::bucketSort(std::vector<Movie> &data, int buckets_num) {
-	std::vector<std::list<Movie>> buckets(buckets_num);
-	int max_rating = 0;
+	std::vector<std::list<Movie>> buckets(buckets_num); // O(k)
+	int max_rating = 0; // (O(1)
 
-	for (const Movie &movie: data) {
-		if (movie.rating > max_rating) {
-			max_rating = movie.rating;
+	for (const Movie &movie: data) { // O(n)
+		if (movie.rating > max_rating) { // O(1)
+			max_rating = movie.rating; // O(1)
 		}
 	}
 
-	for (const Movie &movie: data) {
-		int index = static_cast<int>(buckets_num * movie.rating / (max_rating + 1));
-		buckets[index].push_back(movie);
+	for (const Movie &movie: data) { // O(n)
+		int index = static_cast<int>(buckets_num * movie.rating / (max_rating + 1));  // O(1)
+		buckets[index].push_back(movie); // O(1) amort.
 	}
 
-	for (std::list<Movie> &bucket: buckets) {
-		nextSort(bucket);
+	for (std::list<Movie> &bucket: buckets) { // O(k)
+		// Used std comparator sort, docs said the time complexity is:
+		nextSort(bucket); // Avg O(m log m) Worst O(m^2)
 	}
 
-	std::vector<Movie> sorted;
-	for (const std::list<Movie> &bucket: buckets) {
-		sorted.insert(sorted.end(), bucket.begin(), bucket.end());
+	std::vector<Movie> sorted; // O(1)
+	for (const std::list<Movie> &bucket: buckets) { // O(k)
+		sorted.insert(sorted.end(), bucket.begin(), bucket.end()); // O(m)
 	}
 
-	return sorted;
+	return sorted; // O(1)
 }
 
 void Sorting::heapify(std::vector<Movie> &data, int size, int i) {
@@ -179,7 +171,7 @@ std::vector<Movie> Sorting::heapSort(std::vector<Movie> &data) {
 		heapify(data, i, 0);
 	}
 
-	return data;
+	return data; // O(1)
 }
 
 std::vector<Movie> Sorting::insertionSort(std::vector<Movie> &data, int low, int high) {
@@ -197,29 +189,31 @@ std::vector<Movie> Sorting::insertionSort(std::vector<Movie> &data, int low, int
 		data[j] = v;
 	}
 
-	return data;
+	return data; // O(1)
 }
 
+// Avg O(n log n) Worst O(n^2)
 std::vector<Movie> Sorting::introSort(std::vector<Movie> &data, int max_depth) {
-	int size = static_cast<int>(data.size());
-	int low = 0;
-	int high = size - 1;
+	int size = static_cast<int>(data.size()); // O(1)
+	int low = 0; // O(1)
+	int high = size - 1; // O(1)
 
-	if (size <= 16) {
-		insertionSort(data, low, high);
-	} else if (max_depth == 0) {
-		heapSort(data);
+	if (size <= 16) { // O(1)
+		insertionSort(data, low, high); // O(n^2)
+	} else if (max_depth == 0) { // O(1)
+		heapSort(data); // O(n log n)
 	} else {
-		int partition_index = partition(data, low, high);
+		// Used pivot as median of three
+		int partition_index = partition(data, low, high); // O(n)
 
-		std::vector<Movie> left_partition(data.begin(), data.begin() + partition_index);
-		std::vector<Movie> right_partition(data.begin() + partition_index + 1, data.end());
+		std::vector<Movie> left_partition(data.begin(), data.begin() + partition_index); // O(n)
+		std::vector<Movie> right_partition(data.begin() + partition_index + 1, data.end()); // O(n)
 
-		introSort(left_partition, max_depth - 1);
-		introSort(right_partition, max_depth - 1);
+		introSort(left_partition, max_depth - 1); // O(log n)
+		introSort(right_partition, max_depth - 1); // O(log n)
 	}
 
-	return data;
+	return data; // O(1)
 }
 
 

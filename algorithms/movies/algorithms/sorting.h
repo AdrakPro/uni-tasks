@@ -12,13 +12,11 @@ private:
 
 	void swap(std::vector<Movie> &data, int i1, int i2);
 
-	int choosePivot(int left, int right);
-
 	int partition(std::vector<Movie> &data, int low, int high);
 
 	void nextSort(std::list<Movie> &bucket);
 
-	int medianOfThree(std::vector<Movie>&data, int left, int right);
+	int medianOfThree(std::vector<Movie>&data, int low, int high);
 
 
 public:

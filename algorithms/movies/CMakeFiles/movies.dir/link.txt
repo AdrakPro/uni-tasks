@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/movies.dir/main.cpp.o CMakeFiles/movies.dir/model/movie.cpp.o CMakeFiles/movies.dir/utils/browser.cpp.o CMakeFiles/movies.dir/algorithms/sorting.cpp.o -o movies 

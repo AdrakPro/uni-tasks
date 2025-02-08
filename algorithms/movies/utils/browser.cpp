@@ -23,7 +23,7 @@ std::vector<Movie> Browser::loadMovies(int max_size) {
 			"data/dane.csv"
 	);
 	if (!file.is_open()) {
-		std::cerr << "Error opening file." << std::endl;
+		std::cerr << "Data/dane.csv is not present!" << std::endl;
 		return movies;
 	}
 
