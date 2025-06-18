@@ -1,7 +1,0 @@
-# ninja log v5
-2	492	1712748521814438400	CMakeFiles/movies.dir/main.cpp.o	30d27ad33324370f
-1	677	1712742482546593986	CMakeFiles/movies.dir/model/movie.cpp.o	4aeb5257b3795530
-1	482	1712748537446728019	CMakeFiles/movies.dir/algorithms/sorting.cpp.o	30c95b85aec50385
-2	39	1712769310740725071	build.ninja	1d64c156f7a43b46
-482	569	1712748537534729652	movies	34a053e1df446bb1
-1	765	1712742482634600648	CMakeFiles/movies.dir/utils/browser.cpp.o	1f0c34d9982ff45f
